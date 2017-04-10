@@ -1,0 +1,103 @@
+/*******************************/
+/*ESTILOS DEL DIV PRINCIPAL*/
+/*******************************/
+html {
+     height: 100%;
+}
+body {
+    height: 100%;
+    margin-top: 0px;
+}
+#contenedor-kiosko {
+    width: 100%;
+    height: 85%;
+    position: absolute;
+    /*margin: 1% 1% 1% 1%;*/
+}
+
+#kiosko-div {
+    height: 100%;
+}
+
+.button{
+    margin: 0% 5% 1% 3%;
+    max-height: 100%;
+    min-height: 30%;
+    max-width: 100%;
+    min-width: 20%;
+}
+
+.span-button{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.img{
+    height: 100%;
+    vertical-align: middle;
+}
+
+/*******************************/
+/*ESTILOS DEL DIV DE PRODUCCION*/
+/*******************************/
+
+#kiosko-produccion {
+    height: 100%;
+}
+
+.button-produccion{
+    margin: 5% 5% 1% 3%;
+    max-height: 100%;
+    min-height: 30%;
+    max-width: 100%;
+    min-width: 20%;
+}
+
+/***********************************/
+/*ESTILOS DEL DIV PARA VOLVER ATRÁS*/
+/***********************************/
+
+#div-button-back{
+    margin: 15% 5% 1% 3%;
+    margin-bottom: 0px;
+}
+
+
+#button-back.span-button-back{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#button-back.span-button-back.img-back{
+    height: 50%;
+    vertical-align: middle;
+}
+
+.button-back-left{
+    -moz-border-radius: 50%; 
+    -webkit-border-radius: 50%; 
+    border-radius: 50%;
+    max-height: 100px;
+    min-height: 50px;
+    max-width: 100px;
+    min-width: 50px;
+    background-color: #337ab7;
+    float: left;
+    /*margin-right: 2%;*/
+}
+
+.button-back-right{
+    -moz-border-radius: 50%; 
+    -webkit-border-radius: 50%; 
+    border-radius: 50%;
+    max-height: 100px;
+    min-height: 50px;
+    max-width: 100px;
+    min-width: 50px;
+    background-color: #337ab7;
+    float: right;
+    /*margin-left: 2%;*/
+}
+

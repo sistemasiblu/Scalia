@@ -1,0 +1,15 @@
+To: roma.713@hotmail.com
+Subject: Contacto desde el sitio web
+From: roma.713@hotmail.com
+Reply-To: roma.713@hotmail.com
+X-Mailer: PHP/5.6.15
+
+Detalles del formulario de contacto:
+
+Nombre: 
+E-mail: 
+Telefono: 
+Asunto: 
+Comentarios: 
+
+

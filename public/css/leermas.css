@@ -1,0 +1,47 @@
+{
+    /*Le ponemos estilos a todo el documento*/
+    margin: 0;
+    padding: 0;
+}
+
+body
+{
+    /*Le ponemos estilos al body*/
+    background: #f65;
+}
+
+a
+{
+    /*Le ponemos estilos al enlace*/
+    color: #f65;
+    text-decoration: none;
+}
+
+#contenido
+{
+    /*Le ponemos estilos al article contenedor de la imagen*/
+    background: #243;
+    border-radius: .2em;
+    color: white;
+    margin: 0 auto;
+    max-width: 95%;
+    text-align: center;
+}
+
+#oculto
+{
+    /*Con esta instruccion hacemos q el texto a mostrar este oculto de manera predeterminada al ingresar a la pagina por primera ves*/
+    display: none;
+}
+
+section
+{
+    /*Le ponemos estilos al section contenedor del article*/
+    background: #745;
+    border-radius: .2em;
+    color: white;
+    margin: 0 auto;
+    max-width: 95%;
+    text-align: center;
+}
+
