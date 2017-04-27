@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class DocumentoConciliacionRequest extends Request
+class CambioPasswordRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,10 @@ class DocumentoConciliacionRequest extends Request
     public function rules()
     {
         return [
-            "Documento_idDocumento" => "required|unique:documentoconciliacion,Documento_idDocumento,".$this->get('idDocumentoConciliacion') .",idDocumentoConciliacion,Compania_idCompania,".(\Session::get('idCompania'))
+
+        "password" => "required|min:4|max:20|confirmed",
+        "password_confirmation" => "required|min:4|max:20",
+            
         ];
     }
 }

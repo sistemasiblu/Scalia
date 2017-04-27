@@ -1211,6 +1211,9 @@ if(strpos($camposVista, 'asistentesMovimientoCRM') !== false)
                                                     $html .= '<td>'.$value['correoElectronicoMovimientoCRMAsistente'].'</td>';
                                                     $html .= '</tr>';
                                                 }
+
+
+                                                
                                                 
                                             
                             $html .= '</table>

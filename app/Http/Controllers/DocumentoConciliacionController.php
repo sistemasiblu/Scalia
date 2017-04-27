@@ -66,8 +66,7 @@ class DocumentoConciliacionController extends Controller
     public function store(DocumentoConciliacionRequest $request)
     {
         \App\DocumentoConciliacion::create([
-            'codigoDocumentoConciliacion' => $request['codigoDocumentoConciliacion'],
-            'nombreDocumentoConciliacion' => $request['nombreDocumentoConciliacion'],
+            'Documento_idDocumento' => $request['Documento_idDocumento'],
             'Compania_idCompania' => \Session::get("idCompania")
             ]);
 
@@ -98,7 +97,36 @@ class DocumentoConciliacionController extends Controller
     public function edit($id)
     {
         $documentoconciliacion = \App\DocumentoConciliacion::find($id);
-        return view('documentoconciliacion',['documentoconciliacion'=>$documentoconciliacion]);
+
+        //  Enviamos la lista de documentos comerciales
+        $documento = DB::table(\Session::get("baseDatosCompania").'.Documento')
+            ->where('afectaContabilidadDocumento','=','SI')
+            ->whereOr('afectaContabilidadNIIFDocumento','=','SI')
+            ->lists('nombreDocumento','idDocumento');
+
+        // Consultamos la tabla de detalle comercial
+        // $comercial = DB::table('documentoconciliacioncomercial')
+        //     ->leftjoin('valorconciliacion','ValorConciliacion_idValorConciliacion','=','idValorConciliacion')
+        //     ->where('DocumentoConciliacion_idDocumentoConciliacion','=',$id)
+        //     ->select(DB::raw('idDocumentoConciliacionComercial', 'ValorConciliacion_idValorConciliacion', 'nombreValorConciliacion', 'cuentasLocalDocumentoConciliacionComercial', 'cuentasNiifDocumentoConciliacionComercial'));
+
+        $comercial = DB::select(
+            'SELECT idDocumentoConciliacionComercial, ValorConciliacion_idValorConciliacion, nombreValorConciliacion,cuentasLocalDocumentoConciliacionComercial, cuentasNiifDocumentoConciliacionComercial
+            FROM documentoconciliacioncomercial
+            LEFT JOIN valorconciliacion
+            ON ValorConciliacion_idValorConciliacion = idValorConciliacion
+            WHERE DocumentoConciliacion_idDocumentoConciliacion = '.$id);
+
+        $cartera = DB::select(
+            'SELECT idDocumentoConciliacionCartera, ValorConciliacion_idValorConciliacion, nombreValorConciliacion,cuentasLocalDocumentoConciliacionCartera, cuentasNiifDocumentoConciliacionCartera
+            FROM documentoconciliacioncartera
+            LEFT JOIN valorconciliacion
+            ON ValorConciliacion_idValorConciliacion = idValorConciliacion
+            WHERE DocumentoConciliacion_idDocumentoConciliacion = '.$id);
+
+       $comercial = $this->convertirArray($comercial);
+
+        return view('documentoconciliacion',['documentoconciliacion'=>$documentoconciliacion], compact('documento', 'comercial','cartera'));
     }
 
     /**
@@ -140,10 +168,10 @@ class DocumentoConciliacionController extends Controller
 
         // en el formulario hay un campo oculto en el que almacenamos los id que se eliminan separados por coma
         // en este documentoconciliacion lo convertimos en array y eliminamos dichos id de la tabla de detalle
-        $idsEliminar = explode(',', $request['eliminarOperacion']);
+        $idsEliminar = explode(',', $request['eliminarDocumentoComercial']);
         \App\DocumentoConciliacionComercial::whereIn('idDocumentoConciliacionComercial',$idsEliminar)->delete();
 
-        $contadorDetalle = count($request['ordenDocumentoConciliacionComercial']);
+        $contadorDetalle = count($request['ValorConciliacion_idValorConciliacion']);
         for($i = 0; $i < $contadorDetalle; $i++)
         {
             $indice = array(
@@ -151,14 +179,48 @@ class DocumentoConciliacionController extends Controller
 
             $data = array(
             'DocumentoConciliacion_idDocumentoConciliacion' => $id,
-            'ordenDocumentoConciliacionComercial' => $request['ordenDocumentoConciliacionComercial'][$i],
-            'nombreDocumentoConciliacionComercial' => $request['nombreDocumentoConciliacionComercial'][$i],
-            'samDocumentoConciliacionComercial' => $request['samDocumentoConciliacionComercial'][$i],
-            'observacionDocumentoConciliacionComercial' => $request['observacionDocumentoConciliacionComercial'][$i] );
+            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacion'][$i],
+            'cuentasLocalDocumentoConciliacionComercial' => $request['cuentasLocalDocumentoConciliacionComercial'][$i],
+            'cuentasNiifDocumentoConciliacionComercial' => $request['cuentasNiifDocumentoConciliacionComercial'][$i] );
 
 
             $insertar = \App\DocumentoConciliacionComercial::updateOrCreate($indice, $data);
 
         }
+
+
+
+        // en el formulario hay un campo oculto en el que almacenamos los id que se eliminan separados por coma
+        // en este documentoconciliacion lo convertimos en array y eliminamos dichos id de la tabla de detalle
+        $idsEliminar = explode(',', $request['eliminarDocumentoCartera']);
+        \App\DocumentoConciliacionCartera::whereIn('idDocumentoConciliacionCartera',$idsEliminar)->delete();
+
+        $contadorDetalle = count($request['ValorConciliacion_idValorConciliacion']);
+        for($i = 0; $i < $contadorDetalle; $i++)
+        {
+            $indice = array(
+             'idDocumentoConciliacionCartera' => $request['idDocumentoConciliacionCartera'][$i]);
+
+            $data = array(
+            'DocumentoConciliacion_idDocumentoConciliacion' => $id,
+            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacion'][$i],
+            'cuentasLocalDocumentoConciliacionCartera' => $request['cuentasLocalDocumentoConciliacionCartera'][$i],
+            'cuentasNiifDocumentoConciliacionCartera' => $request['cuentasNiifDocumentoConciliacionCartera'][$i] );
+
+
+            $insertar = \App\DocumentoConciliacionCartera::updateOrCreate($indice, $data);
+
+        }
+    }
+
+    function convertirArray($dato)
+    {
+        $nuevo = array();
+
+        for($i = 0; $i < count($dato); $i++) 
+        {
+          $nuevo[] = get_object_vars($dato[$i]) ;
+        }
+        return $nuevo;
     }
 }

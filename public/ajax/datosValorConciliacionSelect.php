@@ -1,8 +1,10 @@
 <?php
 
+    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'comercial';
     $consulta = DB::Select(
         'SELECT idValorConciliacion, nombreValorConciliacion 
-        FROM valorconciliacion');
+        FROM valorconciliacion
+        WHERE moduloValorConciliacion = "'.$tipo.'"');
 
     $row = array();
 

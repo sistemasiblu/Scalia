@@ -38,7 +38,8 @@
                             <li><a class="toggle-vis" data-column="11"><label> Fecha de proceso</label></a></li>
                             <li><a class="toggle-vis" data-column="12"><label> Tipo de tejido</label></a></li>
                             <li><a class="toggle-vis" data-column="13"><label> Tipo de negocio</label></a></li>
-                            <li><a class="toggle-vis" data-column="14"><label> Observaciones</label></a></li>
+                            <li><a class="toggle-vis" data-column="14"><label> Observaciones OP</label></a></li>
+                            <li><a class="toggle-vis" data-column="14"><label> Observaciones Pedido</label></a></li>
 
                         </ul>
                     </div>
@@ -59,7 +60,8 @@
                                 <th><b>Fecha de proceso</b></th>
                                 <th><b>Tipo de tejido</b></th>
                                 <th><b>Tipo de negocio</b></th>
-                                <th><b>Observaciones</b></th>
+                                <th><b>Observaciones OP</b></th>
+                                <th><b>Observaciones Pedido</b></th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -78,7 +80,8 @@
                                 <th>Fecha de proceso</th>
                                 <th>Tipo de tejido</th>
                                 <th>Tipo de negocio</th>
-                                <th>Observaciones</th>
+                                <th>Observaciones OP</th>
+                                <th>Observaciones Pedido</th>
                             </tr>
                         </tfoot>
                     </table>

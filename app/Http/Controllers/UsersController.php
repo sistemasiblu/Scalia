@@ -47,7 +47,7 @@ class UsersController extends Controller
         $tercero = DB::Select(
             "SELECT nombre1Tercero as nombre, idTercero as id
             FROM ".\Session::get("baseDatosCompania").".Tercero
-            WHERE tipoTercero like '%*05*%'
+            WHERE tipoTercero like '%*05*%' or tipoTercero like '%*02*%'
             ORDER BY nombre1Tercero");
         $tercero = $this->convertirArray($tercero);
 
@@ -152,4 +152,7 @@ class UsersController extends Controller
         \App\User::destroy($id);
         return redirect('/users');
     }
+
+
+    
 }

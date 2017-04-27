@@ -1,4 +1,4 @@
-@extends('layouts.vista')
+@extends('layouts.grid')
 
 @section('titulo')<h3 id="titulo"><center>Parámetros de Conciliación Contable</center></h3>@stop
 
@@ -6,11 +6,13 @@
   @include('alerts.request')
 
 {!!Html::script('js/documentoconciliacion.js')!!}
-
 <script>
-  var DocumentoConciliacionComercial = '<?php echo (isset($documentoconciliacion) ? json_encode($documentoconciliacion->DocumentoConciliacionComercial) : "");?>';
+  var DocumentoConciliacionComercial = '<?php echo (isset($comercial) ? json_encode($comercial) : "");?>';
   DocumentoConciliacionComercial = (DocumentoConciliacionComercial != '' ? JSON.parse(DocumentoConciliacionComercial) : '');
-  
+
+  var DocumentoConciliacionCartera = '<?php echo (isset($cartera) ? json_encode($cartera) : "");?>';
+  DocumentoConciliacionCartera = (DocumentoConciliacionCartera != '' ? JSON.parse(DocumentoConciliacionCartera) : '');
+
   var valorDetalle = [0,0,'','',''];
 
   
@@ -32,6 +34,26 @@
     for(var j=0, k = DocumentoConciliacionComercial.length; j < k; j++)
     {
         comercial.agregarCampos(JSON.stringify(DocumentoConciliacionComercial[j]),'L');
+    }
+
+
+
+    cartera = new Atributos('cartera','contenedor_cartera','cartera_');
+    
+    cartera.altura = '36px;';
+    cartera.campoid = 'idDocumentoConciliacionComercial';
+    cartera.campoEliminacion = 'eliminarOperacion';
+
+    cartera.campos = ['idDocumentoConciliacionComercial', 'ValorConciliacion_idValorConciliacion', 'nombreValorConciliacion', 'cuentasLocalDocumentoConciliacionComercial', 'cuentasNiifDocumentoConciliacionComercial'];
+    cartera.etiqueta = ['input','input','input','input','input'];
+    cartera.tipo = ['hidden','hidden','text','text','text'];
+    cartera.estilo = ['','','width: 400px;height:35px;','width: 500px;height:35px;','width: 500px;height:35px;'];
+    cartera.clase = ['','','','',''];
+    cartera.sololectura = [false,false,false,false,false];
+    
+    for(var j=0, k = DocumentoConciliacionCartera.length; j < k; j++)
+    {
+        cartera.agregarCampos(JSON.stringify(DocumentoConciliacionCartera[j]),'L');
     }
 
    
@@ -76,7 +98,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-            Conmercial</a>
+            Comercial</a>
           </h4>
         </div>
         <div id="collapse1" class="panel-collapse collapse in">
@@ -84,7 +106,7 @@
             <div class="form-group" id='test'>
               <div class="col-sm-12">
                 <div class="row show-grid">
-                    <div class="col-md-1" style="width: 40px;" onclick="abrirModalValor();">
+                    <div class="col-md-1" style="width: 40px;" onclick="abrirModalValor('comercial');">
                       <span class="glyphicon glyphicon-plus"></span>
                     </div>
                     <div class="col-md-1" style="width: 400px;">Valor</div>
@@ -106,10 +128,22 @@
           </h4>
         </div>
         <div id="collapse2" class="panel-collapse collapse">
-          <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat.</div>
+          <div class="panel-body">
+            <div class="form-group" id='test'>
+              <div class="col-sm-12">
+                <div class="row show-grid">
+                    <div class="col-md-1" style="width: 40px;" onclick="abrirModalValor('cartera');">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </div>
+                    <div class="col-md-1" style="width: 400px;">Tipo de Cartera</div>
+                    <div class="col-md-1" style="width: 500px;">Cuentas LOCAL</div>
+                    <div class="col-md-1" style="width: 500px;">Cuentas NIIF</div>
+                    <div id="contenedor_cartera">
+                    </div>
+                </div>
+              </div>
+            </div>  
+          </div> 
         </div>
       </div>
       <div class="panel panel-default">
@@ -120,10 +154,22 @@
           </h4>
         </div>
         <div id="collapse3" class="panel-collapse collapse">
-          <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat.</div>
+          <div class="panel-body">
+            <div class="form-group" id='test'>
+              <div class="col-sm-12">
+                <div class="row show-grid">
+                    <div class="col-md-1" style="width: 40px;" onclick="abrirModalValor();">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </div>
+                    <div class="col-md-1" style="width: 400px;">Concepto Comercial</div>
+                    <div class="col-md-1" style="width: 500px;">Cuentas LOCAL</div>
+                    <div class="col-md-1" style="width: 500px;">Cuentas NIIF</div>
+                    <div id="contenedor_comercial">
+                    </div>
+                </div>
+              </div>
+            </div>  
+          </div> 
         </div>
       </div>
     </div>
@@ -158,8 +204,50 @@
       </div>
       <div class="modal-body">
       <?php 
-        echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/valorconciliaciongridselect"></iframe>'
+       //echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/valorconciliaciongridselect"></iframe>'
       ?>
+              <div class="container">
+            <div class="row">
+                <div class="container">
+                    <div class="btn-group" style="margin-left: 94%;margin-bottom:4px" title="Columns">
+                        <button  type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-th icon-th"></i> 
+                            <span class="caret"></span>
+                        </button>
+                       <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a class="toggle-vis" data-column="0"><label> ID</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Valor</label></a></li>
+                            
+                        </ul>
+                    </div>
+                    
+                    <table id="tvalorSelect" name="tvalorSelect" class="display table-bordered" width="100%">
+                        <thead>
+                            <tr class="btn-default active">
+
+                                <th><b>ID</b></th>
+                                <th><b>Valor</b></th>        
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr class="btn-default active">
+
+                                <th>ID</th>
+                                <th>Valor</th>                             
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="modal-footer">
+                        <button id="botonCampo" name="botonCampo" type="button" class="btn btn-primary" >Seleccionar</button>
+                    </div>
+
+                
+
+                </div>
+            </div>
+        </div>
+
       </div>
     </div>
   </div>
