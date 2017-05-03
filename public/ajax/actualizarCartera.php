@@ -5,8 +5,6 @@ function actualizarCartera($accion, $modulo, $idCompra, $idDocumentoFinanciero, 
     #Consulto cual es el id del periodo dependiendo de la fecha actual para llevar este a la where de la consulta
     $consultaperiodo = DB::Select('SELECT idPeriodo FROM Iblu.Periodo where fechaInicialPeriodo <= "'.$fecha.'" and fechaFinalPeriodo >= "'.$fecha.'"');
 
-    // echo 'SELECT idPeriodo FROM Iblu.Periodo where fechaInicialPeriodo <= "'.$fecha.'" and fechaFinalPeriodo >= "'.$fecha.'"';
-
     if (count($consultaperiodo) == 0) 
     {
       return true;
@@ -24,17 +22,12 @@ function actualizarCartera($accion, $modulo, $idCompra, $idDocumentoFinanciero, 
 
         else if ($modulo == 'pago')
         {
-            $clave = ($idCompra == NULL ? 'DocumentoFinanciero_idDocumentoFinanciero = '.$idDocumentoFinanciero : 'Compra_idCompra = '.$idCompra);
+            $clave = ($idCompra == '' ? 'DocumentoFinanciero_idDocumentoFinanciero = '.$idDocumentoFinanciero : 'Compra_idCompra = '.$idCompra);
 
             $actualizar = DB::Select('UPDATE carteraforward 
               SET abonoCarteraForward = abonoCarteraForward + '.$valor.', 
                   saldoFinalCarteraForward = saldoInicialCarteraForward - abonoCarteraForward 
               WHERE '.$clave.' and Periodo_idPeriodo = '.$periodo['idPeriodo']);
-
-            // $actualizar = DB::Select('UPDATE carteraforward 
-            // SET abonoCarteraForward = abonoCarteraForward + '.$valor.', 
-            //     saldoFinalCarteraForward = saldoInicialCarteraForward - abonoCarteraForward 
-            // WHERE Compra_idCompra = '.$idCompra.' and Periodo_idPeriodo = '.$periodo['idPeriodo']);
         }
 
         else if ($modulo == 'documentofinanciero') 
@@ -57,17 +50,12 @@ function actualizarCartera($accion, $modulo, $idCompra, $idDocumentoFinanciero, 
         else if($modulo == 'pago')
         {
 
-           $clave = ($idCompra == NULL or $idCompra == '' ? 'DocumentoFinanciero_idDocumentoFinanciero = '.$idDocumentoFinanciero : 'Compra_idCompra = '.$idCompra);
+           $clave = ($idCompra == '' ? 'DocumentoFinanciero_idDocumentoFinanciero = '.$idDocumentoFinanciero : 'Compra_idCompra = '.$idCompra);
 
             $actualizar = DB::Select('UPDATE carteraforward 
               SET abonoCarteraForward = abonoCarteraForward - '.$valor.', 
                   saldoFinalCarteraForward = saldoInicialCarteraForward - abonoCarteraForward 
               WHERE '.$clave.' and Periodo_idPeriodo = '.$periodo['idPeriodo']);
-
-          // $actualizar = DB::Select('UPDATE carteraforward 
-          // SET abonoCarteraForward = abonoCarteraForward -'.$valor.', 
-          //     saldoFinalCarteraForward = saldoInicialCarteraForward - abonoCarteraForward 
-          // WHERE Compra_idCompra = '.$idCompra.' and Periodo_idPeriodo = '.$periodo['idPeriodo']);
         }
 
         else if($modulo == 'documentofinanciero')
@@ -88,7 +76,6 @@ function actualizarCartera($accion, $modulo, $idCompra, $idDocumentoFinanciero, 
    if ($fecha2 < $date) 
    {
       #Le sumo un mes a la fecha
-      // $nuevaFecha = date("Y-m-d",strtotime("$fecha + 1 months"));
       $nuevaFecha = date("Y-m-d", strtotime("+1 MONTH", strtotime($fecha)));
 
       if ($idCompra !== '') 

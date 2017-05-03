@@ -52,12 +52,17 @@ function base64($archivo)
   		<table table class="table table-striped table-bordered table-hover" style="width:100%;">';
 
   		$i = 0;
+  		$comprasTotal = 0;
+  		$forwardTotal = 0;
+  		$diferenciaTotalP = 0;
+  		$diferenciaTotalN = 0;
   		$total = count($datos);
 
   		while ($i < $total) 
   		{
   			$forward = $datos[$i]['numeroForward'];
-  			$totalCompra = 0;
+  			$valorCompras = 0;
+  			$valorForward = 0;
 
   			
 			if ($datos[$i]['numeroCompra'] == '' && $datos[$i]['nombreTemporadaCompra'] == '') 
@@ -69,6 +74,9 @@ function base64($archivo)
 					<th colspan="1" style=" background-color:#585858; color:white;">Vencimiento '.$datos[$i]['fechaVencimientoForward'].'</th>
 					<th colspan="1" style=" background-color:#585858; color:white;">'.number_format($datos[$i]['valorDolarForward'],2,".",",").'</th>
 				</tr>';
+
+				$forwardTotal += $datos[$i]['valorDolarForward'];
+
 				$i++;
 			}
 			else
@@ -99,9 +107,10 @@ function base64($archivo)
 						<td style="text-align:right;">'.number_format($datos[$i]['valorCompra'],2,".",",").'</td>
 					</tr>';
 
-					$totalCompra += $datos[$i]['valorCompra'];
+					$valorCompras += $datos[$i]['valorCompra'];
+					$valorForward += $datos[$i]['valorDolarForward'];
 
-					$diferencia = $datos[$i]['valorDolarForward'] - $totalCompra;
+					$diferencia = $datos[$i]['valorDolarForward'] - $valorCompras;
 
 					$i++;
 				}
@@ -109,15 +118,40 @@ function base64($archivo)
 				echo '
 				<tr>
 					<th colspan="3">TOTALES DEL FORWARD '.$forward.'</th>
-					<th style="text-align:right;" colspan="1">'.number_format($totalCompra,2,".",",").'</th>
+					<th style="text-align:right;" colspan="1">'.number_format($valorCompras,2,".",",").'</th>
 				</tr>
 				<tr>
-					<th colspan="3">DIFERENCIA ENTRE EL VALOR DEL FORWARD '.$forward.' Y LA SUMATORIA DE SUS COMPRAS</th>
-					<th style="text-align:right;" colspan="1">'.number_format($diferencia,2,".",",").'</th>
+					<th colspan="3" style="color:blue;">DIFERENCIA ENTRE EL VALOR DEL FORWARD '.$forward.' Y LA SUMATORIA DE SUS COMPRAS</th>
+					<th style="text-align:right; color:blue;" colspan="1">'.number_format($diferencia,2,".",",").'</th>
 				</tr>';
+
+				$forwardTotal += $valorForward;
+				$comprasTotal += $valorCompras;
+				if ($diferencia > 0) 
+					$diferenciaTotalP += $diferencia;	
+				else
+					$diferenciaTotalN += $diferencia;
 
 			}
 		}
+
+
+			echo '
+				<tr>
+					<th colspan="4"></b></th>
+				</tr>
+				<tr>
+					<th colspan="3"><b>TOTAL DE TODOS LOS FORWARDS</b></th>
+					<th style="text-align:right;" colspan="1"><b>'.number_format($forwardTotal,2,".",",").'</b></th>
+				</tr>
+				<tr>
+					<th colspan="3" style="color:green;"><b>SALDO POSITIVO</b></th>
+					<th style="text-align:right; color:green;" colspan="1"><b>'.number_format($diferenciaTotalP,2,".",",").'</b></th>
+				</tr>
+				<tr>
+					<th colspan="3" style="color:red;"><b>SALDO NEGATIVO<b></th>
+					<th style="text-align:right; color:red;" colspan="1"><b>'.number_format($diferenciaTotalN,2,".",",").'</b></th>
+				</tr>';
 	}
 	else
 	{

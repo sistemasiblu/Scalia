@@ -329,15 +329,26 @@ class EmbarqueController extends Controller
                 GROUP BY numeroCompra , numeroVersionCompra
                 ORDER BY numeroCompra , numeroVersionCompra DESC) AS comp
                 GROUP BY numeroCompra
-                HAVING estadoCompra = "Abierto" and Faltante <= 0');
-                
+                HAVING estadoCompra = "Abierto" and Faltante <= 0');                
 
             for ($i=0; $i < count($compra); $i++) 
             { 
-                $idCompra = get_object_vars($compra[$i]);
+                $comp = get_object_vars($compra[$i]);
 
                 $update = DB::Select('UPDATE compra SET estadoCompra = "Cerrado"
-                where idCompra = '.$idCompra['idCompra']);    
+                where idCompra = '.$comp['idCompra']);    
+
+                $destinatario = 'comercio1@ciiblu.com; comercio4@ciiblu.com';
+
+                $mail['destinatarioCorreo'] = explode(';', $destinatario);
+                $mail['asuntoCorreo'] = 'Cierre de compra';
+                $mail['mensaje'] = 'Se ha cerrado la compra número <b>'.$comp["numeroCompra"].'</b>, realizada por el usuario '.\Session::get("nombreUsuario").'.';
+
+                Mail::send('emails.contact',$mail,function($msj) use ($mail)
+                {
+                    $msj->to($mail['destinatarioCorreo']);
+                    $msj->subject($mail['asuntoCorreo']);
+                });
             }
 
             $this->enviarCorreoPagos($id);

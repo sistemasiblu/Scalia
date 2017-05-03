@@ -72,7 +72,7 @@ class DocumentoFinancieroController extends Controller
                     'valorPagoDocumentoFinancieroDetalle' => $request['valorPagoDocumentoFinancieroDetalle'][$i],
                 ]);
 
-                actualizarCartera('carga','documentofinanciero','', $documentofinanciero->idDocumentoFinanciero, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
+                actualizarCartera('carga','pago',$request['Compra_idCompra'][$i], '', $request['fechaNegociacionDocumentoFinanciero'], $request['valorPagoDocumentoFinancieroDetalle'][$i]);
             }
 
             for ($i=0; $i < count($request['fechaProrrogaDocumentoFinancieroProrroga']); $i++) 
@@ -82,6 +82,13 @@ class DocumentoFinancieroController extends Controller
                     'fechaProrrogaDocumentoFinancieroProrroga' => $request['fechaProrrogaDocumentoFinancieroProrroga'][$i],
                     'observacionDocumentoFinancieroProrroga' => $request['observacionDocumentoFinancieroProrroga'][$i]
                 ]);
+            }
+
+            $listaf = \App\ListaFinanciacion::find($request['ListaFinanciacion_idListaFinanciacion']);
+
+            if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
+            {
+                actualizarCartera('carga','documentofinanciero','', $documentofinanciero->idDocumentoFinanciero, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
             }
         }
 
@@ -121,30 +128,38 @@ class DocumentoFinancieroController extends Controller
      */
     public function update(DocumentoFinancieroRequest $request, $id)
     {
+        // Antes de guardar los datos modificados, descargamos los datos originales de la cartera
         if($request['respuesta'] != 'falso')
         {
+            $documentoF = DB::Select('SELECT * from documentofinancierodetalle where DocumentoFinanciero_idDocumentoFinanciero = '.$id);
+
+            // // recorremos el detalle depago original descargandolos de la cartera
+            $total = 0;
+            for ($i=0; $i < count($documentoF); $i++) 
+            { 
+                // convierto array a string
+                $documento = get_object_vars($documentoF[$i]);
+
+                actualizarCartera('descarga','pago',$documento['Compra_idCompra'], '', $request['fechaNegociacionDocumentoFinanciero'], $documento['valorPagoDocumentoFinancieroDetalle']);
+
+                $total += $documento['valorPagoDocumentoFinancieroDetalle'];
+            }
+
+            if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
+            {
+                actualizarCartera('descarga','documentofinanciero', '', $id, $request['fechaNegociacionDocumentoFinanciero'], $total);
+            }
+
             $documentofinanciero = \App\DocumentoFinanciero::find($id);
             $documentofinanciero->fill($request->all());
             $documentofinanciero->save();
 
-            // // Antes de guardar descargamos con los datos no modificados
-            actualizarCartera('descarga','documentofinanciero', '', $id, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
-            // return;
+            $listaf = \App\ListaFinanciacion::find($request['ListaFinanciacion_idListaFinanciacion']);
 
-            // Antes de guardar los datos modificados, descargamos los datos originales de la cartera
-
-                // consultamos el detalle de pagos del forward
-                $documentoF = DB::Select('SELECT * from documentofinancierodetalle where DocumentoFinanciero_idDocumentoFinanciero = '.$id);
-
-                // // recorremos el detalle depago original descargandolos de la cartera
-                for ($i=0; $i < count($documentoF); $i++) 
-                { 
-                    // convierto array a string
-                    $documento = get_object_vars($documentoF[$i]);
-
-                    actualizarCartera('descarga','documentofinanciero','',$documento['DocumentoFinanciero_idDocumentoFinanciero'], $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero'][$i]);
-                }
-                    
+            if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
+            {
+                actualizarCartera('carga','documentofinanciero','', $documentofinanciero->idDocumentoFinanciero, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
+            }
 
             $idsEliminar = explode(',', $request['eliminarDocumentoFinanciero']);
             \App\DocumentoFinancieroDetalle::whereIn('idDocumentoFinancieroDetalle',$idsEliminar)->delete();
@@ -164,6 +179,8 @@ class DocumentoFinancieroController extends Controller
                     );
 
                 $guardar = \App\DocumentoFinancieroDetalle::updateOrCreate($indice, $datos);
+
+                actualizarCartera('carga','pago',$request['Compra_idCompra'][$i], '', $request['fechaNegociacionDocumentoFinanciero'], $request['valorPagoDocumentoFinancieroDetalle'][$i]);
             }
 
             $idsEliminarProrroga = explode(',', $request['eliminarDocumentoFinancieroProrroga']);
@@ -181,9 +198,6 @@ class DocumentoFinancieroController extends Controller
 
                 $guardar = \App\DocumentoFinancieroProrroga::updateOrCreate($indice, $datos);
             }
-
-            // Despues de guardar los datos modificados, cargamos los nuevos datos de la cartera
-                actualizarCartera('carga','documentofinanciero','', $id, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
         }
 
         return redirect('/documentofinanciero');
@@ -197,7 +211,10 @@ class DocumentoFinancieroController extends Controller
      */
     public function destroy($id, Request $request)
     {
-        actualizarCartera('descarga','documentofinanciero','', $id, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
+        if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
+        {
+            actualizarCartera('descarga','documentofinanciero','', $id, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
+        }
 
         \App\DocumentoFinanciero::destroy($id);
         return redirect('/documentofinanciero');

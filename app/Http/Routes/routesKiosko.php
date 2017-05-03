@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function ()
     Route::resource('kioskoproduccionfichatecnica','KioskoController@ProduccionFichaTecnica');
     Route::resource('kioskoproduccionordenproduccion','KioskoController@ProduccionOrdenProduccion');
     Route::resource('kioskoproduccionordencompra','KioskoController@ProduccionOrdenCompra');
+    Route::resource('kioskogestionhumana','KioskoController@GestionHumana');
 
 });
 
