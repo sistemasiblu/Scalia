@@ -68,6 +68,8 @@ function generarCertificadoLaboral(formato)
 			destinatario = $("#destinatarioCertificadoLaboral").val();
 			condicion = $("#fechaNacimientoTercero").val();
 			window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion,'_blank','width=2500px, height=700px, scrollbars=yes');
+			$("#documentoUsuario").val('');
+	    	$("#modalFiltroCertificado").modal("hide");
 		}
 	}
 }

@@ -75,7 +75,6 @@ function base64($archivo)
       <table table class="table table-striped table-bordered table-hover" style="width:100%;">
         <thead class="thead-inverse">
           <tr class="table-info">
-            <th>Número</th>
             <th>Tipo de Contrato</th>
             <th>Salario</th>
             <th>Inicio</th>
@@ -88,7 +87,6 @@ function base64($archivo)
             $certificadol = get_object_vars($certificado[$i]);
             echo '
             <tr>
-              <td>'.$certificadol["codigoAlternoContrato"].'</td>
               <td>'.$certificadol["nombreTipoContrato"].'</td>
               <td style="text-align:right;">'.number_format($certificadol["valorContrato"],2,".",",").'</td>
               <td>'.$certificadol["fechaInicioContrato"].'</td>
