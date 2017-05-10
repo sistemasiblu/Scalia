@@ -24,8 +24,7 @@ class DocumentoConciliacionRequest extends Request
     public function rules()
     {
         return [
-            "codigoDocumentoConciliacion" => "required|string|max:20|unique:documentoconciliacion,codigoDocumentoConciliacion,".$this->get('idDocumentoConciliacion') .",idDocumentoConciliacion,Compania_idCompania,".(\Session::get('idCompania')),
-            "nombreDocumentoConciliacion" => "required|string|max:80"
+            "Documento_idDocumento" => "required|unique:documentoconciliacion,Documento_idDocumento,".$this->get('idDocumentoConciliacion') .",idDocumentoConciliacion,Compania_idCompania,".(\Session::get('idCompania'))
         ];
     }
 }

@@ -29,7 +29,7 @@ $datos = get_object_vars($datos[0]);
         ]
     )); 
 
-$consulta = ('SELECT idTercero, nombre1Tercero, fechaElaboracionMovimiento,numeroMovimiento, idMovimiento, valorTotalMovimiento, nombreFormaPago, FormaPago_idFormaPago, totalUnidadesMovimiento, fechaMaximaMovimiento, diasFormaPago, nombre1Vendedor, Tercero_idVendedor from viewMovimientoEncabezado where Documento_idDocumento = 28 and numeroMovimiento = "'.$valor.'"');
+$consulta = ('SELECT idTercero, nombre1Tercero, fechaElaboracionMovimiento,numeroMovimiento, idMovimiento, valorTotalMovimiento, nombreFormaPago, FormaPago_idFormaPago, totalUnidadesMovimiento, fechaMaximaMovimiento, diasFormaPago, nombre1Vendedor, Tercero_idVendedor from viewMovimientoEncabezado where Documento_idDocumento IN (28,35) and numeroMovimiento = "'.$valor.'"');
 
 //Ejecuto la consulta conectado a la base de datos
 $consultaMetadatos = DB::connection($datos['bdSistemaInformacion'])->Select(DB::raw($consulta));    

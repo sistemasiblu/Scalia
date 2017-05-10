@@ -241,7 +241,7 @@
 				echo 
 				'<div id="menuuser1" class="menu" style="float: right; left:0;">
 		            <div>
-        		         '.\Session::get("nombreUsuario").'
+        		         '.\Session::get("nombreUsuario").', '.\Session::get("nombreCompania").'
 
                 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<a href="http://'.$_SERVER["HTTP_HOST"].'/auth/logout"> <img src="http://'.$_SERVER["HTTP_HOST"].'/imagenes/menu/Salir_.png" title="Salir de Scalia" style="width:32px; height:32px;">

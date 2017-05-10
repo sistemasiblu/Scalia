@@ -341,6 +341,9 @@ function guardarAsesor()
                 
                 alert(respuesta[1]);
                 $("#ModalAsesor").modal("hide");
+                location.reload();
+
+
                 
             },
             error: function(xhr,err)
@@ -352,6 +355,7 @@ function guardarAsesor()
 }
 
 
+ 
 function abrirModal(file)
 {
     // $("#myModal").modal("show");

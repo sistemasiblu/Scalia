@@ -14,6 +14,7 @@
                 border-radius: 4px;
             }
 </style> 
+    <div style="overflow:auto;">
         <div class="container">
             <div class="row">
                 <div class="container">
@@ -36,9 +37,11 @@
                             <li><a class="toggle-vis" data-column="3"><label> Valor de forward</label></a></li>
                             <li><a class="toggle-vis" data-column="4"><label> Compra</label></a></li>
                             <li><a class="toggle-vis" data-column="5"><label> IM</label></a></li>
-                            <li><a class="toggle-vis" data-column="6"><label> Temporada</label></a></li>
-                            <li><a class="toggle-vis" data-column="7"><label> Proveedor</label></a></li>
-                            <li><a class="toggle-vis" data-column="8"><label> Valor programado compra</label></a></li>
+                            <li><a class="toggle-vis" data-column="6"><label> Documento financiero</label></a></li>
+                            <li><a class="toggle-vis" data-column="7"><label> Fecha documento</label></a></li>
+                            <li><a class="toggle-vis" data-column="8"><label> Temporada</label></a></li>
+                            <li><a class="toggle-vis" data-column="9"><label> Proveedor</label></a></li>
+                            <li><a class="toggle-vis" data-column="10"><label> Valor programado compra</label></a></li>
                         </ul>
                     </div>
                     <table id="tcompraforwardgrid" name="tcompraforwardgrid" class="display table-bordered" width="100%">
@@ -50,6 +53,8 @@
                                 <th><b>Valor de forward</b></th>
                                 <th><b>Compra</b></th>
                                 <th><b>IM</b></th>
+                                <th><b>Documento financiero</b></th>
+                                <th><b>Fecha documento</b></th>
                                 <th><b>Temporada</b></th>
                                 <th><b>Proveedor</b></th>
                                 <th><b>Valor programado compra</b></th>
@@ -63,6 +68,8 @@
                                 <th>Valor de forward</th>
                                 <th>Compra</th>
                                 <th>IM</th>
+                                <th>Documento financiero</th>
+                                <th>Fecha documento</th>
                                 <th>Temporada</th>
                                 <th>Proveedor</th>
                                 <th>Valor programado compra</th>
@@ -72,6 +79,7 @@
                 </div>
             </div>
         </div>
+    </div>
 {!!Form::button('Limpiar filtros',["class"=>"btn btn-primary","id"=>'btnLimpiarFiltros'])!!}
 
 <script type="text/javascript">

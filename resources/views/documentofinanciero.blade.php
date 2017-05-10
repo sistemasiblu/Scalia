@@ -46,7 +46,7 @@
     var documentofinancieroprorroga = '<?php echo (isset($documentofinanciero) ? json_encode($documentofinanciero->documentofinancieroprorroga) : "");?>';
     documentofinancieroprorroga = (documentofinancieroprorroga != '' ? JSON.parse(documentofinancieroprorroga) : '');
 
-    eventochange = ['onchange','validarFecha(this.id,this.value)'];
+    eventochange1 = ['onchange','validarFecha(this.id,this.value)'];
 
     var valorDocumentoFinancieroProrroga = ['','',0];
 
@@ -65,7 +65,7 @@
       documentoprorroga.clase    = ['', '', '', ''];
       documentoprorroga.sololectura = [false, false, true, true];  
       documentoprorroga.completar = ['off','off','off', 'off'];
-      documentoprorroga.funciones = [eventochange,'','',''];
+      documentoprorroga.funciones = [eventochange1,'','',''];
       for(var j=0, k = documentofinancieroprorroga.length; j < k; j++)
       {
         documentoprorroga.agregarCampos(JSON.stringify(documentofinancieroprorroga[j]),'L');

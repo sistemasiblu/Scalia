@@ -88,85 +88,232 @@ class ConsultaProduccionController extends Controller
             // CONSULTA PARA EL FORMATO DE IMPRESION DE FICHA TECNICA
             case 'FichaTecnica':
                 // CONSULTO EL ID DE LA FICHA TECNICA PARA EL INFORMA DE FICHA TECNICA
-                $fichatecnica = DB::connection($datos['bdSistemaInformacion'])->Select('SELECT FichaTecnica_idFichaTecnica from Producto 
+                $fichatecnica = DB::connection($datos['bdSistemaInformacion'])->Select('SELECT FichaTecnica_idFichaTecnica as idFichaTecnica from Producto 
                 where codigoAlternoProducto = "'.$id.'"'); 
 
                 $idFichaTecnica = get_object_vars($fichatecnica[0]);
 
-                // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE FICHA TECNICA
-                $encabezado = DB::connection($datos['bdSistemaInformacion'])->Select('
-                    SELECT 
-                        idFichaTecnica,
-                        nombre1Tercero,
-                        nombreTipoNegocio,
-                        nombreTemporada,
-                        referenciaBaseFichaTecnica,
-                        nombreLargoFichaTecnica,
-                        nombreMarca,
-                        nombreCategoria,
-                        nombreTipoProducto,
-                        nombreComposicion,
-                        codigoAlternoFichaTecnica,
-                        numeroMoldeFichaTecnica,
-                        areaMoldeFichaTecnica,
-                        group_concat(DISTINCT nombre1Color) as nombre1Color,
-                        group_concat(DISTINCT nombre1Talla) as nombre1Talla
-                    FROM
-                        FichaTecnica AS FT
-                            LEFT JOIN
-                        Marca AS M ON FT.Marca_idMarca = M.idMarca
-                            LEFT JOIN
-                        TipoNegocio AS TN ON FT.TipoNegocio_idTipoNegocio = TN.idTipoNegocio
-                            LEFT JOIN
-                        Temporada AS Te ON FT.Temporada_idTemporada = Te.idTemporada
-                            LEFT JOIN
-                        Categoria AS C ON FT.Categoria_idCategoria = C.idCategoria
-                            LEFT JOIN
-                        Tercero AS T ON FT.Tercero_idCliente = T.idTercero
-                            LEFT JOIN
-                        FichaTecnicaColor AS FTC ON FTC.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
-                            LEFT JOIN
-                        Color AS Co ON FTC.Color_idColor = Co.idColor
-                            LEFT JOIN
-                        FichaTecnicaTalla AS FTT ON FTT.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
-                            LEFT JOIN
-                        Talla AS Tll ON FTT.Talla_idTalla = Tll.idTalla
-                            LEFT JOIN
-                        Composicion AS Comp ON FT.Composicion_idComposicion = Comp.idComposicion
-                        LEFT JOIN
-                        TipoProducto AS TP ON FT.TipoProducto_idTipoProducto = TP.idTipoProducto
-                    WHERE
-                        idFichaTecnica = '.$idFichaTecnica['FichaTecnica_idFichaTecnica']); 
+                $idFichaTecnica = get_object_vars($fichatecnica[0]);
 
-                // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE FICHA TECNICA IMAGEN
-                $imagen = DB::connection($datos['bdSistemaInformacion'])->Select('
-                    SELECT 
-                        nombreFichaTecnicaImagen,
-                        imagenFichaTecnicaImagen,
-                        observacionFichaTecnicaImagen
-                    FROM
-                        FichaTecnica AS FT
+                    // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE FICHA TECNICA
+                    $encabezado = DB::Select('
+                        SELECT 
+                            idFichaTecnica,
+                            nombre1Tercero,
+                            nombreTipoNegocio,
+                            nombreTemporada,
+                            referenciaBaseFichaTecnica,
+                            nombreLargoFichaTecnica,
+                            nombreMarca,
+                            nombreCategoria,
+                            nombreTipoProducto,
+                            nombreComposicion,
+                            codigoAlternoFichaTecnica,
+                            numeroMoldeFichaTecnica,
+                            areaMoldeFichaTecnica,
+                            precioFichaTecnica,
+                            group_concat(DISTINCT nombre1Color) as nombre1Color,
+                            group_concat(DISTINCT nombre1Talla) as nombre1Talla
+                        FROM
+                            Iblu.FichaTecnica AS FT
+                                LEFT JOIN
+                            Iblu.Marca AS M ON FT.Marca_idMarca = M.idMarca
+                                LEFT JOIN
+                            Iblu.TipoNegocio AS TN ON FT.TipoNegocio_idTipoNegocio = TN.idTipoNegocio
+                                LEFT JOIN
+                            Iblu.Temporada AS Te ON FT.Temporada_idTemporada = Te.idTemporada
+                                LEFT JOIN
+                            Iblu.Categoria AS C ON FT.Categoria_idCategoria = C.idCategoria
+                                LEFT JOIN
+                            Iblu.Tercero AS T ON FT.Tercero_idCliente = T.idTercero
+                                LEFT JOIN
+                            Iblu.FichaTecnicaColor AS FTC ON FTC.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
+                                LEFT JOIN
+                            Iblu.Color AS Co ON FTC.Color_idColor = Co.idColor
+                                LEFT JOIN
+                            Iblu.FichaTecnicaTalla AS FTT ON FTT.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
+                                LEFT JOIN
+                            Iblu.Talla AS Tll ON FTT.Talla_idTalla = Tll.idTalla
+                                LEFT JOIN
+                            Iblu.Composicion AS Comp ON FT.Composicion_idComposicion = Comp.idComposicion
                             LEFT JOIN
-                        FichaTecnicaImagen AS FTI ON FTI.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
-                    WHERE
-                        idFichaTecnica = '.$idFichaTecnica['FichaTecnica_idFichaTecnica']);
+                            Iblu.TipoProducto AS TP ON FT.TipoProducto_idTipoProducto = TP.idTipoProducto
+                        WHERE
+                            idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']); 
 
-                // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE CENTRO DE PRODUCCION DE LA FICHA TECNICA
-                $centroproduccion = DB::connection($datos['bdSistemaInformacion'])->Select('
-                    SELECT 
-                        nombreCentroProduccion,
-                        costoEstimadoFichaTecnicaCentroProduccion,
-                        observacionFichaTecnicaCentroProduccion
-                    FROM
-                        FichaTecnica AS FT
-                            LEFT JOIN
-                        FichaTecnicaCentroProduccion AS FTCP ON FTCP.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
-                            LEFT JOIN
-                        CentroProduccion AS CP ON FTCP.CentroProduccion_idCentroProduccion = CP.idCentroProduccion
-                    WHERE
-                        idFichaTecnica = '.$idFichaTecnica['FichaTecnica_idFichaTecnica']);
+                    // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE FICHA TECNICA IMAGEN
+                    $imagen = DB::Select('
+                        SELECT 
+                            nombreFichaTecnicaImagen,
+                            imagenFichaTecnicaImagen,
+                            observacionFichaTecnicaImagen
+                        FROM
+                            Iblu.FichaTecnica AS FT
+                                LEFT JOIN
+                            Iblu.FichaTecnicaImagen AS FTI ON FTI.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
+                        WHERE
+                            idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
 
-                return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'datos'));
+                    // REALIZO LA CONSULTA PARA OBTENER LOS PROCESOS ESPECIALES DE LA FICHA TECNICA
+                    $procesos = DB::Select('
+                        SELECT 
+                            nombreFichaTecnicaProceso,
+                            imagen1FichaTecnicaProceso,
+                            imagen2FichaTecnicaProceso,
+                            imagen3FichaTecnicaProceso,
+                            observacionFichaTecnicaProceso,
+                            idFichaTecnicaProceso
+                        FROM
+                            Iblu.FichaTecnicaProceso
+                        WHERE
+                            FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
+
+                    if ($procesos != NULL) 
+                    {
+                        $idFichaTecnicaProceso = get_object_vars($procesos[0]);
+
+                        // REALIZO LA CONSULTA PARA OBTENER LOS PROCESOS ESPECIALES DEL COLOR DE LA FICHA TECNICA 
+                        $procesoscolor = DB::Select('
+                            SELECT 
+                                cf.nombre1Color as colorFondo, 
+                                cp.nombre1Color as colorProceso, 
+                                nombreCentroProduccionTecnica
+                            FROM
+                                Iblu.FichaTecnicaProcesoColor ftpc
+                                    LEFT JOIN
+                                Iblu.Color cf ON ftpc.Color_idFondo = cf.idColor
+                                    LEFT JOIN
+                                Iblu.Color cp ON ftpc.Color_idProceso = cp.idColor
+                                    LEFT JOIN
+                                Iblu.CentroProduccionTecnica cpt ON ftpc.CentroProduccionTecnica_idCentroProduccionTecnica = cpt.idCentroProduccionTecnica
+                            WHERE
+                                FichaTecnicaProceso_idFichaTecnicaProceso = '.$idFichaTecnicaProceso["idFichaTecnicaProceso"]);
+                    }
+
+
+                    // REALIZO LA CONSULTA PARA OBTENER LOS COMPONENTES DE LA FICHA TÉCNICA
+                    $componentes = DB::Select('
+                        SELECT 
+                            componenteFichaTecnicaComponente, 
+                            tipoFichaTecnicaComponente, 
+                            tejidoFichaTecnicaComponente, 
+                            pesoFichaTecnicaComponente, 
+                            composicionFichaTecnicaComponente 
+                        FROM 
+                            Iblu.FichaTecnicaComponente 
+                        WHERE
+                            FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
+
+                    // OBSERVACIONES DE LA FICHA TÉCNICA
+                    $observaciones = DB::Select('
+                        SELECT 
+                            observacionesFichaTecnica, 
+                            observacionConstruccionFichaTecnica 
+                        FROM 
+                            Iblu.FichaTecnica 
+                        WHERE 
+                            idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
+
+                    // REALIZO LA CONSULTA PARA LAS ESPECIFICACIONES DE HILOS Y SESGOS
+                    $especificacioneshs = DB::Select('
+                        SELECT 
+                            tipoFichaTecnicaEspecificacion, 
+                            nombreFichaTecnicaEspecificacion, 
+                            especificacionFichaTecnicaEspecificacion, 
+                            observacionFichaTecnicaEspecificacion 
+                        FROM 
+                            Iblu.FichaTecnicaEspecificacion
+                        WHERE 
+                            FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
+
+                    // REALIZO LA CONSULTA PARA LA TABLA DE MEDIDA ANTES DEL PROCESO
+                    $regTallas = '';
+                    $tallas = DB::Select('
+                        SELECT 
+                            idTalla, 
+                            codigoAlternoTalla, 
+                            nombre1Talla 
+                        FROM
+                            Iblu.FichaTecnicaMedidaTalla FTMT 
+                                LEFT JOIN 
+                            Iblu.Talla T on FTMT.Talla_idTalla = T.idTalla 
+                        WHERE
+                            FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica'].' 
+                        GROUP BY
+                            idTalla 
+                        ORDER BY 
+                            ordenTalla');
+
+
+                    for($tal = 0; $tal < count($tallas); $tal++)
+                    {
+                        $talla = get_object_vars($tallas[$tal]);
+
+                        $regTallas .= "SUM(IF(idTalla ".($talla["idTalla"] == ''? ' IS NULL': " = ".$talla["idTalla"]).", valorFichaTecnicaMedidaTalla, 0)) as T_".($talla["idTalla"] == '' ? 0: $talla["idTalla"]).', ';
+                    }
+
+                    $medidas = DB::Select('
+                        SELECT 
+                            nombreParteMedida,
+                            observacionFichaTecnicaMedida,
+                            toleranciaFichaTecnicaMedida,
+                            escalaFichaTecnicaMedida,'.
+                            $regTallas.'
+                            imagenMedida1FichaTecnica
+                        FROM 
+                            Iblu.FichaTecnicaMedida FTM 
+                                LEFT JOIN
+                            Iblu.ParteMedida PM ON FTM.ParteMedida_idParteMedida = PM.idParteMedida
+                                LEFT JOIN
+                            Iblu.FichaTecnicaMedidaTalla FTMT ON FTM.idFichaTecnicaMedida = FTMT.FichaTecnicaMedida_idFichaTecnicaMedida
+                                LEFT JOIN
+                            Iblu.Talla T ON FTMT.Talla_idTalla = T.idTalla
+                                LEFT JOIN 
+                            Iblu.FichaTecnica FT ON FTM.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
+                        WHERE FTM.FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']. '
+                        AND tipoFichaTecnicaMedida = 1 
+                        GROUP BY nombreParteMedida');
+
+                    // MATERIAS PRIMAS POR CENTRO DE PRODUCCIÓN
+                    $materias = DB::Select('
+                        SELECT 
+                            nombreCentroProduccion,
+                            referenciaProducto,
+                            nombreCortoProducto,
+                            nombre1Color,
+                            tipoProductoMaterial,
+                            consumoMaterialConversionProductoMaterial,
+                            consumoProductoProductoMaterial,
+                            observacionProductoMaterial,
+                            imagen1Producto
+                        FROM
+                            Iblu.FichaTecnicaMaterial FTM
+                                LEFT JOIN
+                            Iblu.CentroProduccion CP ON FTM.CentroProduccion_idCentroProduccion = CP.idCentroProduccion
+                                LEFT JOIN
+                            Iblu.Producto P ON FTM.Producto_idMaterial = P.idProducto
+                                LEFT JOIN
+                            Iblu.Color C ON FTM.Color_idColorMaterial = C.idColor
+                        WHERE
+                            FTM.FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica'].' 
+                        ORDER BY nombreCentroProduccion , referenciaProducto');
+
+                    // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE CENTRO DE PRODUCCION DE LA FICHA TECNICA
+                    $centroproduccion = DB::Select('
+                        SELECT 
+                            nombreCentroProduccion,
+                            costoEstimadoFichaTecnicaCentroProduccion,
+                            observacionFichaTecnicaCentroProduccion
+                        FROM
+                            Iblu.FichaTecnica AS FT
+                                LEFT JOIN
+                            Iblu.FichaTecnicaCentroProduccion AS FTCP ON FTCP.FichaTecnica_idFichaTecnica = FT.idFichaTecnica
+                                LEFT JOIN
+                            Iblu.CentroProduccion AS CP ON FTCP.CentroProduccion_idCentroProduccion = CP.idCentroProduccion
+                        WHERE
+                            idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
+
+                    return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'componentes', 'observaciones', 'especificacioneshs', 'medidas', 'tallas', 'materias', 'procesos', 'procesoscolor'));
             break;
 
             // CONSULTA PARA EL FORMATO DE IMPRESION DE ORDEN DE PRODUCCION

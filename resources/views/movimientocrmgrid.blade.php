@@ -1,3 +1,24 @@
+<script type="text/javascript">
+    $(document).ready( function () 
+    {
+
+    <?php  
+    $id = isset($_GET["idDocumentoCRM"]) ? $_GET["idDocumentoCRM"] : 0; 
+    $self=basename($_SERVER["PHP_SELF"]).'?idDocumentoCRM='.$id;
+    header("refresh:300;  url=$self"); 
+    ?>
+
+    });
+
+
+
+    function recargarPage()
+    {  
+        location.reload();
+    }
+
+</script>
+
 {!!Html::script('js/movimientocrm.js'); !!}
 {!!Html::script('js/grid.js'); !!}
 
@@ -106,10 +127,7 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
 </style> 
 
 <script type="text/javascript">
-function recargaPage() 
-{
-location.reload();
-}
+
 
 
 
@@ -180,7 +198,7 @@ location.reload();
                     <div class="col-md-12" style="overflow: auto;">
                     <table id="tmovimientocrm" name="tmovimientocrm" class="display table-bordered" width="100%">
                         <thead>
-                            <tr class="btn-warning active">
+                            <tr class="btn-primary active">
 
                             <th style="width: 100px; padding: 1px 8px;" data-orderable="false">
                                 <a href=<?php echo "movimientocrm/create?idDocumentoCRM=".$id."&aprobador=".$aprobador;?>><span title="Agregar" style= "display: <?php echo $visible;?> color:white " class="glyphicon glyphicon-plus"></span></a>

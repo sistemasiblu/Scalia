@@ -4,6 +4,7 @@
 @section('content')
 @include('alerts.request')
 
+{!! Html::style('css/segmented-controls.css'); !!}
 {!!Html::script('js/dependencia.js')!!}
 
 <?php
@@ -33,21 +34,21 @@ for($i = 0; $i < count($datos); $i++)
 
     $(document).ready(function(){
 
-      permisos = new Atributos('permisos','contenedor_permisos','permisos_');
+      protRol = new Atributos('protRol','contenedor_permisos','permisos_');
 
-      permisos.altura = '35px';
-      permisos.campoid = 'idDependenciaPermiso';
-      permisos.campoEliminacion = 'eliminarDependenciaPermiso';
+      protRol.altura = '35px';
+      protRol.campoid = 'idDependenciaPermiso';
+      protRol.campoEliminacion = 'eliminarDependenciaPermiso';
 
-      permisos.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idDependenciaPermiso'];
-      permisos.etiqueta = ['input', 'input', 'input'];
-      permisos.tipo     = ['hidden', 'text', 'hidden'];
-      permisos.estilo   = ['', 'width: 900px;height:35px;' ,''];
-      permisos.clase    = ['','', '', ''];
-      permisos.sololectura = [true,true,true];
+      protRol.campos   = ['idDependenciaPermiso', 'Rol_idRol', 'nombreRolPermiso'];
+      protRol.etiqueta = ['input', 'input', 'input'];
+      protRol.tipo     = ['hidden', 'hidden', 'text'];
+      protRol.estilo   = ['', '' ,'width: 900px;height:35px;'];
+      protRol.clase    = ['','', '', ''];
+      protRol.sololectura = [true,true,true];
       for(var j=0, k = dependenciapermisos.length; j < k; j++)
       {
-        permisos.agregarCampos(JSON.stringify(dependenciapermisos[j]),'L');
+        protRol.agregarCampos(JSON.stringify(dependenciapermisos[j]),'L');
         console.log(JSON.stringify(dependenciapermisos[j]))
       }
 
@@ -56,7 +57,7 @@ for($i = 0; $i < count($datos); $i++)
   </script>
 
 
-	 @if(isset($dependencia))
+   @if(isset($dependencia))
     @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
       {!!Form::model($dependencia,['route'=>['dependencia.destroy',$dependencia->idDependencia],'method'=>'DELETE'])!!}
     @else
@@ -125,7 +126,7 @@ for($i = 0; $i < count($datos); $i++)
       </div>  
 
       <div class="form-group" id='test'>
-        {!!Form::label('Dependencia_idPadre', 'Dependencia Administrativa', array('class' => 'col-sm-2 control-label')) !!}
+        {!!Form::label('Dependencia_idPadre', 'Dependencia padre', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-10">
           <div class="input-group">
             <span class="input-group-addon">
@@ -141,8 +142,100 @@ for($i = 0; $i < count($datos); $i++)
         <div class="form-group">
           <div class="col-lg-12">
             <div class="panel panel-primary">
-              <div class="panel-heading">Permisos</div>
+              <div class="panel-heading">Detalle</div>
               <div class="panel-body">
+
+              <div class="panel-group" id="accordion">
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#puntoLocalizacion">Puntos de localización</a>
+                    </h4>
+                  </div>
+                  <div id="puntoLocalizacion" class="panel-collapse collapse in">
+                    <div class="panel-body">
+
+                      <div class="panel-group" id="accordion">
+                        <div class="panel panel-info">
+                          <div class="panel-heading">
+                            <h4 class="panel-title">
+                              Generar Puntos de localización
+                            </h4>
+                          </div>
+
+                          <div id="generarPuntoLocalizacion">
+                            <div class="panel-body">
+
+                              <div class="form-group col-md-3" id='test'  style='display: inline;'>
+                                {!!Form::label('fechaInicialEntrevistaResultado', 'Estantes ', array('class' => 'col-sm-1 control-label')) !!}
+                                  <div class="col-md-12">
+                                    <div class="input-group">
+                                     <span class="input-group-addon">
+                                             <i class="fa fa-bars" aria-hidden="true"></i>
+                                     </span>
+                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese la cantidad de estantes'])!!}
+                                    </div>
+                                  </div>     
+                              </div>
+
+                              <div class="form-group col-md-3" id='test'  style='display: inline;'>
+                                {!!Form::label('fechaInicialEntrevistaResultado', 'Niveles ', array('class' => 'col-sm-1 control-label')) !!}
+                                  <div class="col-md-12">
+                                    <div class="input-group">
+                                     <span class="input-group-addon">
+                                             <i class="fa fa-tasks" aria-hidden="true"></i>
+                                     </span>
+                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese el numero de niveles'])!!}
+                                    </div>
+                                  </div>     
+                              </div>
+
+                              <div class="form-group col-md-3" id='test'  style='display: inline;'>
+                                {!!Form::label('fechaInicialEntrevistaResultado', 'Secciones ', array('class' => 'col-sm-1 control-label')) !!}
+                                  <div class="col-md-12">
+                                    <div class="input-group">
+                                     <span class="input-group-addon">
+                                             <i class="fa fa-cubes" aria-hidden="true"></i>
+                                     </span>
+                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese el numero de secciones'])!!}
+                                    </div>
+                                  </div>     
+                              </div>
+
+                              <div class="form-group col-md-3" id='test'  style='display: inline;'>
+                                <div class="col-md-12">
+                                  <div class="input-group">
+                                    <button type="button" id="btnGenerar" class="btn btn-primary fa fa-check" onclick="generarUbicaciones()">Generar</button>
+                                  </div>
+                                </div>     
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>  
+                      </div>
+
+                      <div class="panel-group" id="accordion">
+                        <div class="panel panel-info">
+                          <div class="panel-heading">
+                            <h4 class="panel-title">
+                              Detalle de Puntos de Localizacón
+                            </h4>
+                          </div>
+                          
+                          <div id="generarPuntoLocalizacion">
+                            <div class="panel-body">
+                              a
+                            </div>
+                          </div>
+                        </div>  
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>  
+              </div>
+                
                 <div class="panel-group" id="accordion">
                   <div class="panel panel-info">
                     <div class="panel-heading">
@@ -155,7 +248,7 @@ for($i = 0; $i < count($datos); $i++)
                         <div class="form-group" id='test'>
                           <div class="col-sm-12">
                             <div class="row show-grid">
-                              <div class="col-md-1" style="width: 40px; height: 42px; cursor: pointer;" onclick="abrirModalRol();">
+                              <div class="col-md-1" style="width: 40px; cursor: pointer;" onclick="abrirModalRol();">
                                 <span class="glyphicon glyphicon-plus"></span>
                               </div>
                               <div class="col-md-1" style="width: 900px;">Rol</div>
@@ -168,27 +261,29 @@ for($i = 0; $i < count($datos); $i++)
                     </div>
                   </div>  
                 </div>
+
               </div>
             </div>
           </div>
         </div>
     </fieldset>
 
-	@if(isset($dependencia))
- 		@if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
-   			{!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
-  		@else
-   			{!!Form::submit('Modificar',["class"=>"btn btn-primary"])!!}
-  		@endif
- 	@else
-  		{!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
- 	@endif
+  @if(isset($dependencia))
+    @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
+        {!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
+      @else
+        {!!Form::submit('Modificar',["class"=>"btn btn-primary"])!!}
+      @endif
+  @else
+      {!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
+  @endif
 
-	{!! Form::close() !!}
+  {!! Form::close() !!}
 </div>
 @stop
 
-<div id="myModalRol" class="modal fade" role="dialog">
+
+<div id="ModalRoles" class="modal fade" role="dialog">
   <div class="modal-dialog" style="width:100%;">
 
     <!-- Modal content-->

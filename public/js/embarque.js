@@ -422,7 +422,8 @@ function abrirModalEmbarque(reg)
 
     $('#compradorVendedorEmbarque').val($('#compradorVendedorEmbarqueDetalle'+reg).val())
     $('#cantidadContenedor').val($('#cantidadContenedorEmbarqueDetalle'+reg).val())
-    $('#tipoContenedor option[value='+$('#tipoContenedorEmbarqueDetalle'+reg).val()+']').prop('selected', true);
+    $('#tipoContenedor').val('1x20')
+    // $('#tipoContenedor option[value='+$('#tipoContenedorEmbarqueDetalle'+reg).val()+']').prop('selected', true);
     $('#contenedorEmbarque').val($('#numeroContenedorEmbarqueDetalle'+reg).val())
     $('#blEmbarque').val($('#blEmbarqueDetalle'+reg).val())
     $('#courrierEmbarque').val($('#numeroCourrierEmbarqueDetalle'+reg).val())
@@ -530,20 +531,23 @@ function duplicarCompras()
     else
     {
         reg = embarques.contador;
-        regAnt = reg-2;
-        regAct = regAnt+1;
+        regAnt = 0;
+        for (var i = 0; i < reg; i++) 
+        {
+            $("#blEmbarqueDetalle"+i).val($("#blEmbarqueDetalle"+regAnt).val());
+            $("#numeroContenedorEmbarqueDetalle"+i).val($("#numeroContenedorEmbarqueDetalle"+regAnt).val());
+            $("#numeroCourrierEmbarqueDetalle"+i).val($("#numeroCourrierEmbarqueDetalle"+regAnt).val());
+            $("#observacionEmbarqueDetalle"+i).val($("#observacionEmbarqueDetalle"+regAnt).val());
+            $("#descripcionEmbarqueDetalle"+i).val($("#descripcionEmbarqueDetalle"+regAnt).val());
+            $("#fechaReservaEmbarqueDetalle"+i).val($("#fechaReservaEmbarqueDetalle"+regAnt).val());
+            $("#fechaRealEmbarqueDetalle"+i).val($("#fechaRealEmbarqueDetalle"+regAnt).val());
+            $("#fechaMaximaEmbarqueDetalle"+i).val($("#fechaMaximaEmbarqueDetalle"+regAnt).val());
+            $("#fechaLlegadaZonaFrancaEmbarqueDetalle"+i).val($("#fechaLlegadaZonaFrancaEmbarqueDetalle"+regAnt).val());
+            $("#fechaArriboPuertoEstimadaEmbarqueDetalle"+i).val($("#fechaArriboPuertoEstimadaEmbarqueDetalle"+regAnt).val());
+            $("#fechaArriboPuertoEmbarqueDetalle"+i).val($("#fechaArriboPuertoEmbarqueDetalle"+regAnt).val());
+        }
 
-        $("#blEmbarqueDetalle"+regAct).val($("#blEmbarqueDetalle"+regAnt).val());
-        $("#numeroContenedorEmbarqueDetalle"+regAct).val($("#numeroContenedorEmbarqueDetalle"+regAnt).val());
-        $("#numeroCourrierEmbarqueDetalle"+regAct).val($("#numeroCourrierEmbarqueDetalle"+regAnt).val());
-        $("#observacionEmbarqueDetalle"+regAct).val($("#observacionEmbarqueDetalle"+regAnt).val());
-        $("#descripcionEmbarqueDetalle"+regAct).val($("#descripcionEmbarqueDetalle"+regAnt).val());
-        $("#fechaReservaEmbarqueDetalle"+regAct).val($("#fechaReservaEmbarqueDetalle"+regAnt).val());
-        $("#fechaRealEmbarqueDetalle"+regAct).val($("#fechaRealEmbarqueDetalle"+regAnt).val());
-        $("#fechaMaximaEmbarqueDetalle"+regAct).val($("#fechaMaximaEmbarqueDetalle"+regAnt).val());
-        $("#fechaLlegadaZonaFrancaEmbarqueDetalle"+regAct).val($("#fechaLlegadaZonaFrancaEmbarqueDetalle"+regAnt).val());
-        $("#fechaArriboPuertoEstimadaEmbarqueDetalle"+regAct).val($("#fechaArriboPuertoEstimadaEmbarqueDetalle"+regAnt).val());
-        $("#fechaArriboPuertoEmbarqueDetalle"+regAct).val($("#fechaArriboPuertoEmbarqueDetalle"+regAnt).val());
+        
     }
     
 }

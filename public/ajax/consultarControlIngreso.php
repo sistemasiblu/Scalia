@@ -37,7 +37,7 @@ else
 	// buscamos la cedula en SAYA para traer los nombres 
 	$tercero = DB::SELECT('
 	SELECT CONCAT(nombreATercero, " ", nombreBTercero) as nombreTercero, CONCAT(apellidoATercero, " ", apellidoBTercero) as apellidoTercero, TipoIdentificacion_idIdentificacion
-	FROM Iblu.Tercero 
+	FROM '.\Session::get("baseDatosCompania").'.Tercero 
 	WHERE documentoTercero = '.$numeroDocumento);
 
 	// si encuentra los datos en SAYA

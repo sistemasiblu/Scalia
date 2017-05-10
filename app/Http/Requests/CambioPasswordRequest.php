@@ -23,10 +23,18 @@ class CambioPasswordRequest extends Request
      */
     public function rules()
     {
+<<<<<<< HEAD
         return 
         [
             "password" => "required|min:4|max:20|confirmed",
             "password_confirmation" => "required|min:4|max:20",
+=======
+        return [
+
+        "password" => "required|min:4|max:20|confirmed",
+        "password_confirmation" => "required|min:4|max:20",
+            
+>>>>>>> 281ff4e585714cf601c5dc16fad246c2ed8b2580
         ];
     }
 }

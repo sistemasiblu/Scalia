@@ -7,7 +7,8 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-
+use Session;
+use Redirect;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
@@ -77,6 +78,10 @@ class AuthController extends Controller
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
+         else
+        Session::flash('message-error', 'Usuario o Contraseña Incorrecta');
+        return redirect::to('auth/login');
+
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
@@ -108,6 +113,7 @@ class AuthController extends Controller
         $request->session()->put('idCompania', $request["Compania_idCompania"]);
         $compania = \App\Compania::where('idCompania', "=", $request["Compania_idCompania"])->get();
         $request->session()->put('nombreCompania', $compania[0]['nombreCompania']);
+        $request->session()->put('baseDatosCompania', $compania[0]['baseDatosCompania']);
 
         // consultamos el id de usuario para almacenar tambien el id del tercero asociado
         $tercero  = \App\User::where('id','=', \Session::get('idUsuario'))->lists('Tercero_idAsociado');

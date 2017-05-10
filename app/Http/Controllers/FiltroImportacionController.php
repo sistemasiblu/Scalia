@@ -107,7 +107,8 @@ class FiltroImportacionController extends Controller
                 Tercero_idProveedor,
                 Ciudad_idPuerto,
                 fechaCompra,
-                nombreDocumentoImportacion
+                nombreDocumentoImportacion,
+                IF(pagoEmbarqueDetalle = 1, "SI", "") AS pagoEmbarqueDetalle
             FROM
                 (SELECT 
                         idCompra,

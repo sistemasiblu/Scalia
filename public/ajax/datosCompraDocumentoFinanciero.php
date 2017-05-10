@@ -1,7 +1,7 @@
 <?php 
 
     $consulta = DB::Select("
-        SELECT idCompra, numeroCompra, valorCompra, facturaEmbarqueDetalle
+        SELECT idCompra, numeroCompra, valorCompra, facturaEmbarqueDetalle, saldoFinalCarteraForward
         FROM
             (SELECT 
                 idCompra, numeroCompra, valorCompra
@@ -9,7 +9,17 @@
                 compra c
             GROUP BY numeroCompra , numeroVersionCompra
             ORDER BY numeroCompra , numeroVersionCompra DESC) AS c
-        LEFT JOIN carteraforward cf ON c.idCompra = cf.Compra_idCompra
+        LEFT JOIN
+        scalia.carteraforward AS cartf ON c.idCompra = cartf.Compra_idCompra
+            AND cartf.Periodo_idPeriodo = (SELECT 
+                idPeriodo
+            FROM
+                Iblu.Periodo
+            WHERE
+                fechaInicialPeriodo <= CURDATE()
+                    AND fechaFinalPeriodo >= CURDATE())
+            LEFT JOIN
+        Iblu.Periodo P ON cartf.Periodo_idPeriodo = P.idPeriodo
         LEFT JOIN embarquedetalle ed ON c.idCompra = ed.Compra_idCompra
         WHERE saldoInicialCarteraForward > 0
         GROUP BY numeroCompra");
@@ -23,7 +33,7 @@
         $row[$key][] = $value['numeroCompra']; 
         $row[$key][] = $value['facturaEmbarqueDetalle'];   
         $row[$key][] = $value['valorCompra']; 
-        $row[$key][] = $value['valorCompra']; 
+        $row[$key][] = $value['saldoFinalCarteraForward']; 
         $row[$key][] = $value['idCompra']; 
     }
 

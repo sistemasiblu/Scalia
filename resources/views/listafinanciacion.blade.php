@@ -66,7 +66,7 @@
               <span class="input-group-addon">
                 <i class="fa fa-list"></i>
               </span>
-              {!! Form::select('tipoListaFinanciacion', ['Credito'=>'Crédito','RecursoPropio' => 'Recurso Propio','Cruzado'=>'Cruzado'],null,['class' => 'form-control']) !!}
+              {!! Form::select('tipoListaFinanciacion', ['Credito'=>'Crédito','RecursoPropio' => 'Recurso Propio'],null,['class' => 'form-control']) !!}
             </div>
           </div>
         </div>
