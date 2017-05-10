@@ -8,7 +8,8 @@
       {!!Html::style('choosen/docsupport/style.css'); !!}
       {!!Html::style('choosen/docsupport/prism.css'); !!}
       {!!Html::style('choosen/chosen.css'); !!}
-    
+      {!!Html::script('sb-admin/bower_components/ckeditor/ckeditor.js'); !!}
+
       {!!Html::style('sb-admin/bower_components/metisMenu/dist/metisMenu.min.css'); !!}
       {!!Html::style('sb-admin/dist/css/sb-admin-2.css'); !!}
       {!!Html::style('sb-admin/bower_components/font-awesome/css/font-awesome.min.css'); !!}

@@ -1,4 +1,4 @@
-@extends('layouts.menudinamicobootstrap')
+@extends('layouts.menudinamico_nuevo')
 
     @section('clases')
      
@@ -55,7 +55,9 @@
         });
         </script>    
 
-
+<!-- DataTables -->
+        {!!Html::script('DataTables/media/js/jquery.dataTables.js'); !!}
+        {!!Html::style('DataTables/media/css/jquery.dataTables.min.css'); !!}
 
 
 @stop

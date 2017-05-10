@@ -83,6 +83,34 @@
 						// 	</li>';
 						// }
 					}
+
+					else if($datosP->nombrePaquete == 'ACTIVOS')
+					{
+						
+						// -------------------------------------------
+						// O P C I O N E S  D E  M O V I M I E N T O  A C T I V O   S E G U N   E L   R O L 
+						// D E L   U S U A R I O  Y   L A   C O M P A N I A
+						// -------------------------------------------
+						$opciones = DB::select(
+						'Select
+						  CONCAT("movimientoactivo?idTransaccionActivo=", idTransaccionActivo) as rutaOpcion,
+						  "menu/movactivo.png" as iconoOpcion,
+						  transaccionactivo.nombreTransaccionActivo as nombreOpcion,
+						  transaccionactivo.nombreTransaccionActivo as nombreCortoOpcion
+						From
+						  transaccionactivo  Inner Join
+						  transaccionrol
+						    On transaccionrol.TransaccionActivo_idTransaccionActivo = TransaccionActivo.idTransaccionActivo
+						  Inner Join
+						  rol
+						    On transaccionrol.Rol_idRol = rol.idRol Inner Join
+						  users
+						    On users.Rol_idRol = rol.idRol
+						Where
+						  users.id = '.\Session::get("idUsuario").' And
+						  transaccionactivo.Compania_idCompania = '.\Session::get("idCompania"));
+
+					}
 					else
 					{
 						// -------------------------------------------

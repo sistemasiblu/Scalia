@@ -43,7 +43,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     // RUTAS MODULO KIOSKO
     require '/Routes/routesKiosko.php';
+
+    require '/Routes/routesActivos.php';
+
 });
 
-
+Route::resource('log','LogController');
+Route::resource('mail','MailController');
 

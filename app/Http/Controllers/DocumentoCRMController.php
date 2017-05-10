@@ -194,13 +194,13 @@ class DocumentoCRMController extends Controller
 
 
             $data = array(
-             'DocumentoCRM_idDocumentoCRM' => $id,
+            'DocumentoCRM_idDocumentoCRM' => $id,
             'tituloDocumentoCRMGrafico' => $request['tituloDocumentoCRMGrafico'][$i],
             'tipoDocumentoCRMGrafico' => $request['tipoDocumentoCRMGrafico'][$i],
             'valorDocumentoCRMGrafico' => $request['valorDocumentoCRMGrafico'][$i],
             'serieDocumentoCRMGrafico' => $request['serieDocumentoCRMGrafico'][$i]);
 
-             $preguntas = \App\DocumentoCRMGrafico::updateOrCreate($indice, $data);
+            $preguntas = \App\DocumentoCRMGrafico::updateOrCreate($indice, $data);
 
         }
 
