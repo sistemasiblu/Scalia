@@ -8,7 +8,7 @@ $(document).ready( function () {
     );
 });
 
-function consultarImportacion(Temporada, Compra, Cliente, Proveedor, Puerto, FechaInicioCompra, FechaFinCompra, FechaInicioEmbarque, FechaFinEmabrque, bodega)
+function consultarImportacion(Temporada, Compra, Cliente, Proveedor, Puerto, FechaInicioCompra, FechaFinCompra, FechaInicioEmbarque, FechaFinEmabrque, bodega, Documento)
 {
 	if (FechaInicioCompra != '' && FechaFinCompra == '' || FechaInicioEmbarque != '' && FechaFinEmabrque == '') 
 		alert('Debe llenar el campo "Hasta" en la Compra o en el Embarque.');
@@ -18,7 +18,7 @@ function consultarImportacion(Temporada, Compra, Cliente, Proveedor, Puerto, Fec
 		join = '';
 
 		if (Temporada != 0)
-			condicion = condicion + 'Temporada_idTemporada = "'+Temporada+'"';
+			condicion = condicion + 'comp.Temporada_idTemporada = "'+Temporada+'"';
 
 		if (Compra !=0) 
 			condicion = condicion + ((condicion !='' && Compra !=0) ? ' and ' : '') + 'numeroCompra = "'+Compra+'"';
@@ -43,6 +43,9 @@ function consultarImportacion(Temporada, Compra, Cliente, Proveedor, Puerto, Fec
 
 		if (bodega == 0)
 			condicion = condicion + ((condicion != '' && bodega == 0) ? ' and ' : '') + 'idMercanciaExtranjeraDetalle IS NULL';
+
+		if (Documento != 0)
+			condicion = condicion + 'DocumentoImportacion_idDocumentoImportacion = "'+Documento+'"';
 
 		join = join + 'LEFT JOIN Iblu.Movimiento m ON ed.facturaEmbarqueDetalle = m.numeroReferenciaExternoMovimiento and m.Documento_idDocumento = 20 LEFT JOIN (select Movimiento_idMovimiento, idMercanciaExtranjeraDetalle  from Iblu.MercanciaExtranjeraDetalle group by Movimiento_idMovimiento ) med ON m.idMovimiento = med.Movimiento_idMovimiento';
 

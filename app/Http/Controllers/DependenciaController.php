@@ -58,6 +58,19 @@ class DependenciaController extends Controller
         ]);
 
         $dependencia = \App\Dependencia::All()->last();
+        for($i = 0; $i < count($request['codigoDependenciaLocalizacionDetalle']); $i++)
+        {
+            \App\DependenciaPermiso::create([
+            'Dependencia_idDependencia' => $dependencia->idDependencia,
+            'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
+            'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
+            'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
+            'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
+            'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
+            'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i],
+            ]);
+        }
+
         for($i = 0; $i < count($request['Rol_idRol']); $i++)
         {
             \App\DependenciaPermiso::create([
@@ -108,6 +121,26 @@ class DependenciaController extends Controller
         $dependencia->fill($request->all());
         $dependencia->Dependencia_idPadre = ($request['Dependencia_idPadre'] == '' or $request['Dependencia_idPadre'] == 0) ? null : $request['Dependencia_idPadre'];
         $dependencia->save();
+        
+        $idsEliminar = explode(',', $request['eliminarDependenciaLocalizacion']);
+        \App\DependenciaLocalizacion::whereIn('idDependenciaLocalizacion',$idsEliminar)->delete();
+        for($i = 0; $i < count($request['codigoDependenciaLocalizacion']); $i++)
+        {
+            $indice = array(
+                'idDependenciaLocalizacion' => $request['idDependenciaLocalizacion'][$i]);
+
+            $datos= array(
+                'Dependencia_idDependencia' => $id,
+                'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
+                'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
+                'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
+                'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
+                'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
+                'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i]
+                );
+
+            $guardar = \App\DependenciaLocalizacion::updateOrCreate($indice, $datos);
+        }
 
         $idsEliminar = explode(',', $request['eliminarDependenciaPermiso']);
         \App\DependenciaPermiso::whereIn('idDependenciaPermiso',$idsEliminar)->delete();

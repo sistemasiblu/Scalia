@@ -4,363 +4,324 @@
 @section('content')
 @include('alerts.request')
 {!!Html::script('js/radicado.js')!!}
-{!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
-{!!Html::style('assets/dropzone/dist/min/dropzone.min.css'); !!}<!--Llamo al dropzone-->
+{!!Html::style('css/modal.css'); !!}
 {!!Html::style('css/dropzone.css'); !!}<!--Llamo al dropzone-->
+{!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
+
 {!!Html::style('css/BootSideMenu.css'); !!}
 {!!Html::script('js/BootSideMenu.js'); !!}
 {!!Html::style('css/cerrardivs.css'); !!}
 
 <!--Con este css ajusto el tamaño del dropzone-->
 <style> 
-
 .dropzone-previews 
-  { height: 200px; border: groove; 1px black; background-color: white; overflow-y: scroll; } 
+  { 
+    height: 200px; border: groove; 1px black; background-color: white; overflow-y: scroll; 
+  } 
 </style> 
-<input id="tipoFormulario" type="hidden" readonly="true" value="radicado">
- <div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-12" style="height:500px;">
-      <div class="row">
-        
-        <div class="form-group">
-          <div class="col-lg-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading"><h4>Documentos</h4></div>
-              <div class="panel-body">             
+    
+{!!Form::open(['route'=>'radicado.store','method'=>'POST', 'action' => 'RadicadoController@store', 'id' => 'radicado' , 'files' => true])!!}
 
+<input type="hidden" id="token" value="{{csrf_token()}}"/>
 <?php 
-//Realizo una consulta a la bd para saber que usuario tiene permiso a que documento mediante el idRol 
-//y teniendo en cuenta que ese documento este en el CCD y en la sub serie para que el usuario lo pueda ver a la hora de radicar
+#
 
-$Rol = DB::Select('Select Rol_idRol from users where id = '.Session::get('idUsuario'));
-$idRol = get_object_vars($Rol[0]);
-
-$titulo = DB::Select('
+$titulos = DB::Select('
   SELECT 
-    idDocumento, nombreDocumento
+    idDependencia,
+    nombreDependencia,
+    abreviaturaDependencia,
+    idSerie,
+    nombreSerie,
+    idSubSerie,
+    nombreSubSerie,
+    idDocumento,
+    nombreDocumento
 FROM
-    users u
+    retenciondocumental rd
         LEFT JOIN
-    rol r ON u.Rol_idRol = r.idRol
+    dependencia dep ON rd.Dependencia_idDependencia = dep.idDependencia
         LEFT JOIN
-    dependenciapermiso dp ON dp.Rol_idRol = r.idRol
+    serie s ON rd.Serie_idSerie = s.idSerie
         LEFT JOIN
-    seriepermiso sp ON sp.Rol_idRol = r.idRol
+    subserie ss ON rd.SubSerie_idSubSerie = ss.idSubSerie
         LEFT JOIN
-    subseriepermiso ssp ON ssp.Rol_idRol = r.idRol
+    documento d ON rd.Documento_idDocumento = d.idDocumento
         LEFT JOIN
-    subserie ss ON ssp.Subserie_idSubserie = ss.idSubSerie
+    dependenciapermiso depp ON dep.idDependencia = depp.Dependencia_idDependencia
         LEFT JOIN
-    documentopermiso docp ON docp.Rol_idRol = r.idRol
+    seriepermiso sp ON s.idSerie = sp.Serie_idSerie
         LEFT JOIN
-    documento d ON docp.Documento_idDocumento = d.idDocumento
+    subseriepermiso ssp ON ss.idSubSerie = ssp.SubSerie_idSubSerie
         LEFT JOIN
-    documentopermisocompania dpc ON dpc.Documento_idDocumento = d.idDocumento
+    documentopermiso dp ON d.idDocumento = dp.Documento_idDocumento
         LEFT JOIN
-    compania c ON dpc.Compania_idCompania = c.idCompania
+    documentopermisocompania dpc ON d.idDocumento = dpc.Documento_idDocumento
         LEFT JOIN
-    clasificaciondocumental cd ON cd.Subserie_idSubserie = ss.idSubSerie
+    users udep ON depp.Rol_idRol = udep.Rol_idRol
+        LEFT JOIN
+    users us ON sp.Rol_idRol = us.Rol_idRol
+        LEFT JOIN
+    users uss ON ssp.Rol_idRol = uss.Rol_idRol
+        LEFT JOIN
+    users ud ON dp.Rol_idRol = ud.Rol_idRol
 WHERE
-    idCompania = '.Session::get("idCompania").' AND dp.Rol_idRol = '.$idRol["Rol_idRol"].' 
-        AND sp.Rol_idRol = '.$idRol["Rol_idRol"].'
-        AND ssp.Rol_idRol = '.$idRol["Rol_idRol"].'
-        AND docp.Rol_idRol = '.$idRol["Rol_idRol"].'
+    dpc.Compania_idCompania = '.\Session::get("idCompania").'
+        AND udep.id = '.\Session::get("idUsuario").'
+        AND us.id = '.\Session::get("idUsuario").'
+        AND uss.id = '.\Session::get("idUsuario").'
+        AND ud.id = '.\Session::get("idUsuario").' 
         AND cargarDocumentoPermiso = 1
         AND tipoDocumento = 2
-GROUP BY docp.Documento_idDocumento
-');
-  
-    //Cuento cuantos documentos hay 
-    for($i = 0; $i < count($titulo); $i++)
-    {
-//Convertir un array a un string      
-$nombretitulo = get_object_vars($titulo[$i]);
-    echo '
-      <div class="panel-group" id="accordion">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#adjuntarRadicado'.$i.'">'.$nombretitulo["nombreDocumento"].'</a>
-            </h4>
-          </div>
-          <div id="adjuntarRadicado'.$i.'" class="panel-collapse collapse">
-            <div class="panel-body">
-                <div class="form-group">
-                  <div class="col-sm-1">
-                    <div class="input-group"">
-                     <div class="container">
-                      <div class="dropzone dropzone-previews" id="dropzoneFileUpload_'.$i.'_'.$nombretitulo["idDocumento"].'" >
-                      </div>
-                        </div>  
-                        </br>
-                       <input id="botonRadicar_'.$i.'_'.$nombretitulo['idDocumento'].'" type="button" value="Radicar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); Radicar(\'\', this.id); irArriba();">
+GROUP BY idDependencia , idSerie , idSubSerie , idDocumento
+ORDER BY nombreDependencia , nombreSerie , nombreSubSerie , nombreDocumento');
+
+$datos = array();
+// por facilidad de manejo convierto el stdclass a tipo array con un cast (array)
+ for ($i = 0, $c = count($titulos); $i < $c; ++$i) 
+ {
+    $datos[$i] = (array) $titulos[$i];
+ }
+
+$i=0;
+$registros = count($titulos);
+
+$ns = 0;
+$liserie = array();
+$divserie = array();
+
+while ($i < $registros) 
+{
+  $dependencia = $datos[$i]['abreviaturaDependencia'];
+
+  while ($i < $registros && $dependencia == $datos[$i]['abreviaturaDependencia']) 
+  {
+    $serie = $datos[$i]['nombreSerie'];
+    $nss = 0;
+    $lisubserie = array();
+    $divsubserie = array();
+
+    if(!isset($liserie[$ns]))
+      $liserie[$ns] = '';
+
+    if(!isset($divserie[$ns]))
+      $divserie[$ns] = '';
+
+    $liserie[$ns] .= '
+      <li onclick="asignarIdDependenciaSerie('.$datos[$i]["idDependencia"].','.$datos[$i]["idSerie"].')"><a data-toggle="tab" href="#'.$datos[$i]["idDependencia"].'_'.$datos[$i]["idSerie"].'">'.$datos[$i]["abreviaturaDependencia"].'-'.$datos[$i]["nombreSerie"].'</a></li>';
+
+    $divserie[$ns] .= '
+        <div id="'.$datos[$i]["idDependencia"].'_'.$datos[$i]["idSerie"].'" class="tab-pane fade">
+          <ul class="nav nav-tabs">';
+
+      while ($i < $registros && $dependencia == $datos[$i]['abreviaturaDependencia'] && $serie = $datos[$i]['nombreSerie']) 
+      {
+        $subserie = $datos[$i]['nombreSubSerie'];
+        if(!isset($lisubserie[$nss]))
+          $lisubserie[$nss] = '';
+
+        if(!isset($divsubserie[$nss]))
+          $divsubserie[$nss] = '';
+
+        $lisubserie[$nss] .= '
+            <li onclick="asignarIdSubSerie('.$datos[$i]["idSubSerie"].')"><a data-toggle="tab" href="#'.$datos[$i]["idSubSerie"].'">'.$datos[$i]["nombreSubSerie"].'</a></li>';
+        $divsubserie[$nss] .= '
+              <div id="'.$datos[$i]["idSubSerie"].'" class="tab-pane fade">';
+
+        while ($i < $registros && $dependencia == $datos[$i]['abreviaturaDependencia'] && $serie = $datos[$i]['nombreSerie'] && $subserie == $datos[$i]['nombreSubSerie']) 
+        {
+          $divsubserie[$nss] .= 
+              '<div class="panel-body">
+                <div class="panel-group" id="accordion">
+                  <div class="panel panel-info">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#documento_'.$datos[$i]["idDocumento"].'">'.$datos[$i]["nombreDocumento"].'</a>
+                      </h4>
                     </div>
-                  </div>
+                    <div id="documento_'.$datos[$i]["idDocumento"].'" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="form-group" id="test">
+                          <div class="col-sm-12">
+                            
+                            <div class="input-group"">
+                              <div class="container">
+                                <div class="dropzone dropzone-previews" id="dropzoneFileUpload_'.$datos[$i]["idDocumento"].'" >
+                                </div>
+                              </div>  
+                              </br>
+                               <a href="#myModalRadicado"><input id="botonRadicar_'.$datos[$i]['idDocumento'].'" type="button" value="Radicar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); radicar(\'\', this.id); irArriba();"></a>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>  
                 </div>
-            </div>
-        </div>  
-      </div>
-    </div>';
+              </div>';
+          ?>
+          
+          <script type="text/javascript">
+            var baseUrl = "{{ url("/") }}";
+            var token = "{{ Session::getToken() }}";
+            Dropzone.autoDiscover = false;
 
-?>
-<!--Llamo una libreria del dropzone-->
-{!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
- <!--Funcion de laravel para llamar la fecha actual-->
- <?php $fechahoy = Carbon\Carbon::now();?>
-<script type="text/javascript">
-    var baseUrl = "{{ url("/") }}";
-    var token = "{{ Session::getToken() }}";
-    Dropzone.autoDiscover = false;
-   //Le doy un nombre al dropzone (id)
-    var myDropzone = new Dropzone("div#dropzoneFileUpload_<?php echo $i.'_'.$nombretitulo['idDocumento'];?>", {
-        url: baseUrl + "/dropzone/uploadFilesRadicado",
-        params: {
-            _token: token
-        }
-        
-    });
-
-   
-    //Configuro el dropzone
-    myDropzone.options.myAwesomeDropzone =  {
-    paramName: "file", // The name that will be used to transfer the file
-    maxFilesize: 20, // MB
-    addRemoveLinks: true,
-    clickable: true,
-    previewsContainer: ".dropzone-previews",
-    clickable: false,
-    accept: function(file, done) {
-
-      }
-    };
-    //envio las funciones al realizar cuando se de clic en la vista previa dentro del dropzone
-     myDropzone.on("addedfile", function(file) {
-          file.previewElement.addEventListener("click", function(reg, idDoc) {
-            var idDrop = this.parentNode.id; //Con el indexOf obtengo la posicion (en este caso el numero (id) del dropzone)
-            Radicar(file, idDrop);
-            irArriba();
-          });
-        });
-
-     function Radicar(file, idDrop)
-     {
-        $('#pestanas').append('<input type="hidden" name="idDropzone" id="idDropzone" value=""/>');
-
-        $('#idDropzone').val(idDrop);
-
-
-        if(file != '')
-        {
-            PreviewImage(file); //Vista previa en tamaño mayor
-            document.getElementById("archivoRadicado").value = file["name"]; //Envio el nombre del archivo   
-
-        }
-        else
-        {
-          document.getElementById("archivoRadicado").value = ''; 
-        }           
-            
-        idDrop = idDrop.substring( idDrop.indexOf("_")+1); //Le quito el nombre hasta el guion bajo para que me quede solo el numero (id)
-        document.getElementById('Documento_idDocumento').value = idDrop.substring( idDrop.indexOf("_")+1); //Envio el id del documento
-        Documento_idDocumentoP = idDrop.substring( idDrop.indexOf("_")+1); //Envio el id del documento
-        
-        document.getElementById('registro').value = idDrop.substring( 0, idDrop.indexOf("_")); //envio el id del registro
-        document.getElementById("pestanas").style.display = "block"; //Al dar clic se abre el div 
-        var token = document.getElementById('token').value;
-        
-        //Saber la ip del servidor
-        var ip = ((location.href.split('/'))[0])+'//'+((location.href.split('/'))[2]);
-
-        $.ajax({
-                headers: {'X-CSRF-TOKEN': token},
-                dataType: "json",
-                data: {'Documento_idDocumentoP': Documento_idDocumentoP},
-                url:   ip+'/armarMetadatosDocumento/',
-                type:  'post',
-                beforeSend: function(){
-                    //Lo que se hace antes de enviar el formulario
-                    },
-                success: function(respuesta){
-                    //lo que se si el destino devuelve algo
-                    $("#propiedades").html(respuesta);
-                    // $("#nombreEstructuraPadre").style.width = 100%;
-                },
-                error:    function(xhr,err){ 
-                    alert("Error");
-                }
+            var myDropzone = new Dropzone("div#dropzoneFileUpload_<?php echo $datos[$i]["idDocumento"];?>", 
+            {
+              url: baseUrl + "/dropzone/uploadFilesRadicado",
+              params: 
+              {
+                _token: token
+              }
             });
+
+            //Configuro el dropzone
+            myDropzone.options.myAwesomeDropzone =  
+            {
+              paramName: "file", // The name that will be used to transfer the file
+              maxFilesize: 20, // MB
+              addRemoveLinks: true,
+              clickable: true,
+              previewsContainer: ".dropzone-previews",
+              clickable: false,
+              accept: function(file, done) 
+              {
+
+              }
+            };
+
+            //envio las funciones al realizar cuando se de clic en la vista previa dentro del dropzone
+            myDropzone.on("addedfile", function(file) 
+            {
+              file.previewElement.addEventListener("click", function(reg, idDoc) 
+              {
+                var idDrop = this.parentNode.id; //Con el indexOf obtengo la posicion (en este caso el numero (id) del dropzone)
+                radicar(file, idDrop);
+                irArriba();
+              });
+            });
+          </script>
+
+          <?php
+          $i++;  
+        }
+        $divsubserie[$nss] .= '</div>';
+        $nss ++;
       }
-      
-</script>
-<?php
+
+      $divserie[$ns] .= implode('',$lisubserie).
+                      '</ul>
+                      <div class="tab-content">'.
+                      implode('',$divsubserie).'
+                      </div>
+                    </div>';
+      $ns ++;
+  }
 }
-    ?>
 
-    <script type="text/javascript">
-       //Contiene la vista previa del documento adjunto
-       function PreviewImage(archivo) {
-
-                pdffile=archivo;
-                pdffile_url=URL.createObjectURL(pdffile);
-                $('#viewer').attr('src',pdffile_url);
-            }
-      </script>
-
-  
-            </div>
-
-
-          </div>
-        </div>
-      </div>
-      </div>
+echo '
+<div id="form-radicado">
+  <ul class="nav nav-tabs">
+    '.implode('', $liserie).'
+  </ul>
+    <div class="tab-content">
+      '.implode('', $divserie).'
     </div>
-    
-  </div>
-</div>
-
-  @if(isset($radicado))
-    @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
-      {!!Form::model($radicado,['route'=>['radicado.destroy',$radicado->id],'method'=>'DELETE', 'action' => 'RadicadoController@store', 'files' => true])!!}
-    @else
-      {!!Form::model($radicado,['route'=>['radicado.update',$radicado->id],'method'=>'PUT', 'action' => 'RadicadoController@store', 'files' => true])!!}
-    @endif
-  @else
-    {!!Form::open(['route'=>'radicado.store','method'=>'POST', 'action' => 'RadicadoController@store', 'id' => 'radicado' , 'files' => true])!!}
-  @endif
-</script>
-<?php 
-$codigoRadicado = DB::table('radicado')
-->select(DB::raw('Dependencia_idDependencia','Serie_idSerie','SubSerie_idSubSerie'))
-->get();
+</div>';
 ?>
-<!--Creo el div que contiene las dos pestañas (Clasificacion y Propiedades)-->
-<div class="col-sm-10" id="pestanas" style="width: 1345px; height:600px; background-color: white; z-index: 1000 ; border: 1px inset; border-color: #ddd; position: absolute; top: 115px; display: none;">
-<a class='cerrar' href='javascript:void(0);' onclick='document.getElementById(&apos;pestanas&apos;).style.display = &apos;none&apos;'>x</a> <!--Es la funcion la cual cierra el div flotante-->
-<div class="col-md-12">
-<h2 id="titulo"><left>Radicar<h5>
-<!-- <label class= "col-sm-12 control-label">Versión</label> -->
-<div class="input-group">
-<!-- <span class="input-group-addon">
-<i class="fa fa-bars"></i>
-</span> -->
-  <input id="numeroRadicadoVersion" name="numeroRadicadoVersion" style="height:30px; width:80px;" type="hidden" readonly="true" value="1.0">
-<input id="tipoRadicado" name="tipoRadicado" type="hidden"  value="radicado">
-<input id="tipoRadicadoVersion" name="tipoRadicadoVersion" style="height:30px; width:80px;" type="hidden" value="0">
-</div>
-</h5></left></h2>
-<div class="form-group col-md-6 form-inline" id='test'> <!--Encabezado dentro del div-->
-  {!!Form::label('codigoRadicado', 'Código', array('class' => 'col-sm-3 control-label')) !!}
-  <div class="col-sm-10">
-    <div class="input-group">
-      <span class="input-group-addon">
-        <i class="fa fa-barcode "></i>
-      </span>
-        {!!Form::text('codigoRadicado',null,['class'=>'form-control','readonly','placeholder'=>'Código de radicado'])!!}
-        {!! Form::hidden('idRadicado', null, array('id' => 'idRadicado')) !!} 
+
+{!!Form::hidden('registro', 0, array('id' => 'registro'))!!}
+{!!Form::hidden('archivoRadicado', 0, array('id' => 'archivoRadicado'))!!}
+{!!Form::hidden('Dependencia_idDependencia', null, array('id' => 'Dependencia_idDependencia'))!!}
+{!!Form::hidden('Serie_idSerie', null, array('id' => 'Serie_idSerie'))!!}
+{!!Form::hidden('SubSerie_idSubSerie', null, array('id' => 'SubSerie_idSubSerie'))!!}
+{!!Form::hidden('Documento_idDocumento', null, array('id' => 'Documento_idDocumento'))!!} 
+{!!Form::hidden('numeroRadicadoVersion', '1.0', array('id' => 'numeroRadicadoVersion'))!!} 
+{!!Form::hidden('tipoRadicadoVersion', 0, array('id' => 'tipoRadicadoVersion'))!!} 
+
+<!-- Modal de radicado -->
+  <div id="myModalRadicado" class="modalDialog">
+    <div id="modal-dialog">
+    <div class="modal-header">
+      <a href="#close" title="Cerrar" class="close">X</a>
+      <h4 class="modal-title">Radicar documento</h4>
     </div>
-  </div>
-</div>
-<div class="form-group col-md-6 form-inline" id='test'>
-  {!!Form::label('fechaRadicado', 'Fecha', array('class' => 'col-sm-3 control-label')) !!}
-  <div class="col-sm-10">
-    <div class="input-group">
-      <span class="input-group-addon">
-        <i class="fa fa-calendar "></i>
-      </span>
-        {!!Form::text('fechaRadicado',date('Y-m-d') ,['class'=>'form-control','readonly','placeholder'=>'Fecha de radicado',])!!}
-    </div>
-  </div>
-</div>
-  </br>
-  </br>
-  </br>
-  </br>
+      <div class="modal-radicado">
 
-<ul class="nav nav-tabs"> <!--Pestañas de navegacion-->
-  <li class="active"><a data-toggle="tab" href="#clasificacion">Clasificación</a></li>
-  <li><a data-toggle="tab" href="#propiedades">Propiedades</a></li>
-</ul>
-</br>
-
-<div class="tab-content">
-  <div id="clasificacion" class="tab-pane fade in active">
-    <div id='form-radicado'>
-
-  <fieldset id="archivo-form-fieldset"> 
-</br>
-<!--Campos de la pestaña clasificacion-->
-        <div class="form-group" id='test'>
-            {!!Form::label('Dependencia_idDependencia', 'Dependencia', array('class' => 'col-sm-2 control-label'))!!}
-            <div class="col-sm-10">
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                          <i class="fa fa-pencil-square-o"></i>
-                        </span>
-                {!!Form::select('Dependencia_idDependencia',$dependencia, (isset($archivo) ? $archivo->Dependencia_idDependencia : 0),["class" => "form-control", "onchange"=> "buscarDependencia(this.value)", "placeholder" =>"Seleccione la dependencia"])!!}
-              </div>
-            </div>
-        </div>
-
-        <div class="form-group" id='test'>
-          {!!Form::label('Serie_idSerie', 'Serie', array('class' => 'col-sm-2 control-label'))!!}
+        <div class="form-group col-md-6" id='test'>
+          {!!Form::label('codigoRadicado', 'Código', array('class' => 'col-sm-3 control-label')) !!}
           <div class="col-sm-10">
-                  <div class="input-group">
-                      <span class="input-group-addon">
-                        <i class="fa fa-pencil-square-o"></i>
-                      </span>
-              {!!Form::select('Serie_idSerie',$serie, (isset($archivo) ? $archivo->Serie_idSerie : 0),["class" => "form-control", "onchange"=> "buscarSubSerie(this.value)", "placeholder" =>"Seleccione la serie"])!!}
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-barcode "></i>
+              </span>
+                {!!Form::text('codigoRadicado',null,['class'=>'form-control','readonly','placeholder'=>'Código de radicado'])!!}
+                {!! Form::hidden('idRadicado', null, array('id' => 'idRadicado')) !!} 
             </div>
           </div>
         </div>
 
-
-        <div class="form-group" id='test'>
-          {!!Form::label('SubSerie_idSubSerie', 'Sub Serie', array('class' => 'col-sm-2 control-label'))!!}
+        <div class="form-group col-md-6" id='test'>
+          {!!Form::label('fechaRadicado', 'Fecha', array('class' => 'col-sm-3 control-label')) !!}
           <div class="col-sm-10">
-                  <div class="input-group">
-                      <span class="input-group-addon">
-                        <i class="fa fa-pencil-square-o"></i>
-                      </span>
-              {!!Form::select('SubSerie_idSubSerie',$subserie, (isset($archivo) ? $archivo->SubSerie_idSubSerie : 0),["class" => "form-control", "placeholder" =>"Seleccione la sub serie"])!!}
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-calendar "></i>
+              </span>
+                {!!Form::text('fechaRadicado',date('Y-m-d H:m:s') ,['class'=>'form-control','readonly','placeholder'=>'Fecha de radicado',])!!}
             </div>
           </div>
         </div>
 
-        <div class="form-group" id='test'>
-          {!!Form::label('ubicacionEstanteRadicado', 'P.L', array('class' => 'col-sm-2 control-label'))!!}
+        <div class="form-group col-md-6" id='test'>
+          {!!Form::label('ubicacionEstanteRadicado', 'P.L', array('class' => 'col-sm-3 control-label'))!!}
           <div class="col-sm-10">
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="fa fa-sitemap"></i>
-                </span>
-              {!!Form::text('ubicacionEstanteRadicado',null,['class'=>'form-control', 'placeholder'=>'Digite la ubicación del estante'])!!}
-            </div>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-sitemap"></i>
+              </span>
+            {!!Form::text('ubicacionEstanteRadicado',null,['class'=>'form-control', 'placeholder'=>' Punto de localización'])!!}
+            <span title="Crear punto de localización" class="input-group-addon btn btn-primary" 
+            onclick="mostrarModalPL()"
+            style="cursor:pointer">
+              <i class="fa fa-check"></i>
+            </span>
           </div>
         </div>
+      </div>
 
-        <div class="form-group" id='test'>
-          {!!Form::label('ubicacionEtiquetaRadicado', 'Ubicación', array('class' => 'col-sm-2 control-label'))!!}
-          <div class="col-sm-10">
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="fa fa-exchange"></i>
-                </span>
-                Izquierda Derecha <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                {!! Form::radio('ubicacionEtiquetaRadicado', 'derecha', true, ['onclick' => 'asignarCheck(this)']) !!}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                {!! Form::radio('ubicacionEtiquetaRadicado', 'derecha', false, ['onclick' => 'asignarCheck(this)']) !!}
-            </div>
-          </div>
-        </div>
-
-        
-
-      <div class="form-group" id='test'>
-        {!! Form::label('etiquetaRadicado', 'Etiquetas', array('class' => 'col-sm-2 control-label')) !!}
+      <div class="form-group col-md-6" id='test'> 
+        {!!Form::label('numeroPaginasRadicado', 'Páginas', array('class' => 'col-sm-3 control-label')) !!}
         <div class="col-sm-10">
+          <div class="input-group">
+            <span class="input-group-addon">
+              <i class="fa fa-file"></i>
+            </span>
+              {!!Form::text('numeroPaginasRadicado',null,['class'=>'form-control','placeholder'=>'Número de páginas'])!!}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-12" id='test'>
+        {!!Form::label('ubicacionEtiquetaRadicado', 'Ubicación', array('class' => 'col-sm-3 control-label'))!!}
+        <div class="col-sm-10">
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-exchange"></i>
+              </span>
+              Izquierda Derecha <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {!! Form::radio('ubicacionEtiquetaRadicado', 'derecha', true, ['onclick' => 'asignarCheck(this)']) !!}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {!! Form::radio('ubicacionEtiquetaRadicado', 'derecha', false, ['onclick' => 'asignarCheck(this)']) !!}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-12" id='test'> 
+        {!! Form::label('etiquetaRadicado', 'Etiquetas', array('class' => 'col-sm-3 control-label')) !!}
+        <div class="col-sm-11">
           <div class="input-group">
             <span class="input-group-addon">
               <i class="fa fa-tags"></i>
@@ -369,44 +330,35 @@ $codigoRadicado = DB::table('radicado')
             {!!Form::hidden('etiquetaRadicado', null, array('id' => 'etiquetaRadicado'))!!}
           </div>
         </div>
-      </div>        
-   {!!Form::hidden('Documento_idDocumento', 0, array('id' => 'Documento_idDocumento'))!!}
-   {!!Form::hidden('registro', 0, array('id' => 'registro'))!!}
-   {!!Form::hidden('archivoRadicado', 0, array('id' => 'archivoRadicado'))!!}
-   <input type="hidden" id="token" value="{{csrf_token()}}"/>
-
-</fieldset>
-</div>
-</div>
-
-<!--Campos de la pestaña Propiedades-->
-  <div id="propiedades" class="tab-pane fade" style="overflow-y: scroll; height:256px;" >
-  
-<!-- INSERTO LOS METADATOS -->
-
-  </div>
-  @if(isset($radicado))
-    @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
-        {!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
-      @else
-        {!!Form::submit('Modificar',["class"=>"btn btn-primary"])!!}
-      @endif
-  @else
-      {!!Form::button('Adicionar',["class"=>"btn btn-primary", "onclick"=>"guardarDatos($('#idDropzone').val());"])!!}
-  @endif
-
-</div>
-</div>
-<div id="preview" class="col-md-6">
-      <div style="clear:both">
-        <iframe id="viewer" frameborder="0" scrolling="no" width="100%" height="490px"></iframe> <!--Defino el stylo de la vista previa-->       
       </div>
-</div>
-</div>
-</div>
-</div>
 
-{!! Form::close() !!}
+        <div class="form-group">
+          <div class="col-md-12">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Indexación</div>
+              <div class="panel-body">
+                <div class="panel-group" id="accordion">
+                  <div id="divMetadatos">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="preview" class="col-md-6">
+          <div style="clear:both">
+            <iframe id="viewer" frameborder="0" scrolling="no" width="100%" height="490px"></iframe> <!--Defino el stylo de la vista previa-->       
+          </div>
+        </div>
+
+        {!!Form::button('Adicionar',["class"=>"btn btn-primary", "onclick"=>"guardarDatos();"])!!}
+
+      </div>
+    </div>
+</div>
+@stop
 
 <!-- Modal etiqueta -->
 <div id="myModalEtiqueta" class="modal fade" role="dialog">
@@ -423,16 +375,21 @@ $codigoRadicado = DB::table('radicado')
       </div>
     </div>
   </div>
-</div>               
+</div>   
 
-<script>
-//Guardo las etiquetas en el formulario 
-  function etiquetaSelect(ids,nombetiqueta)
-  {
-    document.getElementById('etiquetaRadicado').value=ids;
-    document.getElementById('nombreEtiqueta').value=nombetiqueta;
-  }
-</script>
-<!--Funcion para cerrar el div -->
+<!-- Modal PL -->
+<div id="myModalPL" class="modal fade" role="dialog">
+  <div class="modal-dialog" style="width:1000px;">
 
-@stop
+    <!-- Modal content-->
+    <div style="" class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Punto de localización</h4>
+      </div>
+      <div class="modal-body">
+        <iframe style="width:100%; height:510px; z-index: 964790"; id="localizacion" name="localizacion" src="{!! URL::to ('puntolocalizacion')!!}"> </iframe> 
+      </div>
+    </div>
+  </div>
+</div>   

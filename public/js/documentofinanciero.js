@@ -202,7 +202,7 @@ function agregarCompras()
 
             for (var i = 0; i < datos.length; i++) 
             {
-                var valores = new Array(0, datos[i][4], datos[i][0], 0, datos[i][1], datos[i][2], datos[i][3]);
+                var valores = new Array(0, datos[i][5], datos[i][0], 0, datos[i][2], datos[i][3], datos[i][4]);
                 window.parent.documentofinanciero.agregarCampos(valores,'A');    
             }
             calcularTotales();

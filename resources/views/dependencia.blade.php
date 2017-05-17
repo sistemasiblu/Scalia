@@ -32,6 +32,21 @@ for($i = 0; $i < count($datos); $i++)
     dependenciapermisos = (dependenciapermisos != '' ? JSON.parse(dependenciapermisos) : '');
     var valorDependencia = ['','', 0];
 
+    // --------------------------------------------------
+    // D E T A L L E  P U N T O  L O C A L I Z A C I Ó N
+    // --------------------------------------------------
+
+    var dependenciaLocalizacion = '<?php echo (isset($dependencia) ? json_encode($dependencia->dependenciaLocalizacion) : "");?>';
+
+    dependenciaLocalizacion = (dependenciaLocalizacion != '' ? JSON.parse(dependenciaLocalizacion) : '');
+
+    valorResultado =  Array("Activo", "Inactivo");
+    nombreResultado =  Array("Activo", "Inactivo");
+
+    var resultado = [valorResultado,nombreResultado];
+
+    var valorExamenMedico = [0,'','',''];
+
     $(document).ready(function(){
 
       protRol = new Atributos('protRol','contenedor_permisos','permisos_');
@@ -52,6 +67,50 @@ for($i = 0; $i < count($datos); $i++)
         console.log(JSON.stringify(dependenciapermisos[j]))
       }
 
+
+      // --------------------------------------------------
+      // D E T A L L E  P U N T O  L O C A L I Z A C I Ó N
+      // --------------------------------------------------
+
+        localizacion = new Atributos('localizacion','contenedor_localizacion','localizacion_');
+        
+        localizacion.altura = '35px;';
+        localizacion.campoid = 'idDependenciaLocalizacion';
+        localizacion.campoEliminacion = 'eliminarDependenciaLocalizacion';
+        // localizacion.botonEliminacion = true;
+        
+        localizacion.campos   = [
+        'idDependenciaLocalizacion',
+        'numeroEstanteDependenciaLocalizacion',
+        'numeroNivelDependenciaLocalizacion',
+        'numeroSeccionDependenciaLocalizacion',
+        'codigoDependenciaLocalizacion', 
+        'descripcionDependenciaLocalizacion',  
+        'estadoDependenciaLocalizacion', 
+        'Dependencia_idDependencia'];
+        
+        localizacion.etiqueta = ['input', 'input', 'input', 'input', 'input', 'input', 'select', 'input'];
+
+        localizacion.tipo     = ['hidden','hidden','hidden','hidden','text', 'text', '', 'hidden'];
+        
+        localizacion.estilo   = ['','','','',
+                                'vertical-align:top; width: 300px; height:35px;', 
+                                'vertical-align:top; width: 300px;  height:35px;',
+                                'vertical-align:top; width: 300px;  height:35px; display: inline-block;',
+                                ''];
+
+        localizacion.clase    = ['','','','','','','',''];
+
+        localizacion.sololectura = [true,true,true,true,true,true,false,true];
+      
+        localizacion.opciones = ['','','','','','',resultado,''];
+
+        localizacion.funciones ['','','','','','','',''];
+
+        for(var j=0, k = dependenciaLocalizacion.length; j < k; j++)
+        {
+          localizacion.agregarCampos(JSON.stringify(dependenciaLocalizacion[j]),'L');
+        }
     });
 
   </script>
@@ -69,7 +128,7 @@ for($i = 0; $i < count($datos); $i++)
 
 
 <div id='form-section' >
-
+<input type="hidden" id="token" value="{{csrf_token()}}"/>
   <fieldset id="dependencia-form-fieldset"> 
       <div class="form-group" id='test'>
         {!!Form::label('codigoDependencia', 'C&oacute;digo', array('class' => 'col-sm-2 control-label')) !!}
@@ -80,6 +139,7 @@ for($i = 0; $i < count($datos); $i++)
             </span>
             {!!Form::text('codigoDependencia',null,['class'=>'form-control','placeholder'=>'Ingresa el código del sistema de la dependencia'])!!}
             {!!Form::hidden('idDependencia', null, array('id' => 'idDependencia')) !!}
+            {!!Form::hidden('eliminarDependenciaLocalizacion', null, array('id' => 'eliminarDependenciaLocalizacion')) !!}
             {!!Form::hidden('eliminarDependenciaPermiso', null, array('id' => 'eliminarDependenciaPermiso')) !!}
           </div>
         </div>
@@ -159,7 +219,7 @@ for($i = 0; $i < count($datos); $i++)
                         <div class="panel panel-info">
                           <div class="panel-heading">
                             <h4 class="panel-title">
-                              Generar Puntos de localización
+                              Generar Puntos de Localización
                             </h4>
                           </div>
 
@@ -167,37 +227,37 @@ for($i = 0; $i < count($datos); $i++)
                             <div class="panel-body">
 
                               <div class="form-group col-md-3" id='test'  style='display: inline;'>
-                                {!!Form::label('fechaInicialEntrevistaResultado', 'Estantes ', array('class' => 'col-sm-1 control-label')) !!}
+                                {!!Form::label('estanteDependenciaPuntoLocalizaCion', 'Estantes ', array('class' => 'col-sm-1 control-label')) !!}
                                   <div class="col-md-12">
                                     <div class="input-group">
                                      <span class="input-group-addon">
                                              <i class="fa fa-bars" aria-hidden="true"></i>
                                      </span>
-                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese la cantidad de estantes'])!!}
+                                      {!!Form::text('estanteDependenciaPuntoLocalizaCion',null,['class'=> 'form-control','placeholder'=>'Ingrese la cantidad de estantes'])!!}
                                     </div>
                                   </div>     
                               </div>
 
                               <div class="form-group col-md-3" id='test'  style='display: inline;'>
-                                {!!Form::label('fechaInicialEntrevistaResultado', 'Niveles ', array('class' => 'col-sm-1 control-label')) !!}
+                                {!!Form::label('nivelDependenciaPuntoLocalizacion', 'Niveles ', array('class' => 'col-sm-1 control-label')) !!}
                                   <div class="col-md-12">
                                     <div class="input-group">
                                      <span class="input-group-addon">
                                              <i class="fa fa-tasks" aria-hidden="true"></i>
                                      </span>
-                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese el numero de niveles'])!!}
+                                      {!!Form::text('nivelDependenciaPuntoLocalizacion',null,['class'=> 'form-control','placeholder'=>'Ingrese el numero de niveles'])!!}
                                     </div>
                                   </div>     
                               </div>
 
                               <div class="form-group col-md-3" id='test'  style='display: inline;'>
-                                {!!Form::label('fechaInicialEntrevistaResultado', 'Secciones ', array('class' => 'col-sm-1 control-label')) !!}
+                                {!!Form::label('seccionDependenciaPuntoLocalizacion', 'Secciones ', array('class' => 'col-sm-1 control-label')) !!}
                                   <div class="col-md-12">
                                     <div class="input-group">
                                      <span class="input-group-addon">
                                              <i class="fa fa-cubes" aria-hidden="true"></i>
                                      </span>
-                                      {!!Form::text('fechaInicialEntrevistaResultado',(isset($entrevistaresultado) ? $entrevistaresultado->fechaInicialEntrevistaResultado : null),['class'=> 'form-control','placeholder'=>'Ingrese el numero de secciones'])!!}
+                                      {!!Form::text('seccionDependenciaPuntoLocalizacion',null,['class'=> 'form-control','placeholder'=>'Ingrese el numero de secciones'])!!}
                                     </div>
                                   </div>     
                               </div>
@@ -219,13 +279,26 @@ for($i = 0; $i < count($datos); $i++)
                         <div class="panel panel-info">
                           <div class="panel-heading">
                             <h4 class="panel-title">
-                              Detalle de Puntos de Localizacón
+                              Detalle de Puntos de Localización
                             </h4>
                           </div>
                           
                           <div id="generarPuntoLocalizacion">
                             <div class="panel-body">
-                              a
+                              <div class="col-sm-12">
+                                <div class="row show-grid">
+                                  <div style="overflow: auto; height: 300px;">
+                                      <div class="col-md-1" style="width: 42px; height:42px;"></div>
+                                      <div class="col-md-1" style="width: 300px;">Codigo</div>
+                                      <div class="col-md-4" style="width: 300px;">Descripción</div>
+                                      <div class="col-md-4" style="width: 300px;">Estado</div>
+                                   
+                                      <div id="contenedor_localizacion">
+                                      </div>
+
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>  
@@ -272,10 +345,10 @@ for($i = 0; $i < count($datos); $i++)
     @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
         {!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
       @else
-        {!!Form::submit('Modificar',["class"=>"btn btn-primary"])!!}
+        {!!Form::submit('Modificar',["class"=>"btn btn-primary","onclick"=>'validarFormulario(event);'])!!}
       @endif
   @else
-      {!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
+      {!!Form::submit('Adicionar',["class"=>"btn btn-primary","onclick"=>'validarFormulario(event);'])!!}
   @endif
 
   {!! Form::close() !!}

@@ -298,6 +298,7 @@
                           <thead>
                               <tr class="btn-primary active">
                                   <th><b>Compra</b></th>
+                                  <th><b>Proveedor</b></th>
                                   <th><b>Factura</b></th>
                                   <th><b>Valor FOB</b></th>
                                   <th><b>Programado</b></th>
@@ -306,6 +307,7 @@
                           <tfoot>
                               <tr class="btn-default active">
                                   <th>Compra</th>
+                                  <th>Proveedor</th>
                                   <th>Factura</th>
                                   <th>Valor FOB</th>
                                   <th>Programado</th>

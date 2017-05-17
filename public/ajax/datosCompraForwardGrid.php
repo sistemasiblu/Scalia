@@ -98,6 +98,7 @@
             FROM
                 documentofinancieroprorroga
             GROUP BY DocumentoFinanciero_idDocumentoFinanciero) AS dfp ON df.idDocumentoFinanciero = dfp.DocumentoFinanciero_idDocumentoFinanciero
+        GROUP BY numeroCompra
         ORDER BY numeroCompra, fechaDocumentoFinanciero DESC');
     }
 

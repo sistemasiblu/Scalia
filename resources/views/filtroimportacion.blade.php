@@ -88,6 +88,18 @@
       </div>
 
       <div class="form-group col-md-6">
+        {!!Form::label('documentoImportacion', 'Documento', array('class' => 'col-sm-4 col-md-2 control-label')) !!}
+        <div class="col-sm-8 col-md-8">
+          <div class="input-group">
+            <span class="input-group-addon">
+              <i class="fa fa-list"></i>
+            </span>
+            {!! Form::select('documentoImportacion', $documento ,null,['class' => 'chosen-select form-control', 'id'=>'documentoImportacion']) !!}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
 
       </div>
       <br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -154,6 +166,7 @@
         $(\'#fechaFinalCompra\').val(),
         $(\'#fechaInicialEmbarque\').val(),
         $(\'#fechaFinalEmbarque\').val(),
-        $(\'#filtroBodega option:selected\').val());'])!!}
+        $(\'#filtroBodega option:selected\').val(),
+        $(\'#documentoImportacion\').val());'])!!}
 </div>
 @stop

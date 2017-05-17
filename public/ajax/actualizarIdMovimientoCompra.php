@@ -67,23 +67,28 @@
 
 		return;
 
+		#Estilos para la tabla
+		$styleTableEnc = 'style="border: 1px solid; background-color: #255986; color: white;"';
+        $styleTableBody = 'style="border: 1px solid;"';
+        $styleTableBodyN = 'style="border: 1px solid;  text-align: right;"';
+
 		#Consulto todas las compras de las que aún no se ha enviado correo
 		$compras = DB::Select('
 			SELECT 
-			    numeroCompra, envioCorreoCompra
+			    numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
 			FROM
 			    (SELECT 
-			        numeroCompra, envioCorreoCompra
+			        numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
 			    FROM
 			        (SELECT 
-			        	numeroCompra, envioCorreoCompra
+			        	numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
 			    FROM
 			        compra c
 			    GROUP BY numeroCompra , numeroVersionCompra
 			    ORDER BY numeroCompra , numeroVersionCompra DESC) AS c
-			    GROUP BY numeroCompra) AS comp
-			WHERE envioCorreoCompra = 0');
+			    GROUP BY numeroCompra) AS comp');
 
+		$mail = array();
 		#Recorro todas las compras encontradas
 		for ($i=0; $i < count($compras); $i++) 
 		{ 
@@ -103,9 +108,39 @@
 			#Si encuentra archivos asociados a esta compra, envía el correo con los adjuntos encontrados
 			if (count($adjunto) > 0) 
             {
-            	$mail['destinatario'] = '';
-            	$mail['asunto'] = '';
-            	$mail['mensaje'] = '';
+            	#Armo la tabla que irá en el mensaje del correo
+            	$mail['mensaje'] ='Se ha realizado la creación de una nueva compra en Scalia con las siguientes especificaciones: <br><br>
+            	<table cellspacing="0" class="table table-striped table-bordered table-hover" style="width:100%;">
+		            <tr>
+		                <th colspan="12" style=" background-color:#255986; color:white;">Compra: '.$compra['numeroCompra'].'</th>
+		            </tr>
+		            <tr>
+		                <th '.$styleTableEnc.'>Temporada</th>
+		                <th '.$styleTableEnc.'>Proveedor</th>
+		                <th '.$styleTableEnc.'>Forma de pago proveedor</th>
+		                <th '.$styleTableEnc.'>Cliente</th>
+		                <th '.$styleTableEnc.'>Valor</th>
+		                <th '.$styleTableEnc.'>Unidades</th>
+		                <th '.$styleTableEnc.'>Factor</th>
+		                <th '.$styleTableEnc.'>Delivery</th>
+		            </tr>
+		            <tr>
+	                    <td '.$styleTableBody.'>'.$compra["nombreTemporadaCompra"].'</td>
+	                    <td '.$styleTableBody.'>'.$compra["nombreProveedorCompra"].'</td>
+	                    <td '.$styleTableBody.'>'.$compra["formaPagoProveedorCompra"].'</td>
+	                    <td '.$styleTableBody.'>'.$compra["nombreClienteCompra"].'</td>
+	                    <td '.$styleTableBodyN.'>'.$compra["valorCompra"].'</td>
+	                    <td '.$styleTableBody.'>'.$compra["cantidadCompra"].'</td>
+	                    <td '.$styleTableBody.'>'."".'</td>
+	                    <td '.$styleTableBody.'>'.$compra["fechaDeliveryCompra"].'</td>
+	                </tr>
+	            </table>';
+
+            	$destinatario = 'extiblu4@ciiblu.com;extiblu11@ciiblu.com;comercioextiblu@ciiblu.com;comercio4@ciiblu.com;comercio1@ciiblu.com;mariae.palacio@ciiblu.com;claudiagomez@ciiblu.com;yudyrendon@ciiblu.com;victoria.perez@ciiblu.com';
+
+
+            	$mail['destinatario'] = explode(';', $destinatario);
+            	$mail['asunto'] = 'Creación de compra en Scalia';
 
             	Mail::send('emails.contact',$mail,function($msj) use ($mail, $adjunto)
             	{
@@ -121,7 +156,7 @@
             	#Por último actualizo el campo de correo de compra para 
             	#saber que ya esta compra se ha enviado correo
             	DB::Select('UPDATE compra SET envioCorreoCompra = 1 
-            		WHERE numeroCompra = '.$compra['numeroCompra']);
+            		WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
             }
 		}
 			

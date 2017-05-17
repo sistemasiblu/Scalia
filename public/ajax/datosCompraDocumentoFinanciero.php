@@ -1,10 +1,10 @@
 <?php 
 
     $consulta = DB::Select("
-        SELECT idCompra, numeroCompra, valorCompra, facturaEmbarqueDetalle, saldoFinalCarteraForward
+        SELECT idCompra, numeroCompra, nombreProveedorCompra, valorCompra, facturaEmbarqueDetalle, saldoFinalCarteraForward
         FROM
             (SELECT 
-                idCompra, numeroCompra, valorCompra
+                idCompra, numeroCompra, nombreProveedorCompra, valorCompra
             FROM
                 compra c
             GROUP BY numeroCompra , numeroVersionCompra
@@ -31,6 +31,7 @@
         $value = get_object_vars($consulta[$key]); 
 
         $row[$key][] = $value['numeroCompra']; 
+        $row[$key][] = $value['nombreProveedorCompra']; 
         $row[$key][] = $value['facturaEmbarqueDetalle'];   
         $row[$key][] = $value['valorCompra']; 
         $row[$key][] = $value['saldoFinalCarteraForward']; 

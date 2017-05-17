@@ -15,21 +15,23 @@
     else
         $visibleE = 'none;';
 
-    $dependencia = \App\Dependencia::All();
+    $tiposoportedocumental = \App\TipoSoporteDocumental::All();
+    // print_r($tiposoportedocumental);
+    // exit;
     $row = array();
 
-    foreach ($dependencia as $key => $value) 
+    foreach ($tiposoportedocumental as $key => $value) 
     {  
-        $row[$key][] = '<a href="dependencia/'.$value['idDependencia'].'/edit">'.
+        $row[$key][] = '<a href="tiposoportedocumental/'.$value['idTipoSoporteDocumental'].'/edit">'.
                             '<span class="glyphicon glyphicon-pencil" style="display: '.$visibleM.'"></span>'.
                         '</a>&nbsp;'.
-                        '<a href="dependencia/'.$value['idDependencia'].'/edit?accion=eliminar">'.
+                        '<a href="tiposoportedocumental/'.$value['idTipoSoporteDocumental'].'/edit?accion=eliminar">'.
                             '<span class="glyphicon glyphicon-trash" style="display: '.$visibleE.'"></span>'.
                         '</a>';
-        $row[$key][] = $value['idDependencia'];
-        $row[$key][] = $value['codigoDependencia'];
-        $row[$key][] = $value['nombreDependencia'];
-        $row[$key][] = $value['abreviaturaDependencia'];    
+        $row[$key][] = $value['idTipoSoporteDocumental'];
+        $row[$key][] = $value['codigoTipoSoporteDocumental'];
+        $row[$key][] = $value['nombreTipoSoporteDocumental'];
+
     }
 
     $output['aaData'] = $row;

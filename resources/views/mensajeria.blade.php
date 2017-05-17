@@ -33,17 +33,42 @@
           </div>
         </div>
 
-        <!-- <div class="form-group col-md-6" id='test'>
-          {!!Form::label('tipoEnvioMensajeria', 'Tipo de envío', array('class' => 'col-sm-2 control-label')) !!}
-          <div class="col-sm-10">
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-bars"></i>
-              </span> -->
-              {!!Form::hidden('tipoEnvioMensajeria', (isset($mensajeria) ? $mensajeria->tipoEnvioMensajeria : $_GET["tipo"]), array('id' => 'tipoEnvioMensajeria')) !!}
-          <!--   </div>
-          </div>
-        </div> -->
+        <?php 
+          $rol = DB::Select('
+            SELECT 
+                idRol
+            FROM
+                rol r
+                    LEFT JOIN
+                users u ON r.idRol = u.Rol_idRol
+            WHERE
+                id = '.\Session::get('idUsuario'));
+
+          $idRol = get_object_vars($rol[0]);
+
+          if ($idRol['idRol'] == 10 or $idRol['idRol'] == 1) 
+          {
+            ?>
+            <div class='form-group col-md-6' id='test'>
+              {!!Form::label('tipoEnvioMensajeria', 'Tipo de envío', array('class' => 'col-sm-2 control-label')) !!}
+              <div class='col-sm-10'>
+                <div class='input-group'>
+                  <span class='input-group-addon'>
+                    <i class='fa fa-bars'></i>
+                  </span>
+                  {!! Form::select('tipoEnvioMensajeria', ['Mensajero' => 'Mensajero','Transporte' => 'Transporte'],null,['class' => 'form-control','placeholder'=>'Seleccione']) !!}
+                </div>
+              </div>
+            </div>
+        <?php
+          }
+          else
+          {
+            ?>
+            {!!Form::hidden('tipoEnvioMensajeria', (isset($mensajeria) ? $mensajeria->tipoEnvioMensajeria : $_GET['tipo']), array('id' => 'tipoEnvioMensajeria')) !!}
+            <?php
+          }
+        ?>
 
 
       <div class="form-group col-md-6" id='test'>

@@ -329,8 +329,9 @@ class EmbarqueController extends Controller
                 GROUP BY numeroCompra , numeroVersionCompra
                 ORDER BY numeroCompra , numeroVersionCompra DESC) AS comp
                 GROUP BY numeroCompra
-                HAVING estadoCompra = "Abierto" and Faltante <= 0');                
+                HAVING estadoCompra = "Abierto" and Faltante <= 0'); 
 
+                
             for ($i=0; $i < count($compra); $i++) 
             { 
                 $comp = get_object_vars($compra[$i]);
@@ -338,11 +339,38 @@ class EmbarqueController extends Controller
                 $update = DB::Select('UPDATE compra SET estadoCompra = "Cerrado"
                 where idCompra = '.$comp['idCompra']);    
 
-                $destinatario = 'comercio1@ciiblu.com; comercio4@ciiblu.com';
+                $destinatario = 'comercio1@ciiblu.com;comercio4@ciiblu.com';
 
                 $mail['destinatarioCorreo'] = explode(';', $destinatario);
                 $mail['asuntoCorreo'] = 'Cierre de compra';
-                $mail['mensaje'] = 'Se ha cerrado la compra número <b>'.$comp["numeroCompra"].'</b>, realizada por el usuario '.\Session::get("nombreUsuario").'.';
+
+                $styleTableEnc = 'style="border: 1px solid; background-color: #255986; color: white;"';
+                $styleTableBody = 'style="border: 1px solid;"';
+                $styleTableBodyN = 'style="border: 1px solid;  text-align: right;"';  
+
+                $mail['mensaje'] = 'Se ha cerrado la compra número <b>'.$comp["numeroCompra"].'</b>, realizada por el usuario '.\Session::get("nombreUsuario").'.</br></br>
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+                <table cellspacing="0" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <tr>
+                        <th colspan="6" style=" background-color:#255986; color:white;">Compra: '.$comp['numeroCompra'].'</th>
+                    </tr>
+                    <tr>
+                        <th '.$styleTableEnc.'>Compra</th>
+                        <th '.$styleTableEnc.'>Temporada</th>
+                        <th '.$styleTableEnc.'>Proveedor</th>
+                        <th '.$styleTableEnc.'>Cliente</th>
+                        <th '.$styleTableEnc.'>Valor</th>
+                        <th '.$styleTableEnc.'>Usuario</th>
+                      </tr>
+                    <tr>
+                        <td '.$styleTableBody.'>'.$comp["numeroCompra"].'</td>
+                        <td '.$styleTableBody.'>'.$comp["nombreTemporadaCompra"].'</td>
+                        <td '.$styleTableBody.'>'.$comp["nombreProveedorCompra"].'</td>
+                        <td '.$styleTableBody.'>'.$comp["nombreClienteCompra"].'</td>
+                        <td '.$styleTableBodyN.'>'.$comp["valorCompra"].'</td>
+                        <td '.$styleTableBody.'>'.\Session::get("nombreUsuario").'</td>
+                    </tr>
+                </table>';
 
                 Mail::send('emails.contact',$mail,function($msj) use ($mail)
                 {
@@ -360,7 +388,7 @@ class EmbarqueController extends Controller
     public function enviarCorreoPagos($id)
     {
         $pagos = DB::Select('
-            SELECT proformaEmbarqueDetalle, numeroCompra as numeroCompraEmbarqueDetalle, nombreClienteCompra, valorEmbarqueDetalle, facturaEmbarqueDetalle, valorFacturaEmbarqueDetalle, bultoFacturaEmbarqueDetalle, fechaArriboPuertoEstimadaEmbarqueDetalle, compradorVendedorEmbarqueDetalle, nombreProveedorCompra as proveedorTemporadaEmbarqueDetalle, numeroContenedorEmbarqueDetalle, dolarEmbarqueDetalle, pagoEmbarqueDetalle, pagoCorreoEmbarqueDetalle, descripcionEmbarqueDetalle, observacionEmbarqueDetalle, numeroEmbarque, navieraEmbarque, bodegaEmbarque, bodegaCorreoEmbarque, otmEmbarque, otmCorreoEmbarque, valorForwardCompra
+            SELECT proformaEmbarqueDetalle, numeroCompra as numeroCompraEmbarqueDetalle, nombreClienteCompra, valorEmbarqueDetalle, facturaEmbarqueDetalle, valorFacturaEmbarqueDetalle, bultoFacturaEmbarqueDetalle, fechaArriboPuertoEstimadaEmbarqueDetalle, compradorVendedorEmbarqueDetalle, nombreProveedorCompra as proveedorTemporadaEmbarqueDetalle, numeroContenedorEmbarqueDetalle, dolarEmbarqueDetalle, pagoEmbarqueDetalle, pagoCorreoEmbarqueDetalle, descripcionEmbarqueDetalle, observacionEmbarqueDetalle, numeroEmbarque, navieraEmbarque, bodegaEmbarque, bodegaCorreoEmbarque, otmEmbarque, otmCorreoEmbarque, valorForwardCompra, nombreTemporadaCompra as nombreTemporadaEmbarqueDetalle
             FROM embarquedetalle ed
             LEFT JOIN embarque e
             ON ed.Embarque_idEmbarque = e.idEmbarque
@@ -427,10 +455,11 @@ class EmbarqueController extends Controller
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
         <table cellspacing="0" class="table table-striped table-bordered table-hover" style="width:100%;">
             <tr>
-                <th colspan="11" style=" background-color:#255986; color:white;">Embarque: '.$datos[0]['numeroEmbarque'].'</th>
+                <th colspan="12" style=" background-color:#255986; color:white;">Embarque: '.$datos[0]['numeroEmbarque'].'</th>
             </tr>
             <tr>
                 <th '.$styleTableEnc.'>N° Embarque</th>
+                <th '.$styleTableEnc.'>Temporada</th>
                 <th '.$styleTableEnc.'>Proveedor</th>
                 <th '.$styleTableEnc.'>Cliente</th>
                 <th '.$styleTableEnc.'>Factura</th>
@@ -457,6 +486,7 @@ class EmbarqueController extends Controller
                 $mail["mensaje"] .= '
                 <tr>
                     <td '.$styleTableBody.'>'.$datos[$i]["numeroEmbarque"].'</td>
+                    <td '.$styleTableBody.'>'.$datos[$i]["nombreTemporadaEmbarqueDetalle"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["proveedorTemporadaEmbarqueDetalle"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["nombreClienteCompra"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["facturaEmbarqueDetalle"].'</td>

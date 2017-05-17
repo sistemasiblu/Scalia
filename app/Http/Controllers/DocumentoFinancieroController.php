@@ -145,6 +145,8 @@ class DocumentoFinancieroController extends Controller
                 $total += $documento['valorPagoDocumentoFinancieroDetalle'];
             }
 
+            $listaf = \App\ListaFinanciacion::find($request['ListaFinanciacion_idListaFinanciacion']);
+
             if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
             {
                 actualizarCartera('descarga','documentofinanciero', '', $id, $request['fechaNegociacionDocumentoFinanciero'], $total);
@@ -154,11 +156,9 @@ class DocumentoFinancieroController extends Controller
             $documentofinanciero->fill($request->all());
             $documentofinanciero->save();
 
-            $listaf = \App\ListaFinanciacion::find($request['ListaFinanciacion_idListaFinanciacion']);
-
             if ($listaf->tipoListaFinanciacion != 'RecursoPropio') 
             {
-                actualizarCartera('carga','documentofinanciero','', $documentofinanciero->idDocumentoFinanciero, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
+                actualizarCartera('carga','documentofinanciero','', $id, $request['fechaNegociacionDocumentoFinanciero'], $request['totalProgramadoDocumentoFinanciero']);
             }
 
             $idsEliminar = explode(',', $request['eliminarDocumentoFinanciero']);

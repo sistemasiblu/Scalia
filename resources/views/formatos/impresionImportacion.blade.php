@@ -49,6 +49,7 @@ function base64($archivo)
   	$totalValorFaltante = 0;
 	$totalCantidadGeneral = 0;
 	$totalCantidadFaltante = 0;
+	$totalReportadoGeneral = 0;
 	$totalVolumenGeneral = 0;
 	$total = count($datos);
 	
@@ -57,14 +58,14 @@ function base64($archivo)
 		$documento = $datos[$s]["nombreDocumentoImportacion"];
 	  	echo '
 	  	<tr>
-			<th colspan="21" style=" background-color:#255986; color:white;">Compras '.$datos[$s]['nombreDocumentoImportacion'].'</th>
+			<th colspan="24" style=" background-color:#255986; color:white;">Compras '.$datos[$s]['nombreDocumentoImportacion'].'</th>
 		</tr>';
 
 	  while ($s < $total and $documento == $datos[$s]["nombreDocumentoImportacion"])
 		{
 			echo '
 			<tr>
-				<th colspan="21" style=" background-color:#255986; color:white;">Cliente: '.$datos[$s]['nombreClienteCompra'].'</th>
+				<th colspan="24" style=" background-color:#255986; color:white;">Cliente: '.$datos[$s]['nombreClienteCompra'].'</th>
 			</tr>';
 
 			$cliente = $datos[$s]['nombreClienteCompra'];
@@ -72,6 +73,7 @@ function base64($archivo)
 			$valorFaltante = 0;
 			$cantidadCliente = 0;
 			$cantidadFaltante = 0;
+			$reportadoCliente = 0;
 			$volumenCliente = 0;
 
 			echo '
@@ -84,6 +86,8 @@ function base64($archivo)
 				<td><b>Valor embarcado</b></td>
 				<td><b>Unidades embarcadas</b></td>
 				<td><b>Reportado a pago</b></td>
+				<td><b>Valor reportado a pago</b></td>
+				<td><b>Forward</b></td>
 				<td><b>Puerto embarque</b></td>
 				<td><b>Volumen</b></td>
 				<td><b>Delivery</b></td>
@@ -97,6 +101,7 @@ function base64($archivo)
 				<td><b>Fecha maxima despacho</b></td>
 				<td><b>Fecha maxima embarque</b></td>
 				<td><b>Fecha de Ingreso a bodega</b></td>
+				<td><b>Estado de compra</b></td>
 			<tr>';
 
 			while ($s < $total and $documento == $datos[$s]["nombreDocumentoImportacion"] and $cliente == $datos[$s]['nombreClienteCompra']) 
@@ -135,10 +140,12 @@ function base64($archivo)
 						'<td style="text-align:right;">'.number_format($datos[$s]['valorFaltante'],2,".",",").'</td>
 						<td style="text-align:right;">'.number_format($datos[$s]['cantidadFaltante'],2,".",",").'</td>
 						<td>'.$datos[$s]['pagoEmbarqueDetalle'].'</td>
+						<td>'.$datos[$s]['valorFacturaEmbarqueDetallePagada'].'</td>
+						<td>'.$datos[$s]['idForward'].'</td>
 						<td>'.$datos[$s]['nombreCiudadCompra'].'</td>
 						<td style="text-align:right;">'.number_format($datos[$s]['volumenCompra'],2,".",",").'</td>
 						<td>'.$datos[$s]['fechaDeliveryCompra'].'</td>
-						<td>'.$datos[$s]['fechaForwardCompra'].'</td>
+						<td>'.$datos[$s]['fechaVencimientoForward'].'</td>
 						<td>'.$datos[$s]['tiempoBodegaCompra'].'</td>
 						<td>'.$datos[$s]['diaPagoClienteCompra'].'</td>
 						<td>'.$datos[$s]['fechaReservaEmbarqueDetalle'].'</td>
@@ -148,10 +155,12 @@ function base64($archivo)
 						<td>'.$datos[$s]['fechaMaximaCliente'].'</td>
 						<td>'.$datos[$s]['fechaMaximaEmbarqueCumplirForward'].'</td>
 						<td>'.$datos[$s]['fechaLlegadaZonaFrancaEmbarqueDetalle'].'</td>
+						<td>'.$datos[$s]['estadoCompra'].'</td>
 					</tr>';
 
 					$valorFaltante += $datos[$s]['valorFaltante'];
 					$cantidadFaltante += $datos[$s]['cantidadFaltante'];
+					$reportadoCliente += $datos[$s]['valorFacturaEmbarqueDetallePagada'];
 					$volumenCliente += $datos[$s]['volumenCompra'];
 
 					$rowspan++;
@@ -167,6 +176,7 @@ function base64($archivo)
 			$totalValorFaltante += $valorFaltante;
 			$totalCantidadGeneral += $cantidadCliente;
 			$totalCantidadFaltante += $cantidadFaltante;
+  			$totalReportadoGeneral += $reportadoCliente;
   			$totalVolumenGeneral += $volumenCliente;
 
 			echo '
@@ -176,9 +186,11 @@ function base64($archivo)
 				<th style="text-align:right;" colspan="1">'.number_format($cantidadCliente,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($valorFaltante,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($cantidadFaltante,2,".",",").'</th>
+				<th colspan="1"></th>
+				<th style="text-align:right;" colspan="1">'.number_format($reportadoCliente,2,".",",").'</th>
 				<th colspan="2"></th>
 				<th style="text-align:right;" colspan="1">'.number_format($volumenCliente,2,".",",").'</th>
-				<th colspan="11"></th>
+				<th colspan="12"></th>
 			</tr>';
 		}
 	}	  
@@ -189,9 +201,11 @@ function base64($archivo)
 				<th style="text-align:right;" colspan="1">'.number_format($totalCantidadGeneral,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($totalValorFaltante,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($totalCantidadFaltante,2,".",",").'</th>
+				<th colspan="1"></th>
+				<th style="text-align:right;" colspan="1">'.number_format($totalReportadoGeneral,2,".",",").'</th>
 				<th colspan="2"></th>
 				<th style="text-align:right;" colspan="1">'.number_format($totalVolumenGeneral,2,".",",").'</th>
-				<th colspan="11"></th>
+				<th colspan="12"></th>
 			</tr>
 </table>';
 

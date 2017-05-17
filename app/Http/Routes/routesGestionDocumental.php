@@ -11,6 +11,12 @@
 |
 */
 
+/**********************************Rutas sin controlador*********************************/
+
+Route::get('puntolocalizacion', function () {
+    return view('puntolocalizacion');
+});
+
 /**********************************Rutas de las Grids*********************************/
 
 Route::get('datosDependencia', function()
@@ -108,6 +114,16 @@ Route::get('datosMetadatoSelect', function()
     include public_path().'/ajax/datosMetadatoSelect.php';
 });
 
+Route::get('datosTipoSoporteDocumental', function()
+{
+    include public_path().'/ajax/datosTipoSoporteDocumental.php';
+});
+
+Route::get('datosUbicacionDocumento', function()
+{
+    include public_path().'/ajax/datosUbicacionDocumento.php';
+});
+
 /***************************Rutas de los controladores**************************/
 
     Route::resource('sistemainformacion','SistemaInformacionController');
@@ -131,6 +147,8 @@ Route::get('datosMetadatoSelect', function()
     Route::resource('formulario','FormularioController');
     Route::resource('gridFormulario','GridFormularioController');
     Route::resource('consultaradicadofiltro','ConsultaRadicadoFiltroController');
+    Route::resource('tiposoportedocumental','TipoSoporteDocumentalController');
+    Route::resource('ubicaciondocumento','UbicacionDocumentoController');
 
 
 

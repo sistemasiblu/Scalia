@@ -18,6 +18,11 @@ class Dependencia extends Model
 		return $this->hasMany('App\DependenciaPermiso','Dependencia_idDependencia');
 	}
 
+	public function dependenciaLocalizacion() 
+	{
+		return $this->hasMany('App\dependenciaLocalizacion','Dependencia_idDependencia');
+	}
+
 	public function retenciondocumental() 
 	{
 		return $this->hasMany('App\RetencionDocumental','Dependencia_idDependencia');

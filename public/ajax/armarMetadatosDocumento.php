@@ -2,7 +2,7 @@
 
 // INSERTO LOS METADATOS
 //Se recibe por post el id del documento para saber que documento se debe radicar
-$idDocumento = $_POST['Documento_idDocumentoP'];
+$idDocumento = $_POST['idDocumento'];
 //Se realiza una consulta a la tabla documentopropiedad para traer los campos y con ellos realizar el formulario de metadatos en el radicado
 $metadatos = DB::table('documentopropiedad')
 ->leftjoin('documento','documentopropiedad.Documento_idDocumento', "=", 'documento.idDocumento')
@@ -39,7 +39,7 @@ $condicion = ($filtroD['filtroDocumento'] == '' ? '' : $filtroD['filtroDocumento
 
       $divpropiedades .= '<div id="metadatos">
                         <div class="form-group" id="test">
-                            <label id="'.$nombremetadato["idDocumentoPropiedad"].'_lbl" class= "col-sm-2 control-label">'.$nombremetadato["tituloMetadato"].'</label>
+                            <label id="'.$nombremetadato["idDocumentoPropiedad"].'_lbl" class= "col-sm-3 control-label">'.$nombremetadato["tituloMetadato"].'</label>
                             <div class="col-sm-10">
                               <div class="input-group">
                                 <span '.$style.' class="input-group-addon">

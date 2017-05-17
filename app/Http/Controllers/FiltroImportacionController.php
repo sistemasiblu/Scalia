@@ -52,8 +52,13 @@ class FiltroImportacionController extends Controller
             ORDER BY nombreCiudadCompra");
         $puerto = $this->convertirArray($puerto);
 
+        $documento = DB::Select(
+            "SELECT nombreDocumentoImportacion as nombre, idDocumentoImportacion as id
+            FROM documentoimportacion");
+        $documento = $this->convertirArray($documento);
+
         return view('filtroimportacion', 
-            compact( 'temporada', 'compra', 'cliente', 'proveedor', 'puerto'));    
+            compact( 'temporada', 'compra', 'cliente', 'proveedor', 'puerto', 'documento'));    
     }    
 
     function convertirArray($dato)
@@ -92,7 +97,7 @@ class FiltroImportacionController extends Controller
                 nombreCiudadCompra,
                 volumenCompra,
                 fechaDeliveryCompra,
-                fechaForwardCompra,
+                fechaVencimientoForward,
                 tiempoBodegaCompra,
                 diaPagoClienteCompra,
                 fechaReservaEmbarqueDetalle,
@@ -100,15 +105,18 @@ class FiltroImportacionController extends Controller
                 fechaArriboPuertoEstimadaEmbarqueDetalle,
                 diasCiudadTipoTransporte,
                 fechaLlegadaZonaFrancaEmbarqueDetalle,
-                (((fechaForwardCompra - INTERVAL diasCiudadTipoTransporte DAY) - INTERVAL tiempoBodegaCompra DAY) - INTERVAL IFNULL(diasFormaPago, 0) DAY) AS fechaMaximaCliente,
+                (((fechaVencimientoForward - INTERVAL diasCiudadTipoTransporte DAY) - INTERVAL tiempoBodegaCompra DAY) - INTERVAL IFNULL(diasFormaPago, 0) DAY) AS fechaMaximaCliente,
                 (((fechaRealEmbarque - INTERVAL tiempoBodegaCompra DAY) - INTERVAL diaPagoClienteCompra DAY) - INTERVAL diasCiudadTipoTransporte DAY) AS fechaMaximaEmbarqueCumplirForward,
-                Temporada_idTemporada,
+                comp.Temporada_idTemporada,
                 Tercero_idCliente,
                 Tercero_idProveedor,
                 Ciudad_idPuerto,
                 fechaCompra,
                 nombreDocumentoImportacion,
-                IF(pagoEmbarqueDetalle = 1, "SI", "") AS pagoEmbarqueDetalle
+                IF(pagoEmbarqueDetalle = 1, "SI", "") AS pagoEmbarqueDetalle,
+                IF(pagoEmbarqueDetalle = 1, valorFacturaEmbarqueDetalle, "") AS valorFacturaEmbarqueDetallePagada,
+                IF(idForward IS NULL, "", "SI") as idForward,
+                estadoCompra
             FROM
                 (SELECT 
                         idCompra,
@@ -121,7 +129,6 @@ class FiltroImportacionController extends Controller
                         nombreCiudadCompra,
                         volumenCompra,
                         fechaDeliveryCompra,
-                        fechaForwardCompra,
                         tiempoBodegaCompra,
                         diaPagoClienteCompra,
                         Temporada_idTemporada,
@@ -130,7 +137,8 @@ class FiltroImportacionController extends Controller
                         Ciudad_idPuerto,
                         fechaCompra,
                         nombreDocumentoImportacion,
-                        formaPagoClienteCompra
+                        formaPagoClienteCompra,
+                        estadoCompra
                 FROM
                     (SELECT 
                     numeroVersionCompra,
@@ -144,7 +152,6 @@ class FiltroImportacionController extends Controller
                         nombreCiudadCompra,
                         volumenCompra,
                         fechaDeliveryCompra,
-                        fechaForwardCompra,
                         tiempoBodegaCompra,
                         diaPagoClienteCompra,
                         Temporada_idTemporada,
@@ -153,7 +160,8 @@ class FiltroImportacionController extends Controller
                         Ciudad_idPuerto,
                         fechaCompra,
                         nombreDocumentoImportacion,
-                        formaPagoClienteCompra
+                        formaPagoClienteCompra,
+                        estadoCompra
                 FROM
                     compra c
                 LEFT JOIN documentoimportacion di ON di.idDocumentoImportacion = c.DocumentoImportacion_idDocumentoImportacion
@@ -164,6 +172,10 @@ class FiltroImportacionController extends Controller
                 embarquedetalle ed ON comp.idCompra = ed.Compra_idCompra
                     LEFT JOIN
                 embarque e ON e.idEmbarque = ed.Embarque_idEmbarque
+                    LEFT JOIN
+                forwarddetalle fd ON comp.idCompra = fd.Compra_idCompra
+                    LEFT JOIN
+                forward f ON fd.Forward_idForward = f.idForward
                     LEFT JOIN
                 Iblu.CiudadTipoTransporte ctt ON ctt.Ciudad_idCiudad = e.Ciudad_idPuerto_Carga
                     LEFT JOIN
