@@ -241,7 +241,7 @@ echo '
 {!!Form::hidden('tipoRadicadoVersion', 0, array('id' => 'tipoRadicadoVersion'))!!} 
 
 <!-- Modal de radicado -->
-  <div id="myModalRadicado" class="modalDialog">
+  <div id="myModalRadicado" class="modalDialog" style="display:none;">
     <div id="modal-dialog">
     <div class="modal-header">
       <a href="#close" title="Cerrar" class="close">X</a>

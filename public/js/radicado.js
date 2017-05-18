@@ -17,7 +17,7 @@ function asignarIdSubSerie(idSubSerie)
 function radicar(file, idDrop)
 {
     // $('#openModal').modal('show');
-    // $('#myModalRadicado').css('display','block');
+    $('#myModalRadicado').css('display','block');
 
     idDocumento = idDrop.substring(idDrop.indexOf("_")+1); //Le quito el nombre hasta el guion bajo para que me quede solo el numero (id)
     $("#Documento_idDocumento").val(idDocumento);
@@ -189,7 +189,7 @@ function guardarDatos(){
                 ubicacion = $("#ubicacionEstanteRadicado").val();
                 $(formId)[0].reset();
                 alert(result);
-                $("#myModalRadicado").modal("hide");
+                $('#myModalRadicado').css('display','none');
                 // imprimirRadicado(result, ubicacion);
             },
             error: function(){

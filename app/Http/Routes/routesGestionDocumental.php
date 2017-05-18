@@ -290,6 +290,11 @@ Route::post('consultarCamposMetadatoDocumento', function()
     include public_path().'/ajax/consultarCamposMetadatoDocumento.php';
 });
 
+Route::post('cargarEstanteDependencia', function()
+{
+    include public_path().'/ajax/cargarEstanteDependencia.php';
+});
+
 
 //********************RUTAS DEL MISMO CONTROLADOR**********************
 Route::get('dropzone','RadicadoController@indexdropzone');
