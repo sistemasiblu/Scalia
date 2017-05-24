@@ -18,6 +18,8 @@ function radicar(file, idDrop)
 {
     // $('#openModal').modal('show');
     $('#myModalRadicado').css('display','block');
+    // var modal = document.getElementById('mymodal');
+    // modal.style.display = "block";  
 
     idDocumento = idDrop.substring(idDrop.indexOf("_")+1); //Le quito el nombre hasta el guion bajo para que me quede solo el numero (id)
     $("#Documento_idDocumento").val(idDocumento);
@@ -58,6 +60,12 @@ function radicar(file, idDrop)
                 alert("Error");
             }
         });
+}
+
+function cerrarModal()
+{
+    var modal = document.getElementById('myModalRadicado');
+    modal.style.display = "none";   
 }
 
 function PreviewImage(archivo) 

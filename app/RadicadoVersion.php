@@ -9,7 +9,7 @@ class RadicadoVersion extends Model
 	protected $table ='radicadoversion';
 	protected $primaryKey = 'idRadicadoVersion';
 	
-	protected $fillable = ['Radicado_idRadicado','fechaRadicado','numeroRadicadoVersion','tipoRadicadoVersion',
+	protected $fillable = ['Radicado_idRadicado','fechaRadicadoVersion','numeroRadicadoVersion','tipoRadicadoVersion',
 	'archivoRadicadoVersion'];
 
 	public $timestamps = false;

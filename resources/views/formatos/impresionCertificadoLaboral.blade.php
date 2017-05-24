@@ -105,6 +105,7 @@ function base64($archivo)
 
 
 
+    <img src="http://'.$_SERVER["HTTP_HOST"].'/imagenes/kiosko/Firma_Milena.png" style="width:40%;"><br>
     ________________________________<br>
     <b>MILENA M. VILLAMIZAR REYES</b><br>
     Directora Gestión Humana';

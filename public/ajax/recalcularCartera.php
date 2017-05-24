@@ -55,7 +55,7 @@ include public_path().'/ajax/actualizarCartera.php';
     #Consulto los documentos financieros del mes actual
     $documentos = DB::Select(
         'SELECT
-    idDocumentoFinanciero, fechaNegociacionDocumentoFinanciero, SUM(valorPagoDocumentoFinancieroDetalle) AS valorTotalDocumentoFinanciero
+    idDocumentoFinanciero, fechaNegociacionDocumentoFinanciero, IFNULL(SUM(valorPagoDocumentoFinancieroDetalle) , 0) AS valorTotalDocumentoFinanciero
         FROM
             documentofinanciero df
         LEFT JOIN documentofinancierodetalle dfd ON df.idDocumentoFinanciero = dfd.DocumentoFinanciero_idDocumentoFinanciero

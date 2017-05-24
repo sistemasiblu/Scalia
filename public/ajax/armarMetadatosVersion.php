@@ -88,13 +88,13 @@ $estructura .=
 
 
 <div class="form-group col-md-4 form-inline" id="test">
-  <label id="fechaRadicado" class= "col-sm-3 control-label">Fecha</label>
+  <label id="fechaRadicadoVersion" class= "col-sm-3 control-label">Fecha</label>
     <div class="col-sm-12">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="fa fa-calendar "></i>
         </span>
-        <input id="V_fechaRadicado" readonly name="V_fechaRadicado" class="form-control" type="text" value="'.$fechahoy.'">
+        <input id="V_fechaRadicadoVersion" readonly name="V_fechaRadicadoVersion" class="form-control" type="text" value="'.$fechahoy.'">
       </div>
     </div>
 </div>

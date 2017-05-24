@@ -26,7 +26,7 @@
           <span class="input-group-addon">
             <i class="fa fa-bars"></i>
           </span>
-          {!! Form::select('tipoUbicacionDocumento', ['historiaslaborales' => 'Historias Laborales','otros' => 'Otros'],null,['class' => 'form-control', 'onchange' => 'mostrarCamposTipoUbicacion(this.value)', 'placeholder' => 'Seleccione el tipo', 'required' => 'required']) !!}
+          {!! Form::select('tipoUbicacionDocumento', ['Historias' => 'Historias','otros' => 'Otros'],null,['class' => 'form-control', 'onchange' => 'mostrarCamposTipoUbicacion(this.value)', 'placeholder' => 'Seleccione el tipo', 'required' => 'required']) !!}
           {!!Form::hidden('idUbicacionDocumento', null, array('id' => 'idUbicacionDocumento')) !!}
           {!!Form::hidden('DependenciaLocalizacion_idDependenciaLocalizacion', null, array('id' => 'DependenciaLocalizacion_idDependenciaLocalizacion')) !!}
         </div>
@@ -162,6 +162,18 @@
             <i class="fa fa-bank"></i>
           </span>
           {!!Form::select('Compania_idCompania',$compania, (isset($ubicaciondocumento) ? $ubicaciondocumento->Compania_idCompania : 0),["class" => "select form-control","placeholder" =>"Seleccione la compañía", 'required' => 'required'])!!}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" id='test'>
+      {!!Form::label('estadoUbicacionDocumento', 'Estado', array('class' => 'col-sm-2 control-label')) !!}
+      <div class="col-sm-10">
+        <div class="input-group">
+          <span class="input-group-addon">
+            <i class="fa fa-bars"></i>
+          </span>
+          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Averiada' => 'Averiada'],null,['class' => 'form-control', 'onchange' => 'mostrarCamposTipoUbicacion(this.value)', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
         </div>
       </div>
     </div>

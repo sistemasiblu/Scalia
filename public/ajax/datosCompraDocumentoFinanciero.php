@@ -1,7 +1,7 @@
 <?php 
 
     $consulta = DB::Select("
-        SELECT idCompra, numeroCompra, nombreProveedorCompra, valorCompra, facturaEmbarqueDetalle, saldoFinalCarteraForward
+        SELECT idCompra, numeroCompra, nombreProveedorCompra, valorCompra, facturaEmbarqueDetalle, IFNULL(valorFacturaEmbarqueDetalle, valorCompra) as valorProgramado
         FROM
             (SELECT 
                 idCompra, numeroCompra, nombreProveedorCompra, valorCompra
@@ -22,7 +22,7 @@
         Iblu.Periodo P ON cartf.Periodo_idPeriodo = P.idPeriodo
         LEFT JOIN embarquedetalle ed ON c.idCompra = ed.Compra_idCompra
         WHERE saldoInicialCarteraForward > 0
-        GROUP BY numeroCompra");
+        GROUP BY numeroCompra, facturaEmbarqueDetalle");
 
     $row = array();
 
@@ -34,7 +34,7 @@
         $row[$key][] = $value['nombreProveedorCompra']; 
         $row[$key][] = $value['facturaEmbarqueDetalle'];   
         $row[$key][] = $value['valorCompra']; 
-        $row[$key][] = $value['saldoFinalCarteraForward']; 
+        $row[$key][] = $value['valorProgramado']; 
         $row[$key][] = $value['idCompra']; 
     }
 

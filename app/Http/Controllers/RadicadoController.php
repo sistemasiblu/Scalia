@@ -224,7 +224,7 @@ class RadicadoController extends Controller
             //Guardo en documentoversion sus respectivos campos         
             \App\RadicadoVersion::create([
             'Radicado_idRadicado' => $radicado->idRadicado,
-            'fechaRadicado' => $request['fechaRadicado'],
+            'fechaRadicadoVersion' => $request['fechaRadicadoVersion'],
             'numeroRadicadoVersion' => $request['numeroRadicadoVersion'],
             'tipoRadicadoVersion' => $request['tipoRadicadoVersion'],
             'archivoRadicadoVersion' => $destinationPath
@@ -472,7 +472,7 @@ class RadicadoController extends Controller
         //Guardo en documentoversion sus respectivos campos         
         \App\RadicadoVersion::create([
         'Radicado_idRadicado' => $request['V_Radicado_idRadicado'],
-        'fechaRadicado' => $request['V_fechaRadicado'],
+        'fechaRadicadoVersion' => $request['V_fechaRadicadoVersion'],
         'numeroRadicadoVersion' => $request['numeroVersionGuardar'],
         'tipoRadicadoVersion' => $request['tipoVersion'],
         'archivoRadicadoVersion' => $destinationPath
@@ -618,7 +618,7 @@ class RadicadoController extends Controller
 
             $data= array(
                 'Radicado_idRadicado' => $radicado->idRadicado,
-                'fechaRadicado' => $request['fechaRadicado'],
+                'fechaRadicadoVersion' => $request['fechaRadicadoVersion'],
                 'numeroRadicadoVersion' => $request['numeroRadicadoVersionConsulta'],
                 'tipoRadicadoVersion' => $request['tipoRadicadoVersioConsulta'],
                 'archivoRadicadoVersion' => $destinationPath);
@@ -688,7 +688,7 @@ class RadicadoController extends Controller
             $numeroVersion = ($request['versionInicialFormulario'] == '') ? '1.0' : $request['versionInicialFormulario'];
             \App\RadicadoVersion::create([
             'Radicado_idRadicado' => $radicado->idRadicado,
-            'fechaRadicado' => $request['fechaFormulario'],
+            'fechaRadicadoVersion' => $request['fechaFormulario'],
             'numeroRadicadoVersion' => $numeroVersion,
             'tipoRadicadoVersion' => $request['tipoVersionFormulario'],
             'archivoRadicadoVersion' => ''
@@ -760,7 +760,7 @@ class RadicadoController extends Controller
 
             $data= array(
                 'Radicado_idRadicado' => $request['F_Radicado_idRadicado'],
-                'fechaRadicado' => $request['fechaFormularioA'],
+                'fechaRadicadoVersion' => $request['fechaFormularioA'],
                 'numeroRadicadoVersion' => $request['versionMaximaFormulario'],
                 'tipoRadicadoVersion' => $request['F_tipoRadicadoVersioFormulario'],
                 'archivoRadicadoVersion' => '');
@@ -825,7 +825,7 @@ class RadicadoController extends Controller
             //Guardo en documentoversion sus respectivos campos         
             \App\RadicadoVersion::create([
             'Radicado_idRadicado' => $request['FNV_Radicado_idRadicado'],
-            'fechaRadicado' => $request['FNV_Fecha'],
+            'fechaRadicadoVersion' => $request['FNV_Fecha'],
             'numeroRadicadoVersion' => $request['numeroVersionFormulario'],
             'tipoRadicadoVersion' => $request['FNV_tipoVersion'],
             'archivoRadicadoVersion' => ''

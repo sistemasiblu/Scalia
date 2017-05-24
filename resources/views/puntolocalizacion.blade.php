@@ -52,8 +52,6 @@
     </div>
   </div>
 
-  
-
   <div class="container-fluid" style="margin-top:10px;">
     <div id="botones">
     </div>
@@ -71,8 +69,26 @@
     </div>                
   </div>
 
-  </fieldset>
+</fieldset>
 
   {!! Form::close() !!}
 </div>
 @stop
+<!-- Modal PL -->
+<div id="myModalUbicacion" class="modal fade" role="dialog">
+  <div class="modal-dialog" style="width:80%;">
+
+    <!-- Modal content-->
+    <div style="" class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ubicación del documento</h4>
+      </div>
+      <div id="bodyUbicacion" class="modal-body">
+        <?php 
+          // echo '<iframe style="width:100%; height:510px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/ubicaciondocumentomodal?tipo=categoriaagenda"></iframe>'
+        ?>
+      </div>
+    </div>
+  </div>
+</div>   

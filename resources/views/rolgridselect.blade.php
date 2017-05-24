@@ -154,7 +154,7 @@
         for (var i = 0; i < datos.length; i++) 
         {
             var valores = new Array(datos[i][0],datos[i][2],0,1,1,1,1,1);
-            window.parent.permisos.agregarCampos(valores,'A');  
+            window.parent.protRol.agregarCampos(valores,'A');  
         }
 
         window.parent.$("#myModalRol").modal("hide");

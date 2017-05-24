@@ -5,16 +5,17 @@ $numeroEstante = $_POST['numeroEstante'];
 
 $localizacion = DB::Select('
   SELECT 
-    idDependencia, nombreDependencia, dl.*
+    idDependencia, nombreDependencia, capacidadDependenciaLocalizacion, posicionUbicacionDocumento, estadoUbicacionDocumento, idUbicacionDocumento, dl.*
 FROM
     dependencialocalizacion dl
         LEFT JOIN
     dependencia d ON dl.Dependencia_idDependencia = d.idDependencia
+      LEFT JOIN
+    ubicaciondocumento ud ON dl.idDependenciaLocalizacion = ud.DependenciaLocalizacion_idDependenciaLocalizacion
 WHERE idDependencia = '.$idDependencia.'
 AND numeroEstanteDependenciaLocalizacion = '.$numeroEstante.'
-ORDER BY nombreDependencia , numeroEstanteDependenciaLocalizacion , numeroNivelDependenciaLocalizacion DESC , numeroSeccionDependenciaLocalizacion
+ORDER BY nombreDependencia , numeroEstanteDependenciaLocalizacion , numeroNivelDependenciaLocalizacion DESC , numeroSeccionDependenciaLocalizacion, posicionUbicacionDocumento
 ');
-
 
 $clocalizacion = array();
 // por facilidad de manejo convierto el stdclass a tipo array con un cast (array)
@@ -55,7 +56,7 @@ for ($i=0; $i < count($estante); $i++)
 
           $estructura .= "<table class='table table-bordered' style='width:100%;font-size: 12px;padding: 3px 10px;'>
                             <tr>
-                              <td style='background-color: #F2F2F2;vertical-align: inherit;'>
+                              <td style='width:10%;background-color: #F2F2F2;vertical-align: inherit;'>
                                 <center><b>Estante ".strtoupper($clocalizacion[$i]["numeroEstanteDependenciaLocalizacion"])."</b></center>
                               </td>
                             </tr>";
@@ -66,30 +67,76 @@ for ($i=0; $i < count($estante); $i++)
               $nivel = $clocalizacion[$i]['numeroNivelDependenciaLocalizacion'];
 
               $estructura .= "<tr>
-                                <td style='width:60px;vertical-align: inherit;background-color: #F2F2F2;'>
+                                <td style='width:10%;vertical-align: inherit;background-color: #F2F2F2;'>
                                     <center><b>Nivel ".$clocalizacion[$i]["numeroNivelDependenciaLocalizacion"]."</b></center>
                                 </td>";
 
                 while ($i < $total and $dependencia == $clocalizacion[$i]['idDependencia'] and $estante == $clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'] and $nivel == $clocalizacion[$i]['numeroNivelDependenciaLocalizacion']) 
                 {
 
-                  if ($clocalizacion[$i]['estadoDependenciaLocalizacion'] == 'Inactivo') 
-                  {
-                      $estructura .= "<td style='vertical-align: inherit; border:1px solid; background-color:#C0C0C0'>
-                                      &nbsp;
-                                      </td>";                    
-                  }
-                  else
-                  {
-                      $estructura .= "<td style='vertical-align: inherit; border:1px solid;'>
-                                    <div id=".$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion']." onclick='ConsultarInformacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].");' style='cursor:pointer; heigth:100%;'>
-                                        Seccion ".$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion']."
-                                    </div>
-                                    <input type='hidden' value='".$clocalizacion[$i]['idDependenciaLocalizacion']."'>
-                                  </td>";
-                  }
+                    $seccion = $clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'];
+                    $registros = 1;
 
-                  $i++;
+                      $estructura .= "
+                        <td style='width:10%; height:1px; padding:0; border:1px solid;'>";
+
+                        if ($clocalizacion[$i]['estadoDependenciaLocalizacion'] == 'Inactivo') 
+                        {
+                          $estructura .= "
+                            <div style='background-color:#C0C0C0; display:inline-block; height:100%; width:100%; position:relative;'>
+                              <center>INACTIVO</center>";
+                        }
+                        else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'Disponible')
+                        {
+                          $estructura .= "
+                            <div title='Ubicaciones disponibles' style='background-color:#81F79F; display:inline-block; cursor:pointer; height:100%; width:100%' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].',0,event'.");'>
+                                <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
+                        }
+                        else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'NoDisponible')
+                        {
+                          $estructura .= "
+                            <div title='Caja cerrada' style='background-color:#F5D0A9; display:inline-block; height:100%; width:100%'>
+                              <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
+                        }
+
+                          $ubicacion = DB::Select('
+                            SELECT 
+                              count(idUbicacionDocumento) as registrosUbicacionDocumento
+                            FROM 
+                              ubicaciondocumento 
+                            WHERE 
+                              DependenciaLocalizacion_idDependenciaLocalizacion = '.$clocalizacion[$i]['idDependenciaLocalizacion'].'
+                            GROUP BY DependenciaLocalizacion_idDependenciaLocalizacion');
+
+                          if (count($ubicacion) > 0) 
+                          {
+                            $registros = get_object_vars($ubicacion[0])['registrosUbicacionDocumento'];
+                          }
+
+                          if ($registros > 4)
+                            $ancho = (100/$registros)-2;
+                          else
+                            $ancho = 20;
+
+                    while ($i < $total and $dependencia == $clocalizacion[$i]['idDependencia'] and $estante == $clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'] and $nivel == $clocalizacion[$i]['numeroNivelDependenciaLocalizacion'] and $seccion == $clocalizacion[$i]['numeroSeccionDependenciaLocalizacion']) 
+                    {     
+                        $color = ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Activa') ? '#F78181' : '#F3E2A9';
+
+                        if ($clocalizacion[$i]['posicionUbicacionDocumento'] != '') 
+                        {
+                                $estructura .="
+                                <div style='background-color:".$color."; display:inline-block; cursor:pointer; height:100%; width:".$ancho."%' title='Ubicación ".$clocalizacion[$i]['posicionUbicacionDocumento']." ocupada' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event'.");'>
+                                    ".$clocalizacion[$i]['posicionUbicacionDocumento']."
+                                </div>";
+                        }
+
+                        $i++;
+                    }
+
+                    
+                    $estructura .= "  </div>
+                                    </td>";
+
                 }
 
               $estructura .= "</tr>";

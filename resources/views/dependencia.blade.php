@@ -45,7 +45,7 @@ for($i = 0; $i < count($datos); $i++)
 
     var resultado = [valorResultado,nombreResultado];
 
-    var valorExamenMedico = [0,'','',''];
+    var valorRol = [0,'','',''];
 
     $(document).ready(function(){
 
@@ -55,10 +55,10 @@ for($i = 0; $i < count($datos); $i++)
       protRol.campoid = 'idDependenciaPermiso';
       protRol.campoEliminacion = 'eliminarDependenciaPermiso';
 
-      protRol.campos   = ['idDependenciaPermiso', 'Rol_idRol', 'nombreRolPermiso'];
+      protRol.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idDependenciaPermiso'];
       protRol.etiqueta = ['input', 'input', 'input'];
-      protRol.tipo     = ['hidden', 'hidden', 'text'];
-      protRol.estilo   = ['', '' ,'width: 900px;height:35px;'];
+      protRol.tipo     = ['hidden', 'text', 'hidden'];
+      protRol.estilo   = ['', 'width: 900px;height:35px;' ,''];
       protRol.clase    = ['','', '', ''];
       protRol.sololectura = [true,true,true];
       for(var j=0, k = dependenciapermisos.length; j < k; j++)
@@ -356,7 +356,7 @@ for($i = 0; $i < count($datos); $i++)
 @stop
 
 
-<div id="ModalRoles" class="modal fade" role="dialog">
+<div id="myModalRol" class="modal fade" role="dialog">
   <div class="modal-dialog" style="width:100%;">
 
     <!-- Modal content-->

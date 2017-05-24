@@ -40,7 +40,7 @@ $metadatos = DB::table('radicadodocumentopropiedad')
 //Consulto el codigo y la fecha del radicado 
 $encabezado = DB::table('radicado')
 ->leftjoin('radicadoversion','radicadoversion.Radicado_idRadicado', "=", "radicado.idRadicado")
-->select(DB::raw('codigoRadicado, fechaRadicado'))
+->select(DB::raw('codigoRadicado, fechaRadicadoVersion'))
 ->where('idRadicado', "=", $idRadicado)
 ->where('numeroRadicadoVersion', "=", $versionmaxima)
 ->get();
@@ -83,13 +83,13 @@ $estructura .= //Este es el codigo del radicado
 
 
 <div class="form-group col-md-4 form-inline" id="test">
-  <label id="fechaRadicado" class= "col-sm-3 control-label">Fecha</label>
+  <label id="fechaRadicadoVersion" class= "col-sm-3 control-label">Fecha</label>
     <div class="col-sm-12">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="fa fa-calendar "></i>
         </span>
-        <input id="fechaRadicado" readonly name="fechaRadicado" class="form-control" type="text" value="'.$encabezadoRadicado["fechaRadicado"].'">
+        <input id="fechaRadicadoVersion" readonly name="fechaRadicadoVersion" class="form-control" type="text" value="'.$encabezadoRadicado["fechaRadicadoVersion"].'">
       </div>
     </div>
 </div>

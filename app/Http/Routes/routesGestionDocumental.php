@@ -295,6 +295,21 @@ Route::post('cargarEstanteDependencia', function()
     include public_path().'/ajax/cargarEstanteDependencia.php';
 });
 
+Route::post('cerrarCapacidadDependencia', function()
+{
+    include public_path().'/ajax/cerrarCapacidadDependencia.php';
+});
+
+Route::post('llenarCamposUbicacion', function()
+{
+    include public_path().'/ajax/llenarCamposUbicacion.php';
+});
+
+Route::post('asignarPLRadicado', function()
+{
+    include public_path().'/ajax/asignarPLRadicado.php';
+});
+
 
 //********************RUTAS DEL MISMO CONTROLADOR**********************
 Route::get('dropzone','RadicadoController@indexdropzone');
@@ -320,3 +335,7 @@ Route::get('documentoselect','DocumentoController@indexDocumentoGrid');
 Route::get('companiaselect','CompaniaController@indexCompaniaGrid');
 
 Route::get('metadatoselect','MetadatoController@indexMetadatoGrid');
+
+Route::get('ubicaciondocumentomodal','UbicacionDocumentoController@indexModal');
+
+Route::get('eliminarUbicacion/delete/{id}', 'UbicacionDocumentoController@destroy');

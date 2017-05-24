@@ -9,7 +9,7 @@ class DependenciaLocalizacion extends Model
 	protected $table ='dependencialocalizacion';
 	protected $primaryKey = 'idDependenciaLocalizacion';
 	
-	protected $fillable = ['Dependencia_idDependencia', 'numeroEstanteDependenciaLocalizacion', 'numeroNivelDependenciaLocalizacion', 'numeroSeccionDependenciaLocalizacion', 'codigoDependenciaLocalizacion', 'descripcionDependenciaLocalizacion', 'estadoDependenciaLocalizacion'];
+	protected $fillable = ['Dependencia_idDependencia', 'numeroEstanteDependenciaLocalizacion', 'numeroNivelDependenciaLocalizacion', 'numeroSeccionDependenciaLocalizacion', 'codigoDependenciaLocalizacion', 'descripcionDependenciaLocalizacion', 'estadoDependenciaLocalizacion', 'capacidadDependenciaLocalizacion'];
 
 	public $timestamps = false;	
 

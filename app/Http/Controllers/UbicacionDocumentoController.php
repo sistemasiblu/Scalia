@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Response;
+use Validator;
 
 class UbicacionDocumentoController extends Controller
 {
@@ -19,6 +21,14 @@ class UbicacionDocumentoController extends Controller
         return view('ubicaciondocumentogrid');
     }
 
+    public function indexModal()
+    {
+        $tiposoporte = \App\TipoSoporteDocumental::All()->lists('nombreTipoSoporteDocumental','idTipoSoporteDocumental');
+        $compania = \App\Compania::All()->lists('nombreCompania','idCompania');
+        $dependenciaproductora = \App\Dependencia::All()->lists('nombreDependencia','idDependencia');
+        return view('ubicaciondocumentomodal',compact('tiposoporte','compania','dependenciaproductora'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -26,7 +36,6 @@ class UbicacionDocumentoController extends Controller
      */
     public function create()
     {
-        // $dependencialocalizacion = \App\DependenciaLocalizacion::All()->lists()
         $tiposoporte = \App\TipoSoporteDocumental::All()->lists('nombreTipoSoporteDocumental','idTipoSoporteDocumental');
         $compania = \App\Compania::All()->lists('nombreCompania','idCompania');
         $dependenciaproductora = \App\Dependencia::All()->lists('nombreDependencia','idDependencia');
@@ -41,7 +50,11 @@ class UbicacionDocumentoController extends Controller
      */
     public function store(Request $request)
     {
-        \App\UbicacionDocumento::create([
+
+        $indice = array(
+            'idUbicacionDocumento' => $request['idUbicacionDocumento']);
+
+        $data = array(
             'tipoUbicacionDocumento' => $request['tipoUbicacionDocumento'],
             'DependenciaLocalizacion_idDependenciaLocalizacion' => $request['DependenciaLocalizacion_idDependenciaLocalizacion'],
             'posicionUbicacionDocumento' => $request['posicionUbicacionDocumento'],
@@ -54,11 +67,24 @@ class UbicacionDocumentoController extends Controller
             'TipoSoporteDocumental_idTipoSoporteDocumental' => $request['TipoSoporteDocumental_idTipoSoporteDocumental'],
             'Dependencia_idProductora' => $request['Dependencia_idProductora'],
             'Compania_idCompania' => $request['Compania_idCompania'],
-            'observacionUbicacionDocumento' => $request['observacionUbicacionDocumento'],
-            'estadoUbicacionDocumento' => $request['estadoUbicacionDocumento']
-        ]);
+            'estadoUbicacionDocumento' => $request['estadoUbicacionDocumento'],
+            'observacionUbicacionDocumento' => $request['observacionUbicacionDocumento']);
 
-        return redirect('ubicaciondocumento');
+        $preguntas = \App\UbicacionDocumento::updateOrCreate($indice, $data);
+
+        $id = \App\UbicacionDocumento::All()->last();
+
+        if($request->ajax()) 
+        {   
+            if ($request['idUbicacionDocumento'] != '') 
+                return response()->json('Modificacion hecha correctamente en ID:'.$request['idUbicacionDocumento']);
+            else
+                return response()->json('Ubicacion creada correctamente con ID: '.$id->idUbicacionDocumento);
+        }
+        else
+        {
+            return redirect('ubicaciondocumento');
+        }
     }
 
     /**
@@ -109,9 +135,16 @@ class UbicacionDocumentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         \App\UbicacionDocumento::destroy($id);
-        return redirect('ubicaciondocumento');
+        if($request->ajax()) 
+        {
+            return response()->json(['Eliminado correctamente.']);
+        }
+        else
+        {
+            return redirect('ubicaciondocumento');
+        }
     }
 }

@@ -3,14 +3,13 @@
 
 @section('content')
 @include('alerts.request')
-{!!Html::script('js/radicado.js')!!}
 {!!Html::style('css/modal.css'); !!}
-{!!Html::style('css/dropzone.css'); !!}<!--Llamo al dropzone-->
+{!!Html::script('js/radicado.js')!!}
 {!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
-
+{!!Html::style('assets/dropzone/dist/min/dropzone.min.css'); !!}<!--Llamo al dropzone-->
+{!!Html::style('css/dropzone.css'); !!}<!--Llamo al dropzone-->
 {!!Html::style('css/BootSideMenu.css'); !!}
 {!!Html::script('js/BootSideMenu.js'); !!}
-{!!Html::style('css/cerrardivs.css'); !!}
 
 <!--Con este css ajusto el tamaño del dropzone-->
 <style> 
@@ -19,10 +18,6 @@
     height: 200px; border: groove; 1px black; background-color: white; overflow-y: scroll; 
   } 
 </style> 
-    
-{!!Form::open(['route'=>'radicado.store','method'=>'POST', 'action' => 'RadicadoController@store', 'id' => 'radicado' , 'files' => true])!!}
-
-<input type="hidden" id="token" value="{{csrf_token()}}"/>
 <?php 
 #
 
@@ -150,7 +145,7 @@ while ($i < $registros)
                                 </div>
                               </div>  
                               </br>
-                               <a href="#myModalRadicado"><input id="botonRadicar_'.$datos[$i]['idDocumento'].'" type="button" value="Radicar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); radicar(\'\', this.id); irArriba();"></a>
+                               <input id="botonRadicar_'.$datos[$i]['idDocumento'].'" type="button" value="Radicar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); radicar(\'\', this.id); irArriba();">
                             </div>
 
                           </div>
@@ -159,15 +154,14 @@ while ($i < $registros)
                     </div>
                   </div>  
                 </div>
-              </div>';
-          ?>
+              </div>
           
           <script type="text/javascript">
-            var baseUrl = "{{ url("/") }}";
-            var token = "{{ Session::getToken() }}";
+            var baseUrl = "http://'.$_SERVER["HTTP_HOST"].'";
+            var token = "'.Session::getToken().'";
             Dropzone.autoDiscover = false;
 
-            var myDropzone = new Dropzone("div#dropzoneFileUpload_<?php echo $datos[$i]["idDocumento"];?>", 
+            var myDropzone = new Dropzone("div#dropzoneFileUpload_'.$datos[$i]["idDocumento"].'", 
             {
               url: baseUrl + "/dropzone/uploadFilesRadicado",
               params: 
@@ -176,11 +170,10 @@ while ($i < $registros)
               }
             });
 
-            //Configuro el dropzone
             myDropzone.options.myAwesomeDropzone =  
             {
-              paramName: "file", // The name that will be used to transfer the file
-              maxFilesize: 20, // MB
+              paramName: "file", 
+              maxFilesize: 20,
               addRemoveLinks: true,
               clickable: true,
               previewsContainer: ".dropzone-previews",
@@ -191,19 +184,17 @@ while ($i < $registros)
               }
             };
 
-            //envio las funciones al realizar cuando se de clic en la vista previa dentro del dropzone
             myDropzone.on("addedfile", function(file) 
             {
               file.previewElement.addEventListener("click", function(reg, idDoc) 
               {
-                var idDrop = this.parentNode.id; //Con el indexOf obtengo la posicion (en este caso el numero (id) del dropzone)
+                var idDrop = this.parentNode.id;
                 radicar(file, idDrop);
                 irArriba();
               });
             });
-          </script>
+          </script>';
 
-          <?php
           $i++;  
         }
         $divsubserie[$nss] .= '</div>';
@@ -231,6 +222,8 @@ echo '
 </div>';
 ?>
 
+{!!Form::open(['route'=>'radicado.store','method'=>'POST', 'action' => 'RadicadoController@store', 'id' => 'radicado' , 'files' => true])!!}
+
 {!!Form::hidden('registro', 0, array('id' => 'registro'))!!}
 {!!Form::hidden('archivoRadicado', 0, array('id' => 'archivoRadicado'))!!}
 {!!Form::hidden('Dependencia_idDependencia', null, array('id' => 'Dependencia_idDependencia'))!!}
@@ -239,12 +232,12 @@ echo '
 {!!Form::hidden('Documento_idDocumento', null, array('id' => 'Documento_idDocumento'))!!} 
 {!!Form::hidden('numeroRadicadoVersion', '1.0', array('id' => 'numeroRadicadoVersion'))!!} 
 {!!Form::hidden('tipoRadicadoVersion', 0, array('id' => 'tipoRadicadoVersion'))!!} 
-
+<input type="hidden" id="token" value="{{csrf_token()}}"/>
 <!-- Modal de radicado -->
   <div id="myModalRadicado" class="modalDialog" style="display:none;">
     <div id="modal-dialog">
     <div class="modal-header">
-      <a href="#close" title="Cerrar" class="close">X</a>
+      <a onclick="cerrarModal()" title="Cerrar" class="close">X</a>
       <h4 class="modal-title">Radicar documento</h4>
     </div>
       <div class="modal-radicado">
@@ -263,13 +256,13 @@ echo '
         </div>
 
         <div class="form-group col-md-6" id='test'>
-          {!!Form::label('fechaRadicado', 'Fecha', array('class' => 'col-sm-3 control-label')) !!}
+          {!!Form::label('fechaRadicadoVersion', 'Fecha', array('class' => 'col-sm-3 control-label')) !!}
           <div class="col-sm-10">
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-calendar "></i>
               </span>
-                {!!Form::text('fechaRadicado',date('Y-m-d H:m:s') ,['class'=>'form-control','readonly','placeholder'=>'Fecha de radicado',])!!}
+                {!!Form::text('fechaRadicadoVersion',date('Y-m-d H:m:s') ,['class'=>'form-control','readonly','placeholder'=>'Fecha de radicado',])!!}
             </div>
           </div>
         </div>
@@ -349,7 +342,7 @@ echo '
 
         <div id="preview" class="col-md-6">
           <div style="clear:both">
-            <iframe id="viewer" frameborder="0" scrolling="no" width="100%" height="490px"></iframe> <!--Defino el stylo de la vista previa-->       
+            <iframe id="viewer" frameborder="0" scrolling="no" width="100%" height="490px"></iframe>    
           </div>
         </div>
 
@@ -379,7 +372,7 @@ echo '
 
 <!-- Modal PL -->
 <div id="myModalPL" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="width:1000px;">
+  <div class="modal-dialog" style="width:90%;">
 
     <!-- Modal content-->
     <div style="" class="modal-content">
