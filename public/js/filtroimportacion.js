@@ -45,7 +45,7 @@ function consultarImportacion(Temporada, Compra, Cliente, Proveedor, Puerto, Fec
 			condicion = condicion + ((condicion != '' && bodega == 0) ? ' and ' : '') + 'idMercanciaExtranjeraDetalle IS NULL';
 
 		if (Documento != 0)
-			condicion = condicion + 'DocumentoImportacion_idDocumentoImportacion = "'+Documento+'"';
+			condicion = condicion + ((condicion != '' && Documento != 0) ? ' and ' : '') + 'DocumentoImportacion_idDocumentoImportacion = "'+Documento+'"';
 
 		join = join + 'LEFT JOIN Iblu.Movimiento m ON ed.facturaEmbarqueDetalle = m.numeroReferenciaExternoMovimiento and m.Documento_idDocumento = 20 LEFT JOIN (select Movimiento_idMovimiento, idMercanciaExtranjeraDetalle  from Iblu.MercanciaExtranjeraDetalle group by Movimiento_idMovimiento ) med ON m.idMovimiento = med.Movimiento_idMovimiento';
 

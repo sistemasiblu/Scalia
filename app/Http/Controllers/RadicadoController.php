@@ -139,6 +139,7 @@ class RadicadoController extends Controller
                 'SubSerie_idSubSerie' => ($request['SubSerie_idSubSerie'] == '' ? null : $request['SubSerie_idSubSerie']),
                 'Documento_idDocumento' => $request['Documento_idDocumento'],
                 'ubicacionEstanteRadicado' => $request['ubicacionEstanteRadicado'],
+                'numeroPaginasRadicado' => $request['numeroPaginasRadicado'],
                 'Compania_idCompania' => \Session::get("idCompania")
                 ]);
 
@@ -598,6 +599,7 @@ class RadicadoController extends Controller
             $radicado->Documento_idDocumento = $request['idDocumento'];
             $radicado->SubSerie_idSubSerie = $request['SubSerie_idSubSerie'];
             $radicado->ubicacionEstanteRadicado = $request['ubicacionEstanteRadicado'];
+            $radicado->numeroPaginasRadicado = $request['numeroPaginasRadicado'];
             $radicado->Compania_idCompania = \Session::get("idCompania");
             // $radicado->archivoRadicado = $destinationPath;
             $radicado->save();

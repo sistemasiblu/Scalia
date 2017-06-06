@@ -4,7 +4,7 @@ $idUbicacion = $_POST['idUbicacion'];
 
 $ubicacion = DB::Select("
 	SELECT 
-	    CONCAT(descripcionDependenciaLocalizacion,'-',posicionUbicacionDocumento) as puntoLocalizacion
+	    CONCAT(descripcionDependenciaLocalizacion,' ',posicionUbicacionDocumento) as puntoLocalizacion
 	FROM
 	    ubicaciondocumento ud
 	        LEFT JOIN

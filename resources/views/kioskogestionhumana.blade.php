@@ -125,7 +125,8 @@
 
 	    </div>
       <div class="modal-footer">
-      	<button type="button" class="btn btn-primary" onclick="generarCertificadoLaboral('certificado');">Generar</button>
+      	<button type="button" class="btn btn-primary" onclick="generarCertificadoLaboral('certificado', 'noemail');">Generar</button>
+      	<button type="button" class="btn btn-primary" onclick="generarCertificadoLaboral('certificado', 'email');">Generar y enviar por correo</button>
       </div>
     </div>
   </div>
@@ -145,23 +146,24 @@
 
         	$fechaInicial = date('Y-m-d');
         	$fechaFinal = date('Y-m-d',strtotime("-1 MONTH", strtotime($fechaInicial)));
+        	$disabled = '';
 
-        	$Q2 = DB::Select('
-        		SELECT 
-					nombreLiquidacionNomina, 
-					fechaInicioLiquidacionNomina, 
-					fechaFinLiquidacionNomina 
-				FROM 
-					Iblu.LiquidacionNomina 
-				WHERE estadoLiquidacionNomina = "DEFINITIVA" 
-					AND fechaInicioLiquidacionNomina <= '.$fechaInicial.'
-				    AND fechaFinLiquidacionNomina >= '.$fechaInicial);
+    //     	$Q2 = DB::Select('
+    //     		SELECT 
+				// 	nombreLiquidacionNomina, 
+				// 	fechaInicioLiquidacionNomina, 
+				// 	fechaFinLiquidacionNomina 
+				// FROM 
+				// 	Iblu.LiquidacionNomina 
+				// WHERE estadoLiquidacionNomina = "DEFINITIVA" 
+				// 	AND fechaInicioLiquidacionNomina <= '.$fechaInicial.'
+				//     AND fechaFinLiquidacionNomina >= '.$fechaInicial);
 
-	        	$disabled = '';
-	        	if (empty($Q2)) 
-	        		$disabled = '';
-	        	else
-	        		$disabled = '';
+	   //      	$disabled = '';
+	   //      	if (empty($Q2)) 
+	   //      		$disabled = '';
+	   //      	else
+	   //      		$disabled = '';
 
 
         	while($fechaInicial >= $fechaFinal)
@@ -193,7 +195,8 @@
 
 	    </div>
       <div class="modal-footer">
-      	<button type="button" class="btn btn-primary" onclick="generarReciboPago('recibo');">Generar</button>
+      	<button type="button" class="btn btn-primary" onclick="generarReciboPago('recibo', 'noemail');">Generar</button>
+      	<button type="button" class="btn btn-primary" onclick="generarReciboPago('recibo', 'email');">Generar y enviar por correo</button>
       </div>
     </div>
   </div>

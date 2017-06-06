@@ -481,6 +481,8 @@ class KioskoController extends Controller
         {   
             $tercero = DB::Select('SELECT idTercero FROM '.\Session::get("baseDatosCompania").'.Tercero WHERE documentoTercero = '.$request['documentoU']);
 
+            $mail = ($_GET['mail'] != '') ? $_GET['mail'] : '';
+
             if (empty($tercero)) 
             {
                 return;
@@ -530,7 +532,7 @@ class KioskoController extends Controller
                 GROUP BY ConceptoNomina_idConceptoNomina, idLiquidacionNomina
                 ORDER BY numeroLiquidacionNomina, naturalezaConceptoNomina DESC");
 
-            return view('formatos.impresionReciboPago',compact('recibo'));
+            return view('formatos.impresionReciboPago',compact('recibo', 'mail'));
         }
 
         //--------------------------------------------------------
@@ -539,6 +541,8 @@ class KioskoController extends Controller
         if ($request['formato'] == 'certificado') 
         {   
             $tercero = DB::Select('SELECT idTercero FROM '.\Session::get("baseDatosCompania").'.Tercero WHERE documentoTercero = '.$request['documentoU'].' AND fechaNacimientoTercero = "'.$request['condicion'].'"');
+
+            $mail = ($_GET['mail'] != '') ? $_GET['mail'] : '';
 
             if (empty($tercero)) 
             {
@@ -585,7 +589,7 @@ class KioskoController extends Controller
                 ORDER BY fechaInicioContrato ASC
                 ");
 
-            return view('formatos.impresionCertificadoLaboral',compact('certificado'));
+            return view('formatos.impresionCertificadoLaboral',compact('certificado', 'mail'));
         }
     }
 

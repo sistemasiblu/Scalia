@@ -57,7 +57,8 @@ function guardarDatos()
             alert(result);
             idIni = result.substring(40, result.length);
             idUbicacion = idIni.substring(0, idIni.length -1);
-            $("#myModalUbicacion").modal("hide");
+            window.parent.$("#myModalUbicacion").modal("hide");
+            window.parent.window.parent.$("#myModalPL").modal("hide");
             asignarPL(idUbicacion);
             $(formId)[0].reset();            
         },
@@ -150,4 +151,30 @@ function eliminarDatos(idUbicacionDocumento)
             }
         });
     }
+}
+
+function llenarMetadatos(value) 
+{
+    var token = document.getElementById('token').value;
+    $.ajax({
+        headers: {'X-CSRF-TOKEN': token},
+        dataType: "json",
+        data: {'value': value},
+        url:   'http://'+location.host+'/consultaMetadatosUbicacion/',
+        type:  'post',
+        success: function(respuesta){
+            if (respuesta == '') 
+            {
+                alert('No se han encontrado datos.');
+            }
+            else
+            {
+                $("#Tercero_idTercero").val(respuesta['idTercero']);
+                $("#nombreTerceroUbicacionDocumento").val(respuesta['nombre1Tercero']);
+            }
+        },
+        error: function(xhr,err){ 
+            alert("Error");
+        }
+    });
 }

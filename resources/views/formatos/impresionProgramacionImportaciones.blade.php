@@ -49,33 +49,39 @@ function base64($archivo)
       <div class="panel-body">
         <?php 
         echo 
-        '<div style="height:25px;">
-          <div style="width:150px; display:inline-block;"><b>Fecha de Compra:</b> </div>
-           <div style="width:450px; display:inline-block;">'.$campos[0]['fechaCompra'].'</div>
-         </div>
-
+        '
         <div style="height:25px;">
           <div style="width:150px; display:inline-block;"><b>Temporada:</b> </div>
            <div style="width:450px; display:inline-block;">'.$campos[0]['nombreTemporadaCompra'].'</div>
+
+           <div style="width:150px; display:inline-block;"><b>Fecha de Compra:</b> </div>
+           <div style="width:450px; display:inline-block;">'.$campos[0]['fechaCompra'].'</div>
+         </div>
+
+
+        <div style="height:25px;">
+          <div style="width:150px; display:inline-block;"><b>PI:</b> </div>
+           <div style="width:450px; display:inline-block;">'.$campos[0]['numeroCompra'].'</div>
 
            <div style="width:150px; display:inline-block;"><b>Proveedor:</b> </div>
            <div style="width:450px; display:inline-block;">'.$campos[0]['nombreProveedorCompra'].'</div>
          </div>
 
-         <div style="height:25px;">
-          <div style="width:150px; display:inline-block;"><b>PI:</b> </div>
-           <div style="width:450px; display:inline-block;">'.$campos[0]['numeroCompra'].'</div>
 
+         <div style="height:25px;">
            <div style="width:150px; display:inline-block;"><b>Pago proveedor:</b> </div>
            <div style="width:450px; display:inline-block;">'.$campos[0]['formaPagoProveedorCompra'].'</div>
+
+           <div style="width:150px; display:inline-block;"><b>Cliente:</b> </div>
+           <div style="width:450px; display:inline-block;">'.$campos[0]['nombreClienteCompra'].'</div>
          </div>
 
          <div style="height:25px;">
-          <div style="width:150px; display:inline-block;"><b>Cliente:</b> </div>
-           <div style="width:450px; display:inline-block;">'.$campos[0]['nombreClienteCompra'].'</div>
-
            <div style="width:150px; display:inline-block;"><b>Pago cliente:</b> </div>
            <div style="width:450px; display:inline-block;">'.$campos[0]['formaPagoClienteCompra'].'</div>
+
+           <div style="width:150px; display:inline-block;"><b>Evento:</b> </div>
+           <div style="width:450px; display:inline-block;">'.$campos[0]['eventoCompra'].'</div>
          </div>
 
          <div style="height:25px;">

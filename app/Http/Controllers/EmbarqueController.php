@@ -455,11 +455,12 @@ class EmbarqueController extends Controller
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
         <table cellspacing="0" class="table table-striped table-bordered table-hover" style="width:100%;">
             <tr>
-                <th colspan="12" style=" background-color:#255986; color:white;">Embarque: '.$datos[0]['numeroEmbarque'].'</th>
+                <th colspan="13" style=" background-color:#255986; color:white;">Embarque: '.$datos[0]['numeroEmbarque'].'</th>
             </tr>
             <tr>
                 <th '.$styleTableEnc.'>N° Embarque</th>
                 <th '.$styleTableEnc.'>Temporada</th>
+                <th '.$styleTableEnc.'>PI</th>
                 <th '.$styleTableEnc.'>Proveedor</th>
                 <th '.$styleTableEnc.'>Cliente</th>
                 <th '.$styleTableEnc.'>Factura</th>
@@ -487,6 +488,7 @@ class EmbarqueController extends Controller
                 <tr>
                     <td '.$styleTableBody.'>'.$datos[$i]["numeroEmbarque"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["nombreTemporadaEmbarqueDetalle"].'</td>
+                    <td '.$styleTableBody.'>'.$datos[$i]["numeroCompraEmbarqueDetalle"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["proveedorTemporadaEmbarqueDetalle"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["nombreClienteCompra"].'</td>
                     <td '.$styleTableBody.'>'.$datos[$i]["facturaEmbarqueDetalle"].'</td>
@@ -562,7 +564,7 @@ class EmbarqueController extends Controller
             
 
             $bodega = DB::Select('
-            SELECT numeroEmbarque, nombreTemporadaCompra as nombreTemporadaEmbarqueDetalle, nombreProveedorCompra as proveedorTemporadaEmbarqueDetalle, numeroCompra as numeroCompraEmbarqueDetalle, valorEmbarqueDetalle, facturaEmbarqueDetalle, valorFacturaEmbarqueDetalle, unidadFacturaEmbarqueDetalle, bultoFacturaEmbarqueDetalle, navieraEmbarque, descripcionEmbarqueDetalle, compradorVendedorEmbarqueDetalle, formaPagoClienteCompra, dolarEmbarqueDetalle, blEmbarqueDetalle, numeroContenedorEmbarqueDetalle, bodegaEmbarque, bodegaCorreoEmbarque
+            SELECT numeroEmbarque, nombreTemporadaCompra as nombreTemporadaEmbarqueDetalle, nombreProveedorCompra as proveedorTemporadaEmbarqueDetalle, numeroCompra as numeroCompraEmbarqueDetalle, valorEmbarqueDetalle, facturaEmbarqueDetalle, valorFacturaEmbarqueDetalle, unidadFacturaEmbarqueDetalle, bultoFacturaEmbarqueDetalle, navieraEmbarque, descripcionEmbarqueDetalle, compradorVendedorEmbarqueDetalle, formaPagoClienteCompra, dolarEmbarqueDetalle, blEmbarqueDetalle, numeroContenedorEmbarqueDetalle, bodegaEmbarque, bodegaCorreoEmbarque, fechaArriboPuertoEstimadaEmbarqueDetalle
             FROM embarquedetalle ed
             LEFT JOIN embarque e
             ON ed.Embarque_idEmbarque = e.idEmbarque
@@ -607,17 +609,16 @@ class EmbarqueController extends Controller
                             <th '.$styleTableEnc.'>Compra</th>
                             <th '.$styleTableEnc.'>Proveedor</th>
                             <th '.$styleTableEnc.'>PI</th>
-                            <th '.$styleTableEnc.'>Valor</th>
                             <th '.$styleTableEnc.'>Factura</th>
-                            <th '.$styleTableEnc.'>Valor</th>
+                            <th '.$styleTableEnc.'>Valor Factura</th>
                             <th '.$styleTableEnc.'>Unidades</th>
                             <th '.$styleTableEnc.'>Bultos</th>
                             <th '.$styleTableEnc.'>Naviera</th>
                             <th '.$styleTableEnc.'>Descripción</th>
                             <th '.$styleTableEnc.'>Cliente</th>
-                            <th '.$styleTableEnc.'>Forma de pago</th>
                             <th '.$styleTableEnc.'>Dolar</th>
                             <th '.$styleTableEnc.'>BL</th>
+                            <th '.$styleTableEnc.'>Arribo a puerto estimado</th>
                             <th '.$styleTableEnc.'>Contenedor</th>
                           </tr>';
 
@@ -629,7 +630,6 @@ class EmbarqueController extends Controller
                                     <td '.$styleTableBody.'>'.$datos[$i]["nombreTemporadaEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBody.'>'.$datos[$i]["proveedorTemporadaEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBodyN.'>'.$datos[$i]["numeroCompraEmbarqueDetalle"].'</td>
-                                    <td '.$styleTableBodyN.'>'.$datos[$i]["valorEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBody.'>'.$datos[$i]["facturaEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBodyN.'>'.$datos[$i]["valorFacturaEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBodyN.'>'.$datos[$i]["unidadFacturaEmbarqueDetalle"].'</td>
@@ -637,9 +637,9 @@ class EmbarqueController extends Controller
                                     <td '.$styleTableBody.'>'.$datos[$i]["navieraEmbarque"].'</td>
                                     <td '.$styleTableBody.'>'.$datos[$i]["descripcionEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBody.'>'.$datos[$i]["compradorVendedorEmbarqueDetalle"].'</td>
-                                    <td '.$styleTableBody.'>'.$datos[$i]['formaPagoClienteCompra'].'</td>
                                     <td '.$styleTableBodyN.'>'.$datos[$i]["dolarEmbarqueDetalle"].'</td>
-                                    <td '.$styleTableBodyN.'>'.$datos[$i]["blEmbarqueDetalle"].'</td>
+                                    <td '.$styleTableBody.'>'.$datos[$i]["blEmbarqueDetalle"].'</td>
+                                    <td '.$styleTableBody.'>'.$datos[$i]["fechaArriboPuertoEstimadaEmbarqueDetalle"].'</td>
                                     <td '.$styleTableBody.'>'.$datos[$i]["numeroContenedorEmbarqueDetalle"].'</td>   
                                 </tr>';
 

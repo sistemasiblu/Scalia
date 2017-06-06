@@ -21,10 +21,10 @@ function cargarEstanteDependencia(idDependencia, numeroEstante)
         });
 }
 
-function abrirUbicacion(idDependencia, idUbicacion,event)
+function abrirUbicacion(idDependencia, idUbicacion, event, estado, localizacion)
 {
     event.stopPropagation();
-    $("#bodyUbicacion").html('<iframe style="width:100%; height:510px; " id="campos" name="campos" src="http://'+location.host+'/ubicaciondocumentomodal?idDependencia='+idDependencia+'&idUbicacion='+idUbicacion+'"></iframe>');
+    $("#bodyUbicacion").html('<iframe style="width:100%; height:510px; " id="campos" name="campos" src="http://'+location.host+'/ubicaciondocumentomodal?idDependencia='+idDependencia+'&idUbicacion='+idUbicacion+'&estado='+estado+'&localizacion='+localizacion+'"></iframe>');
     $('#myModalUbicacion').modal('show');
 }
 
@@ -55,4 +55,11 @@ function cerrarCaja(idDependenciaLocalizacion, event)
                 }
             });
     }
+}
+
+function asignarPLRadicado(pl, event)
+{
+    event.stopPropagation();
+    window.parent.document.getElementById("ubicacionEstanteRadicado").value = pl;
+    window.parent.$("#myModalPL").modal("hide");
 }

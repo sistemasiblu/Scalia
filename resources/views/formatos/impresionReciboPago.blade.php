@@ -53,6 +53,16 @@ function base64($archivo)
   </div>
 
   <?php
+    $formato = '
+    <!DOCTYPE html>
+    <html lang="es">
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        </head>
+        <body>';
     $reg = 0;
     $totalreg = count($recibo);
     
@@ -60,14 +70,14 @@ function base64($archivo)
 
     while ($reg < $totalreg) 
     { 
-      echo '
+      $formato.='
       <table table class="table table-striped table-bordered table-hover" style="width:100%;">';
 
       $totalDevengado = 0;
       $totalDeduccion = 0;
       $totalPagar = 0;
       $liquidacion = $camposrecibo[$reg]['idLiquidacionNomina'];
-      echo '
+      $formato.='
       <tr>
         <td colspan="11"><b>Liquidación: </b>'.$camposrecibo[$reg]['numeroLiquidacionNomina'].'</td>
       </tr>
@@ -174,7 +184,7 @@ function base64($archivo)
           <th style="text-align:right;" colspan="1">$'.number_format($totalDeduccion,0,".",",").'</th>
         </tr></table>';
 
-      echo '
+      $formato.='
         <tr>
           <td colspan="5">'.$dev.'</td>
           <td colspan="6">'.$ded.'</td>
@@ -182,13 +192,43 @@ function base64($archivo)
         $totalPagar = $totalDevengado - $totalDeduccion;
 
 
-        echo '
+        $formato.='
         <tr>
           <th colspan="10">Total a pagar '.$camposrecibo[0]['nombre1Tercero'].'</th>
           <th style="text-align:right;" colspan="1">$'.number_format($totalPagar,0,".",",").'</th>
         </tr>';
-        echo '</table>
-        <h1 class="SaltoDePagina"></h1>';
+        $formato.='</table>
+
+        <h1 class="SaltoDePagina"></h1>
+        </body>
+      </html>';
+    }
+
+    echo $formato;
+
+    //creamos un archivo (fopen) extension html
+    $arch = fopen(public_path().'/recibopago.html', "w");
+
+    // escribimos en el archivo todo el HTML del informe (fputs)
+    fputs ($arch, $formato);
+
+    // cerramos el archivo (fclose)
+    fclose($arch);
+
+    // enviamos un correo con la informacion del certificado y le adjuntamos el archivo que acabamos de crear
+
+    $correo = array();
+    $correo['asunto'] = 'Recibo de pago '.$camposrecibo[0]['nombre1Tercero'];
+    $correo['mensaje'] = 'Recibo de pago generado en Kiosko - Scalia.';
+
+    if ($mail != '') 
+    {
+      Mail::send('emails.contact',$correo,function($msj) use ($mail, $correo)
+        {
+            $msj->to($mail);
+            $msj->subject($correo['asunto']);
+            $msj->attach(public_path().'/recibopago.html'); 
+        }); 
     }
     
   ?>

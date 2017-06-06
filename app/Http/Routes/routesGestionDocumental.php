@@ -310,6 +310,11 @@ Route::post('asignarPLRadicado', function()
     include public_path().'/ajax/asignarPLRadicado.php';
 });
 
+Route::post('consultaMetadatosUbicacion', function()
+{
+    include public_path().'/ajax/consultaMetadatosUbicacion.php';
+});
+
 
 //********************RUTAS DEL MISMO CONTROLADOR**********************
 Route::get('dropzone','RadicadoController@indexdropzone');

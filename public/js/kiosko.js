@@ -46,7 +46,7 @@ function abrirModalCertificadoLaboral()
 	$("#modalFiltroCertificado").modal();
 }
 
-function generarCertificadoLaboral(formato)
+function generarCertificadoLaboral(formato, email)
 {
 	if ($("#destinatarioCertificadoLaboral").val() == '' || $("#fechaNacimientoTercero").val() == '') 
 	{
@@ -64,12 +64,29 @@ function generarCertificadoLaboral(formato)
 		}
 		else
 		{
-			documentoU = $("#documentoUsuario").val();
-			destinatario = $("#destinatarioCertificadoLaboral").val();
-			condicion = $("#fechaNacimientoTercero").val();
-			window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion,'_blank','width=2500px, height=700px, scrollbars=yes');
-			$("#documentoUsuario").val('');
-	    	$("#modalFiltroCertificado").modal("hide");
+			if (email != 'noemail') 
+			{
+				var mail = prompt("Digite un correo electrónico por favor.", "");
+				if (mail != null)
+				{
+					documentoU = $("#documentoUsuario").val();
+					destinatario = $("#destinatarioCertificadoLaboral").val();
+					condicion = $("#fechaNacimientoTercero").val();
+					window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+					$("#documentoUsuario").val('');
+			    	$("#modalFiltroCertificado").modal("hide");
+			    }
+			}
+			else
+			{
+				documentoU = $("#documentoUsuario").val();
+				destinatario = $("#destinatarioCertificadoLaboral").val();
+				condicion = $("#fechaNacimientoTercero").val();
+				mail = '';
+				window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+				$("#documentoUsuario").val('');
+		    	$("#modalFiltroCertificado").modal("hide");
+			}
 		}
 	}
 }
@@ -79,7 +96,7 @@ function abrirModalReciboPago()
 	$("#modalFiltroRecibo").modal();
 }
 
-function generarReciboPago(formato)
+function generarReciboPago(formato, email)
 {
 	if ($("#documentoUsuario").val() == '') 
 	{
@@ -113,9 +130,23 @@ function generarReciboPago(formato)
 	    }
 	    else	    	
 	    {
-	    	window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU,'_blank','width=2500px, height=700px, scrollbars=yes');
-	    	$("#documentoUsuario").val('');
-	    	$("#modalFiltroRecibo").modal("hide");
+	    	if (email != 'noemail') 
+			{
+				var mail = prompt("Digite un correo electrónico por favor.", "");
+				if (mail != null)
+				{
+					window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+			    	$("#documentoUsuario").val('');
+			    	$("#modalFiltroRecibo").modal("hide");
+			    }
+			}
+			else
+			{
+				var mail = '';
+				window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+		    	$("#documentoUsuario").val('');
+		    	$("#modalFiltroRecibo").modal("hide");
+			}
 	    }
 	}
 

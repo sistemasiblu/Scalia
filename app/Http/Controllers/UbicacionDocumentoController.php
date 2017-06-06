@@ -61,7 +61,7 @@ class UbicacionDocumentoController extends Controller
             'numeroLegajoUbicacionDocumento' => $request['numeroLegajoUbicacionDocumento'],
             'numeroFolioUbicacionDocumento' => $request['numeroFolioUbicacionDocumento'],
             'descripcionUbicacionDocumento' => $request['descripcionUbicacionDocumento'],
-            'Tercero_idTercero' => $request['Tercero_idTercero'],
+            'Tercero_idTercero' => ($request['Tercero_idTercero'] == '' ? NULL : $request['Tercero_idTercero']),
             'fechaInicialUbicacionDocumento' => $request['fechaInicialUbicacionDocumento'],
             'fechaFinalUbicacionDocumento' => $request['fechaFinalUbicacionDocumento'],
             'TipoSoporteDocumental_idTipoSoporteDocumental' => $request['TipoSoporteDocumental_idTipoSoporteDocumental'],
@@ -124,6 +124,7 @@ class UbicacionDocumentoController extends Controller
     {
         $ubicaciondocumento = \App\UbicacionDocumento::find($id);
         $ubicaciondocumento -> fill($request->all());
+        $ubicaciondocumento->Tercero_idTercero == '' ? NULL : $request['Tercero_idTercero'];
         $ubicaciondocumento -> save();
 
         return redirect('ubicaciondocumento');

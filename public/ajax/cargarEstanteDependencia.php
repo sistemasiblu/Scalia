@@ -5,7 +5,7 @@ $numeroEstante = $_POST['numeroEstante'];
 
 $localizacion = DB::Select('
   SELECT 
-    idDependencia, nombreDependencia, capacidadDependenciaLocalizacion, posicionUbicacionDocumento, estadoUbicacionDocumento, idUbicacionDocumento, dl.*
+    idDependencia, nombreDependencia, codigoDependencia, capacidadDependenciaLocalizacion, posicionUbicacionDocumento, estadoUbicacionDocumento, idUbicacionDocumento, dl.*, reemplazoUbicacionDocumento
 FROM
     dependencialocalizacion dl
         LEFT JOIN
@@ -14,7 +14,8 @@ FROM
     ubicaciondocumento ud ON dl.idDependenciaLocalizacion = ud.DependenciaLocalizacion_idDependenciaLocalizacion
 WHERE idDependencia = '.$idDependencia.'
 AND numeroEstanteDependenciaLocalizacion = '.$numeroEstante.'
-ORDER BY nombreDependencia , numeroEstanteDependenciaLocalizacion , numeroNivelDependenciaLocalizacion DESC , numeroSeccionDependenciaLocalizacion, posicionUbicacionDocumento
+AND (reemplazoUbicacionDocumento IS NULL or reemplazoUbicacionDocumento = 0)
+ORDER BY nombreDependencia , numeroEstanteDependenciaLocalizacion , numeroNivelDependenciaLocalizacion DESC , numeroSeccionDependenciaLocalizacion, posicionUbicacionDocumento 
 ');
 
 $clocalizacion = array();
@@ -78,7 +79,7 @@ for ($i=0; $i < count($estante); $i++)
                     $registros = 1;
 
                       $estructura .= "
-                        <td style='width:10%; height:1px; padding:0; border:1px solid;'>";
+                        <td style='width:10%; height:100px; padding:0; border:1px solid;'>";
 
                         if ($clocalizacion[$i]['estadoDependenciaLocalizacion'] == 'Inactivo') 
                         {
@@ -88,14 +89,16 @@ for ($i=0; $i < count($estante); $i++)
                         }
                         else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'Disponible')
                         {
+                          $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
+
                           $estructura .= "
-                            <div title='Ubicaciones disponibles' style='background-color:#81F79F; display:inline-block; cursor:pointer; height:100%; width:100%' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].',0,event'.");'>
+                            <div title='Ubicaciones disponibles' style='background-color:#A9F5A9; display:inline-block; cursor:pointer; height:100%; width:100%' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].', 0, event, "inicial", '.$localizacion.");'>
                                 <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
                         }
                         else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'NoDisponible')
                         {
                           $estructura .= "
-                            <div title='Caja cerrada' style='background-color:#F5D0A9; display:inline-block; height:100%; width:100%'>
+                            <div title='Caja cerrada' style='background-color:white; display:inline-block; height:100%; width:100%'>
                               <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
                         }
 
@@ -122,13 +125,66 @@ for ($i=0; $i < count($estante); $i++)
                     {     
                         $color = ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Activa') ? '#F78181' : '#F3E2A9';
 
+
+                        $color = '';
+                        $onclick =  '';
+                        $title = '';
+
+                        if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Activa') 
+                        {
+                            $color = '#F5A9A9';   
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." ocupada'";
+
+                            $pl = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].' '. $clocalizacion[$i]['posicionUbicacionDocumento'].'"';
+                            $onclick = "onclick='asignarPLRadicado(".$pl.", event);'";
+                        }
+
+                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Destruida') 
+                        {
+                            $color = '#F2F5A9';   
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." destruída'";
+
+                            $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
+                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Destruida",'.$localizacion.");'";
+                        }
+
+                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Prestada') 
+                        {
+                          $color = '#A9BCF5';   
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." prestada'";
+
+                            $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
+                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Prestada",'.$localizacion.");'";
+                        }
+
+                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Extraviada') 
+                        {
+                          $color = '#E6E6E6';   
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." extraviada'";
+
+                            $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
+                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Extraviada",'.$localizacion.");'";
+                        }
+
+                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Averiada') 
+                        {
+                          $color = '#A9F5F2';   
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." averiada'";
+
+                            $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
+                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Averiada",'.$localizacion.");'";
+                        }
+
+
+
                         if ($clocalizacion[$i]['posicionUbicacionDocumento'] != '') 
                         {
-                                $estructura .="
-                                <div style='background-color:".$color."; display:inline-block; cursor:pointer; height:100%; width:".$ancho."%' title='Ubicación ".$clocalizacion[$i]['posicionUbicacionDocumento']." ocupada' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event'.");'>
-                                    ".$clocalizacion[$i]['posicionUbicacionDocumento']."
-                                </div>";
+                            $estructura .="
+                            <div style='background-color:".$color."; display:inline-block; cursor:pointer; height:100%; width:".$ancho."%' ".$title." ".$onclick.">
+                                ".$clocalizacion[$i]['posicionUbicacionDocumento']."
+                            </div>";
                         }
+
 
                         $i++;
                     }

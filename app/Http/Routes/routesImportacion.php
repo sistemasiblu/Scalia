@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('filtroimportaciondetallado','FiltroImportacionDetalladoController');
     Route::get('consultaembarque','EmbarqueController@indexConsultaEmbarque');
     Route::get('filtroimportaciongrid','FiltroImportacionController@gridFiltroImportacion');
+    Route::resource('filtrotemporada','FiltroTemporadaController');
 });
 
 
@@ -145,8 +146,14 @@ Route::get('actualizarIdMovimientoCompra', function()
     include public_path().'/ajax/actualizarIdMovimientoCompra.php';
 });
 
+Route::post('llenarMetadatosCompraTemporada', function()
+{
+    include public_path().'/ajax/llenarMetadatosCompraTemporada.php';
+});
+
 Route::resource('consultarImportacion','FiltroImportacionController@consultarImportacion');
 Route::resource('consultarImportacionDetallado','FiltroImportacionDetalladoController@consultarImportacionDetallado');
+Route::resource('consultarTemporada','FiltroTemporadaController@consultarTemporada');
 
 //********************RUTAS DEL MISMO CONTROLADOR**********************
 Route::get('compragridselect','EmbarqueController@indexCompraGrid');

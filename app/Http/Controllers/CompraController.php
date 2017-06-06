@@ -42,6 +42,7 @@ class CompraController extends Controller
     {
         $documentoimportacion = \App\DocumentoImportacion::All()->lists('nombreDocumentoImportacion', 'idDocumentoImportacion');
 
+        // $tercero = Array();
         $tercero = DB::Select(
             "SELECT nombre1Tercero as nombre, idTercero as id
             FROM Iblu.Tercero
@@ -51,13 +52,15 @@ class CompraController extends Controller
             ORDER BY nombre1Tercero");
         $tercero = $this->convertirArray($tercero);
 
+        // $evento = Array();
         $evento = DB::Select(
             "SELECT nombreEvento as nombre, idEvento as id
             FROM Iblu.Evento
             WHERE idEvento IS NOT NULL
             ORDER BY nombreEvento");
         $evento = $this->convertirArray($evento);
-
+        
+        // $tipodocumento = Array();
         $tipodocumento = DB::Select(
             "SELECT idIdentificacion as id, nombreIdentificacion as nombre
             FROM Iblu.TipoIdentificacion");    
@@ -151,6 +154,8 @@ class CompraController extends Controller
     public function edit($id)
     {
         $compra = \App\Compra::find($id);
+
+        // $tercero = Array();
         $tercero = DB::Select(
             "SELECT nombre1Tercero as nombre, idTercero as id
             FROM Iblu.Tercero
@@ -160,6 +165,7 @@ class CompraController extends Controller
             ORDER BY nombre1Tercero");
         $tercero = $this->convertirArray($tercero);
 
+        // $evento = Array();
         $evento = DB::Select(
             "SELECT nombreEvento as nombre, idEvento as id
             FROM Iblu.Evento
@@ -167,6 +173,7 @@ class CompraController extends Controller
             ORDER BY nombreEvento");
         $evento = $this->convertirArray($evento);
 
+        // $tipodocumento = Array();
         $tipodocumento = DB::Select(
             "SELECT idIdentificacion as id, nombreIdentificacion as nombre
             FROM Iblu.TipoIdentificacion");    

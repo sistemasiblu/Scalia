@@ -62,7 +62,18 @@ function base64($archivo)
     setlocale(LC_TIME, 'spanish');
     $mes = strftime("%B",mktime(0, 0, 0, date('m'), 1, 2000));
 
-    echo 'Medellín, '.$mes.' '.date('d').' de '.date('Y').'<br><br><br>
+    $formato = '
+    <!DOCTYPE html>
+    <html lang="es">
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        </head>
+        <body>';
+
+    $formato.='Medellín, '.$mes.' '.date('d').' de '.date('Y').'<br><br><br>
 
     Señores(as):<br>
     <b>'.$camposcertificado[0]['destinatarioCertificado'].'</b><br><br><br>
@@ -85,7 +96,7 @@ function base64($archivo)
           for ($i=0; $i < count($certificado); $i++) 
           { 
             $certificadol = get_object_vars($certificado[$i]);
-            echo '
+            $formato.='
             <tr>
               <td>'.$certificadol["nombreTipoContrato"].'</td>
               <td style="text-align:right;">'.number_format($certificadol["valorContrato"],2,".",",").'</td>
@@ -93,7 +104,7 @@ function base64($archivo)
               <td>'.$certificadol["fechaTerminacionContrato"].'</td>
             </tr>';
           }
-      echo '
+      $formato.='
       </tbody>
     </table>
     <br><br>
@@ -108,7 +119,37 @@ function base64($archivo)
     <img src="http://'.$_SERVER["HTTP_HOST"].'/imagenes/kiosko/Firma_Milena.png" style="width:40%;"><br>
     ________________________________<br>
     <b>MILENA M. VILLAMIZAR REYES</b><br>
-    Directora Gestión Humana';
+    Directora Gestión Humana
+
+    </body>
+    </html>';
+
+    echo $formato;
+
+    //creamos un archivo (fopen) extension html
+    $arch = fopen(public_path().'/certificadolaboral.html', "w");
+
+    // escribimos en el archivo todo el HTML del informe (fputs)
+    fputs ($arch, $formato);
+
+    // cerramos el archivo (fclose)
+    fclose($arch);
+
+    // enviamos un correo con la informacion del certificado y le adjuntamos el archivo que acabamos de crear
+
+    $correo = array();
+    $correo['asunto'] = 'Certificado laboral '.$camposcertificado[0]['nombre1Tercero'];
+    $correo['mensaje'] = 'Certificado laboral generado en Kiosko - Scalia.';
+
+    if ($mail != '') 
+    {
+      Mail::send('emails.contact',$correo,function($msj) use ($mail, $correo)
+        {
+            $msj->to($mail);
+            $msj->subject($correo['asunto']);
+            $msj->attach(public_path().'/certificadolaboral.html'); 
+        }); 
+    }
   ?>
 
 </div>

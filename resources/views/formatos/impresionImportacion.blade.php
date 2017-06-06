@@ -85,9 +85,6 @@ function base64($archivo)
 				<td><b>Unidades compra</b></td>
 				<td><b>Valor embarcado</b></td>
 				<td><b>Unidades embarcadas</b></td>
-				<td><b>Reportado a pago</b></td>
-				<td><b>Valor reportado a pago</b></td>
-				<td><b>Forward</b></td>
 				<td><b>Puerto embarque</b></td>
 				<td><b>Volumen</b></td>
 				<td><b>Delivery</b></td>
@@ -139,9 +136,6 @@ function base64($archivo)
 						$informe .=
 						'<td style="text-align:right;">'.number_format($datos[$s]['valorFaltante'],2,".",",").'</td>
 						<td style="text-align:right;">'.number_format($datos[$s]['cantidadFaltante'],2,".",",").'</td>
-						<td>'.$datos[$s]['pagoEmbarqueDetalle'].'</td>
-						<td>'.$datos[$s]['valorFacturaEmbarqueDetallePagada'].'</td>
-						<td>'.$datos[$s]['idForward'].'</td>
 						<td>'.$datos[$s]['nombreCiudadCompra'].'</td>
 						<td style="text-align:right;">'.number_format($datos[$s]['volumenCompra'],2,".",",").'</td>
 						<td>'.$datos[$s]['fechaDeliveryCompra'].'</td>
@@ -187,8 +181,6 @@ function base64($archivo)
 				<th style="text-align:right;" colspan="1">'.number_format($valorFaltante,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($cantidadFaltante,2,".",",").'</th>
 				<th colspan="1"></th>
-				<th style="text-align:right;" colspan="1">'.number_format($reportadoCliente,2,".",",").'</th>
-				<th colspan="2"></th>
 				<th style="text-align:right;" colspan="1">'.number_format($volumenCliente,2,".",",").'</th>
 				<th colspan="12"></th>
 			</tr>';
@@ -202,8 +194,6 @@ function base64($archivo)
 				<th style="text-align:right;" colspan="1">'.number_format($totalValorFaltante,2,".",",").'</th>
 				<th style="text-align:right;" colspan="1">'.number_format($totalCantidadFaltante,2,".",",").'</th>
 				<th colspan="1"></th>
-				<th style="text-align:right;" colspan="1">'.number_format($totalReportadoGeneral,2,".",",").'</th>
-				<th colspan="2"></th>
 				<th style="text-align:right;" colspan="1">'.number_format($totalVolumenGeneral,2,".",",").'</th>
 				<th colspan="12"></th>
 			</tr>

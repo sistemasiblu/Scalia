@@ -9,7 +9,7 @@ class Radicado extends Model
 	protected $table ='radicado';
 	protected $primaryKey = 'idRadicado';
 	
-	protected $fillable = ['codigoRadicado','Dependencia_idDependencia', 'Serie_idSerie', 'SubSerie_idSubSerie','Documento_idDocumento', 'ubicacionEstanteRadicado', 'Compania_idCompania'];
+	protected $fillable = ['codigoRadicado','Dependencia_idDependencia', 'Serie_idSerie', 'SubSerie_idSubSerie','Documento_idDocumento', 'ubicacionEstanteRadicado', 'numeroPaginasRadicado', 'Compania_idCompania'];
 
 	public $timestamps = false;
 

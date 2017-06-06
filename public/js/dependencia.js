@@ -114,9 +114,9 @@ function generarUbicaciones()
 			for (var k = 1; k <= secciones; k++) 
 			{
 				// El String().slice(-2) funciona igual que el strpad de php. En este caso llena con 2 digitos a la izquierda 
-				codigo = $("#codigoDependencia").val()+''+String("00" + valEst).slice(-3)+''+String("0" + j).slice(-2)+''+String("0" + k).slice(-2);
-				descripcion = $("#codigoDependencia").val()+'-'+String("00" + valEst).slice(-3)+'-'+String("0" + j).slice(-2)+'-'+String("0" + k).slice(-2);
-				var valores = new Array(0, String("00" + valEst).slice(-3), String("0" + j).slice(-3), String("0" + k).slice(-2), codigo, descripcion, 'Activo', 0);
+				codigo = $("#codigoDependencia").val()+''+String("0" + valEst).slice(-2)+''+String("0" + j).slice(-2)+''+String("0" + k).slice(-2);
+				descripcion = $("#codigoDependencia").val()+' '+String("0" + valEst).slice(-2)+' '+String("0" + j).slice(-2)+' '+String("0" + k).slice(-2);
+				var valores = new Array(0, String("0" + valEst).slice(-2), String("0" + j).slice(-2), String("0" + k).slice(-2), codigo, descripcion, 'Activo', 0);
 				localizacion.agregarCampos(valores,'A');	
 			}
 		}

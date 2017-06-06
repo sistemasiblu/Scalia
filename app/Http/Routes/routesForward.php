@@ -100,6 +100,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('filtrocompraforward','FiltroCompraForwardController');
     Route::resource('cierrecompra','CierreCompraController');
     Route::resource('compraforward','ForwardController@compraforward');
+    Route::resource('filtroforward','FiltroForwardController');
+    Route::resource('filtroimportacionforward','FiltroImportacionForwardController');
 });
 
 /**********************************Rutas de las Grids*********************************/
@@ -142,3 +144,5 @@ Route::post('consultarDetalleCompraPagoForward', function()
 });
 
 Route::resource('consultarCompraForward','FiltroCompraForwardController@consultarCompraForward');
+Route::resource('consultarForward','FiltroForwardController@consultarForward');
+Route::resource('consultarImportacionForward','FiltroImportacionForwardController@consultarImportacionForward');

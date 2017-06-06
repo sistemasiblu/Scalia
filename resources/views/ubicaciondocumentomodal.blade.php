@@ -1,5 +1,5 @@
 @extends('layouts.modal')
-@section('titulo')<h3 id="titulo"><center>Ubicacion</center></h3>@stop
+@section('titulo')<h3 id="titulo"><center>Inventario Documental</center></h3>@stop
 
 @section('content')
 @include('alerts.request')
@@ -12,8 +12,7 @@
   $idUbicacion = isset($_GET['idUbicacion']) ? $_GET['idUbicacion'] : ''; 
   $idDependencia = '';
   $pl = '';
-
-  if ($idUbicacion != '0') 
+  if ($idUbicacion != '0' and $_GET['estado'] == 'Prestada' or $idUbicacion != '0' and $_GET['estado'] == 'Extraviada' or $idUbicacion != '0' and $_GET['estado'] == 'Averiada') 
   {
       $ubicacion = DB::Select('
       SELECT
@@ -49,6 +48,53 @@
 
       $datosUbicacion = get_object_vars($ubicacion[0]);
 
+      $localizacion = $_GET['localizacion'].' '.$datosUbicacion['posicionUbicacionDocumento'];
+
+      echo 
+      '<script>
+        $(document).ready( function () {
+          mostrarCamposTipoUbicacion("'.$datosUbicacion["tipoUbicacionDocumento"].'");
+        });
+        </script>';
+  }
+  else if ($idUbicacion != '0' and $_GET['estado'] == 'Destruida')
+  {
+    $ubicacion = DB::Select('
+      SELECT
+        "" idUbicacionDocumento,
+        "" as tipoUbicacionDocumento,
+        DependenciaLocalizacion_idDependenciaLocalizacion,
+        posicionUbicacionDocumento,
+        "" as descripcionUbicacionDocumento,
+        Tercero_idTercero,
+        "" as nombreTerceroUbicacionDocumento,
+        "" as documentoTerceroUbicacionDocumento,
+        "" as numeroLegajoUbicacionDocumento,
+        "" as numeroFolioUbicacionDocumento,
+        "" as fechaInicialUbicacionDocumento,
+        "" as fechaFinalUbicacionDocumento,
+        "" as nombreTipoSoporteDocumental,
+        "" as idTipoSoporteDocumental,
+        "" as nombreDependencia,
+        "" as idDependencia,
+        "" as nombreCompania,
+        "" as idCompania,
+        estadoUbicacionDocumento,
+        "" as observacionUbicacionDocumento
+      FROM
+        ubicaciondocumento ud
+          LEFT JOIN
+        tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoporteDocumental = tsd.idTipoSoporteDocumental
+          LEFT JOIN
+        dependencia d ON ud.Dependencia_idProductora = d.idDependencia
+          LEFT JOIN
+        compania c ON ud.Compania_idCompania = c.idCompania
+      WHERE idUbicacionDocumento = '.$idUbicacion);
+
+      $datosUbicacion = get_object_vars($ubicacion[0]);
+
+      $localizacion = $_GET['localizacion'].' '.$datosUbicacion['posicionUbicacionDocumento'];
+
       echo 
       '<script>
         $(document).ready( function () {
@@ -69,6 +115,8 @@
         DependenciaLocalizacion_idDependenciaLocalizacion = ".$idDependencia);
 
     $pl = get_object_vars($pl[0])['posicionUbicacionDocumento'];
+
+    $localizacion = $_GET['localizacion'].' '.$pl;
   }
 
 
@@ -96,13 +144,15 @@
     </div>
 
     <div class="form-group" id='test'>
-      {!!Form::label('posicionUbicacionDocumento', 'P.L.', array('class' => 'col-sm-2 control-label')) !!}
+      {!!Form::label('localizacionUbicacionDocumento', 'P.L.', array('class' => 'col-sm-2 control-label')) !!}
       <div class="col-sm-10">
         <div class="input-group">
           <span class="input-group-addon">
             <i class="fa fa-sitemap"></i>
           </span>
-          {!!Form::text('posicionUbicacionDocumento',($pl != '' ? $pl : ($idUbicacion != 0 ? $datosUbicacion['posicionUbicacionDocumento'] : null)),['class'=>'form-control', 'readonly', 'placeholder'=>'Punto de localización', 'required' => 'required'])!!}
+          {!!Form::text('localizacionUbicacionDocumento',$localizacion,['class'=>'form-control', 'readonly', 'placeholder'=>'Punto de localización', 'required' => 'required'])!!}
+
+          {!!Form::hidden('posicionUbicacionDocumento', ($pl != '' ? $pl : ($idUbicacion != 0 ? $datosUbicacion['posicionUbicacionDocumento'] : null)), array('id' => 'posicionUbicacionDocumento')) !!}
         </div>
       </div>
     </div>
@@ -126,7 +176,7 @@
           <span class="input-group-addon">
             <i class="fa fa-credit-card"></i>
           </span>
-          {!!Form::text('documentoTerceroUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['documentoTerceroUbicacionDocumento'] : null,['class'=>'form-control','placeholder'=>'Ingresa el documento del empleado'])!!}
+          {!!Form::text('documentoTerceroUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['documentoTerceroUbicacionDocumento'] : null,['class'=>'form-control','placeholder'=>'Ingresa el documento del empleado', 'onchange'=>'llenarMetadatos(this.value)'])!!}
         </div>
       </div>
     </div>
@@ -205,19 +255,19 @@
     </div>
 
     <div class="form-group" id='test'>
-      {!!Form::label('Dependencia_idProductora', 'Area', array('class' => 'col-sm-2 control-label')) !!}
+      {!!Form::label('Dependencia_idProductora', 'Dependencia', array('class' => 'col-sm-2 control-label')) !!}
       <div class="col-sm-10">
         <div class="input-group">
           <span class="input-group-addon">
             <i class="fa fa-bank"></i>
           </span>
-          {!!Form::select('Dependencia_idProductora',$dependenciaproductora, ($idUbicacion != 0) ? $datosUbicacion['idDependencia'] : null,["class" => "select form-control","placeholder" =>"Seleccione el área productora", 'required' => 'required'])!!}
+          {!!Form::select('Dependencia_idProductora',$dependenciaproductora, ($idUbicacion != 0) ? $datosUbicacion['idDependencia'] : null,["class" => "select form-control","placeholder" =>"Seleccione la dependencia productora", 'required' => 'required'])!!}
         </div>
       </div>
     </div>
 
     <div class="form-group" id='test'>
-      {!!Form::label('Compania_idCompania', 'Compania', array('class' => 'col-sm-2 control-label')) !!}
+      {!!Form::label('Compania_idCompania', 'Compañía', array('class' => 'col-sm-2 control-label')) !!}
       <div class="col-sm-10">
         <div class="input-group">
           <span class="input-group-addon">
@@ -254,9 +304,9 @@
 
 
   </fieldset>
-  @if($idUbicacion != '0')
+  @if($idUbicacion != '0' and $_GET['estado'] != 'Destruida')
     {!!Form::button('Modificar',["class"=>"btn btn-primary", 'onclick' => 'guardarDatos()'])!!}
-    <button type="button" class="btn btn-danger" onclick="eliminarDatos(<?php echo $datosUbicacion['idUbicacionDocumento'] ?>)">Eliminar</button>
+    <!-- <button type="button" class="btn btn-danger" onclick="eliminarDatos(<?php echo $datosUbicacion['idUbicacionDocumento'] ?>)">Eliminar</button> -->
   @else
     {!!Form::button('Adicionar',["class"=>"btn btn-primary", 'onclick' => 'guardarDatos()'])!!}
  	@endif

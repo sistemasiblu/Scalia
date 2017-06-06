@@ -1,5 +1,5 @@
 @extends('layouts.vista')
-@section('titulo')<h3 id="titulo"><center>Ubicacion</center></h3>@stop
+@section('titulo')<h3 id="titulo"><center>Inventario Documental</center></h3>@stop
 
 @section('content')
 @include('alerts.request')

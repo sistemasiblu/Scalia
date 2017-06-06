@@ -174,6 +174,11 @@ function enviarDatosLista(id,nombre,cod,objeto, pago)
             $(this).val(id);
         });
     }
+
+    if(objeto == 'nombreTemporadaCompra')
+    {
+        llenarMetadatosTemporada(id);
+    }
 }
 
 function llenarMetadatosVersion(idDocImp, numeroVersion, numeroCompra)
@@ -681,4 +686,38 @@ function mostrarDetalleTemporada(idTemporada)
                 alert('Error');
             }
         });
+}
+
+function llenarMetadatosTemporada(idTemporada)
+{
+   var token = document.getElementById('token').value;
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': token},
+            dataType: "json",
+            data: {'idTemporada': idTemporada},
+            url:   ip+'/llenarMetadatosCompraTemporada/',
+            type:  'post',
+            success: function(respuesta){
+                if(respuesta == '')
+                {
+                    alert('No se encontraron registros en las compras de esta temporada.');
+                    $("#nombreClienteCompra").val('');
+                    $("#Tercero_idCliente").val('');
+                    $("#formaPagoClienteCompra").val('');
+                    $("#eventoCompra").val('');
+                    $("#diaPagoClienteCompra").val('');
+                }
+                else
+                {
+                    $("#nombreClienteCompra").val(respuesta[0]['nombreClienteCompra']);
+                    $("#Tercero_idCliente").val(respuesta[0]['Tercero_idCliente']);
+                    $("#formaPagoClienteCompra").val(respuesta[0]['formaPagoClienteCompra']);
+                    $("#eventoCompra").val(respuesta[0]['eventoCompra']);
+                    $("#diaPagoClienteCompra").val(respuesta[0]['diaPagoClienteCompra']);
+                }
+            },
+            error: function(xhr,err){ 
+                alert('Error');
+            }
+        }); 
 }
