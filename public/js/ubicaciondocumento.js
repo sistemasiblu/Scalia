@@ -20,6 +20,11 @@ function mostrarCamposTipoUbicacion(tipo)
         $("#folio").css('display','none');
         $("#fechaInicial").css('display','none');
         $("#fechaFinal").css('display','none');
+
+        $("#descripcionUbicacionDocumento").val('');
+        $("#numeroFolioUbicacionDocumento").val('');
+        $("#fechaInicialUbicacionDocumento").val('');
+        $("#fechaFinalUbicacionDocumento").val('');
     }
     else if(tipo == 'Otros')
     {
@@ -30,6 +35,10 @@ function mostrarCamposTipoUbicacion(tipo)
 
         $("#documento").css('display','none');
         $("#nombre").css('display','none');
+
+        $("#Tercero_idTercero").val('');
+        $("#documentoTerceroUbicacionDocumento").val('');
+        $("#nombreTerceroUbicacionDocumento").val('');
     }
     else
     {
@@ -39,6 +48,14 @@ function mostrarCamposTipoUbicacion(tipo)
         $("#folio").css('display','none');
         $("#fechaInicial").css('display','none');
         $("#fechaFinal").css('display','none');
+
+        $("#Tercero_idTercero").val('');
+        $("#documentoTerceroUbicacionDocumento").val('');
+        $("#nombreTerceroUbicacionDocumento").val('');
+        $("#descripcionUbicacionDocumento").val('');
+        $("#numeroFolioUbicacionDocumento").val('');
+        $("#fechaInicialUbicacionDocumento").val('');
+        $("#fechaFinalUbicacionDocumento").val('');
     }
 }
 
@@ -60,6 +77,7 @@ function guardarDatos()
             window.parent.$("#myModalUbicacion").modal("hide");
             window.parent.window.parent.$("#myModalPL").modal("hide");
             asignarPL(idUbicacion);
+            location.reload();
             $(formId)[0].reset();            
         },
         error: function(result){
@@ -166,11 +184,13 @@ function llenarMetadatos(value)
             if (respuesta == '') 
             {
                 alert('No se han encontrado datos.');
+                $("#Tercero_idTercero").val('');
+                $("#nombreTerceroUbicacionDocumento").val('');
             }
             else
             {
-                $("#Tercero_idTercero").val(respuesta['idTercero']);
-                $("#nombreTerceroUbicacionDocumento").val(respuesta['nombre1Tercero']);
+                $("#Tercero_idTercero").val(respuesta[0]['idTercero']);
+                $("#nombreTerceroUbicacionDocumento").val(respuesta[0]['nombre1Tercero']);
             }
         },
         error: function(xhr,err){ 

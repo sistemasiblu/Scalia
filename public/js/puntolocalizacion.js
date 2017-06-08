@@ -1,11 +1,11 @@
-function cargarEstanteDependencia(idDependencia, numeroEstante)
+function cargarEstanteDependencia(idDependencia, numeroEstante, tipoInventario)
 {
   var token = document.getElementById('token').value;
 
     $.ajax({
             headers: {'X-CSRF-TOKEN': token},
             dataType: "json",
-            data: {'idDependencia': idDependencia, 'numeroEstante' : numeroEstante},
+            data: {'idDependencia': idDependencia, 'numeroEstante' : numeroEstante, 'tipoInventario': tipoInventario},
             url:   'http://'+location.host+'/cargarEstanteDependencia/',
             type:  'post',
             beforeSend: function(){

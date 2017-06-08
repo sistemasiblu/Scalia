@@ -12,5 +12,5 @@ $consultaMetadatos = DB::Select('
     WHERE documentoTercero = '.$valor);
 
     
-echo json_encode($valores);
+echo json_encode($consultaMetadatos);
 ?>

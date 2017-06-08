@@ -83,7 +83,7 @@ for($i = 0; $i < count($datos); $i++)
 
     $(document).ready(function(){
 
-      documento = new Atributos('subseriedetalle','contenedor_subseriedetalle','subseriedetalle_');
+      documento = new Atributos('documento','contenedor_subseriedetalle','subseriedetalle_');
 
       documento.altura = '35px';
       documento.campoid = 'idSubSerieDetalle';

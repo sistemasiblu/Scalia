@@ -64,29 +64,13 @@ function generarCertificadoLaboral(formato, email)
 		}
 		else
 		{
-			if (email != 'noemail') 
-			{
-				var mail = prompt("Digite un correo electrónico por favor.", "");
-				if (mail != null)
-				{
-					documentoU = $("#documentoUsuario").val();
-					destinatario = $("#destinatarioCertificadoLaboral").val();
-					condicion = $("#fechaNacimientoTercero").val();
-					window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
-					$("#documentoUsuario").val('');
-			    	$("#modalFiltroCertificado").modal("hide");
-			    }
-			}
-			else
-			{
-				documentoU = $("#documentoUsuario").val();
-				destinatario = $("#destinatarioCertificadoLaboral").val();
-				condicion = $("#fechaNacimientoTercero").val();
-				mail = '';
-				window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
-				$("#documentoUsuario").val('');
-		    	$("#modalFiltroCertificado").modal("hide");
-			}
+			mail = (email != 'noemail' ? 'si' : 'no');
+			documentoU = $("#documentoUsuario").val();
+			destinatario = $("#destinatarioCertificadoLaboral").val();
+			condicion = $("#fechaNacimientoTercero").val();
+			window.open('kiosko/'+formato+'?destinatario='+destinatario+'&formato='+formato+'&documentoU='+documentoU+'&condicion='+condicion+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+			$("#documentoUsuario").val('');
+	    	$("#modalFiltroCertificado").modal("hide");
 		}
 	}
 }
@@ -130,23 +114,10 @@ function generarReciboPago(formato, email)
 	    }
 	    else	    	
 	    {
-	    	if (email != 'noemail') 
-			{
-				var mail = prompt("Digite un correo electrónico por favor.", "");
-				if (mail != null)
-				{
-					window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
-			    	$("#documentoUsuario").val('');
-			    	$("#modalFiltroRecibo").modal("hide");
-			    }
-			}
-			else
-			{
-				var mail = '';
-				window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
-		    	$("#documentoUsuario").val('');
-		    	$("#modalFiltroRecibo").modal("hide");
-			}
+	    	mail = (email != 'noemail' ? 'si' : 'no');
+			window.open('kiosko/'+formato+'?condicion='+condicion+'&formato='+formato+'&documentoU='+documentoU+'&mail='+mail,'_blank','width=2500px, height=700px, scrollbars=yes');
+	    	$("#documentoUsuario").val('');
+	    	$("#modalFiltroRecibo").modal("hide");
 	    }
 	}
 

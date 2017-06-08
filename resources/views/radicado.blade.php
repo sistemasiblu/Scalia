@@ -1,5 +1,5 @@
 @extends('layouts.vista')
-@section('titulo')<h3 id="titulo"><center>Adjuntar Documento</center></h3>@stop
+@section('titulo')<h3 id="titulo"><center>Digitalizar Documento</center></h3>@stop
 
 @section('content')
 @include('alerts.request')
@@ -145,7 +145,7 @@ while ($i < $registros)
                                 </div>
                               </div>  
                               </br>
-                               <input id="botonRadicar_'.$datos[$i]['idDocumento'].'" type="button" value="Radicar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); radicar(\'\', this.id); irArriba();">
+                               <input id="botonRadicar_'.$datos[$i]['idDocumento'].'" type="button" value="Digitalizar sin adjunto" class="btn btn-primary" onclick="limpiarDivPreview(); radicar(\'\', this.id); irArriba();">
                             </div>
 
                           </div>
@@ -238,7 +238,7 @@ echo '
     <div id="modal-dialog">
     <div class="modal-header">
       <a onclick="cerrarModal()" title="Cerrar" class="close">X</a>
-      <h4 class="modal-title">Radicar documento</h4>
+      <h4 class="modal-title">Digitalizar documento</h4>
     </div>
       <div class="modal-radicado">
 
@@ -381,7 +381,9 @@ echo '
         <h4 class="modal-title">Punto de localización</h4>
       </div>
       <div class="modal-body">
-        <iframe style="width:100%; height:510px; z-index: 964790"; id="localizacion" name="localizacion" src="{!! URL::to ('puntolocalizacion')!!}"> </iframe> 
+        <?php
+          echo '<iframe style="width:100%; height:400px; " id="localizacion" name="localizacion" src="http://'.$_SERVER["HTTP_HOST"].'/puntolocalizacion?tipo=\'digital\'"></iframe>';
+        ?>
       </div>
     </div>
   </div>

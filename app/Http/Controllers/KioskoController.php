@@ -504,6 +504,7 @@ class KioskoController extends Controller
                     nombreCargo,
                     nombre1Tercero,
                     fechaInicioContrato,
+                    IF(correoElectronicoTercero = '', 'NULL', correoElectronicoTercero) as correoElectronicoTercero,
                     nombreCentroTrabajo,
                     naturalezaConceptoNomina,
                     nombreConceptoNomina,
@@ -532,6 +533,12 @@ class KioskoController extends Controller
                 GROUP BY ConceptoNomina_idConceptoNomina, idLiquidacionNomina
                 ORDER BY numeroLiquidacionNomina, naturalezaConceptoNomina DESC");
 
+                if (empty($recibo)) 
+                {
+                    echo 'No hay recibos de pago generados para este tercero en los periodos seleccionados.';
+                    return;
+                }
+
             return view('formatos.impresionReciboPago',compact('recibo', 'mail'));
         }
 
@@ -558,6 +565,7 @@ class KioskoController extends Controller
                     nombreIdentificacion,
                     nombre1Tercero,
                     documentoTercero,
+                    IF(correoElectronicoTercero = '', 'NULL', correoElectronicoTercero) as correoElectronicoTercero,
                     codigoAlternoContrato,
                     nombreTipoContrato,
                     valorContrato,

@@ -1,16 +1,21 @@
 @extends('layouts.modal')
-@section('titulo')<h3 id="titulo"><center>Punto de localización</center></h3>@stop
+@section('titulo')<h3 id="titulo"><center>Inventario Documental</center></h3>@stop
 
 @section('content')
 @include('alerts.request')
 {!!Html::script('js/puntolocalizacion.js')!!}
+
+
 
 <div id='form-section' >
 
   <fieldset id="ubicacionDocumento-form-fieldset">  
   <input type="hidden" id="token" value="{{csrf_token()}}"/>
 
+
   <?php 
+    $tipoInventario = $_GET['tipo'];
+
     $localizacion = DB::Select('
       SELECT 
           idDependencia, nombreDependencia, dl.*
@@ -27,7 +32,7 @@
       $clocalizacion[$i] = (array) $localizacion[$i];
     }
 
-    $select = '<select class="form-control" onchange="cargarEstanteDependencia(this.value, 001)">
+    $select = '<select class="form-control" onchange="cargarEstanteDependencia(this.value, 001, '.$tipoInventario.')">
     <option value="" disabled selected>Seleccione una dependencia</option>';
 
     for ($i=0; $i < count($localizacion); $i++) 
@@ -38,7 +43,7 @@
     $select .= '</select>';
   ?>
 
-  <div class="form-group" id='test'>
+  <div class="form-group col-md-10" id='test'>
     {!!Form::label('Dependencia', 'Dependencia', array('class' => 'col-sm-2 control-label')) !!}
     <div class="col-sm-10">
       <div class="input-group">
@@ -51,6 +56,31 @@
       </div>
     </div>
   </div>
+
+<?php 
+  $style = 'width: 13px; height: 13px; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; display:inline-block;'
+?>
+
+  <div class="form-group col-md-2" id='test'>
+    <div class="btn-group" title="Convención de colores">
+        <button type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
+            <i class="fa fa-pie-chart"></i> 
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+            <li><a class="toggle-vis" data-column="0"><label> Disponible <div style="background-color:#A9F5A9; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="1"><label> Llena <div style="background-color:white; border: 1px solid; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="2"><label> Ocupada <div style="background-color:#F5A9A9; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="3"><label> Destruída <div style="background-color:#F2F5A9; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="4"><label> Prestada <div style="background-color:#A9BCF5; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="5"><label> Extraviada <div style="background-color:#E6E6E6; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="6"><label> Deteriorada <div style="background-color:#A9F5F2; <?php echo $style ?>"></div></label></a></li>
+            <li><a class="toggle-vis" data-column="7"><label> Inactiva <div style="background-color:#C0C0C0; <?php echo $style ?>"></div></label></a></li>
+        </ul>
+    </div>
+  </div>
+
+  <br><br>
 
   <div class="container-fluid" style="margin-top:10px;">
     <div id="botones">

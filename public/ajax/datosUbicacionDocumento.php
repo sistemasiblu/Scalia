@@ -27,7 +27,7 @@
             observacionUbicacionDocumento,
             estadoUbicacionDocumento
         FROM
-            ubicacionDocumento ud
+            ubicaciondocumento ud
                 LEFT JOIN
             tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoporteDocumental = tsd.idTipoSoporteDocumental
                 LEFT JOIN

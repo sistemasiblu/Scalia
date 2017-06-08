@@ -89,7 +89,7 @@ class RetencionController extends Controller
                 on r.SubSerie_idSubserie = ss.idSubSerie
                 left join documento doc
                 on r.Documento_idDocumento = doc.idDocumento
-                where Retencion_idRetencion = '.$retencion->idRetencion);
+                where Retencion_idRetencion = '.$id);
 
             $dir = get_object_vars($carpetas[$i]);
 

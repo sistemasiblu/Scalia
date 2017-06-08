@@ -219,16 +219,24 @@ function base64($archivo)
 
     $correo = array();
     $correo['asunto'] = 'Recibo de pago '.$camposrecibo[0]['nombre1Tercero'];
+    $correo['destinatario'] = $camposrecibo[0]['correoElectronicoTercero'];
     $correo['mensaje'] = 'Recibo de pago generado en Kiosko - Scalia.';
 
-    if ($mail != '') 
+    if ($mail == 'si') 
     {
-      Mail::send('emails.contact',$correo,function($msj) use ($mail, $correo)
-        {
-            $msj->to($mail);
-            $msj->subject($correo['asunto']);
-            $msj->attach(public_path().'/recibopago.html'); 
-        }); 
+      if ($correo['destinatario'] == 'NULL') 
+      {
+        echo '<script>alert("No tiene un correo electrónico asociado.")</script>';
+      }
+      else
+      {
+        Mail::send('emails.contact',$correo,function($msj) use ($correo)
+          {
+              $msj->to($correo['destinatario']);
+              $msj->subject($correo['asunto']);
+              $msj->attach(public_path().'/recibopago.html'); 
+          }); 
+      }
     }
     
   ?>

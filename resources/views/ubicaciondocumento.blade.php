@@ -173,7 +173,7 @@
           <span class="input-group-addon">
             <i class="fa fa-bars"></i>
           </span>
-          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Averiada' => 'Averiada'],null,['class' => 'form-control', 'onchange' => 'mostrarCamposTipoUbicacion(this.value)', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
+          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Deteriorada' => 'Deteriorada'],null,['class' => 'form-control', 'onchange' => 'mostrarCamposTipoUbicacion(this.value)', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
         </div>
       </div>
     </div>

@@ -80,7 +80,7 @@ function base64($archivo)
 
     Cordial saludo:<br><br><br>
 
-    Les informamos que '.($camposcertificado[0]['sexoTercero'] == 'Masculino' ? 'el señor ' : 'la señora').'<b>'.$camposcertificado[0]['nombre1Tercero'].'</b> identificado(a) con '.$camposcertificado[0]['nombreIdentificacion'].' No. <b>'.$camposcertificado[0]['documentoTercero'].'</b> ha suscrito los siguientes contratos de trabajo con nuestra compañía desempeñando el cargo de <b>'.$camposcertificado[0]['nombreCargo'].'</b>:<br><br><br>
+    Les informamos que '.($camposcertificado[0]['sexoTercero'] == 'Masculino' ? 'el señor ' : 'la señora').'<b>'.$camposcertificado[0]['nombre1Tercero'].'</b> identificado(a) con '.$camposcertificado[0]['nombreIdentificacion'].' No. <b>'.$camposcertificado[0]['documentoTercero'].'</b> ha suscrito los siguientes contratos de '.($camposcertificado[0]['fechaTerminacionContrato'] == 'Vigente' ? 'labora' : 'laboró').' en nuestra compañía desempeñando el cargo de <b>'.$camposcertificado[0]['nombreCargo'].'</b>:<br><br><br>
 
 
       <table table class="table table-striped table-bordered table-hover" style="width:100%;">
@@ -139,16 +139,24 @@ function base64($archivo)
 
     $correo = array();
     $correo['asunto'] = 'Certificado laboral '.$camposcertificado[0]['nombre1Tercero'];
+    $correo['destinatario'] = $camposcertificado[0]['correoElectronicoTercero'];
     $correo['mensaje'] = 'Certificado laboral generado en Kiosko - Scalia.';
 
-    if ($mail != '') 
+    if ($mail == 'si') 
     {
-      Mail::send('emails.contact',$correo,function($msj) use ($mail, $correo)
-        {
-            $msj->to($mail);
-            $msj->subject($correo['asunto']);
-            $msj->attach(public_path().'/certificadolaboral.html'); 
-        }); 
+      if ($correo['destinatario'] == 'NULL') 
+      {
+        echo '<script>alert("No tiene un correo electrónico asociado.")</script>';
+      }
+      else
+      {
+        Mail::send('emails.contact',$correo,function($msj) use ($correo)
+          {
+              $msj->to($correo['destinatario']);
+              $msj->subject($correo['asunto']);
+              $msj->attach(public_path().'/certificadolaboral.html'); 
+          }); 
+      }
     }
   ?>
 

@@ -119,7 +119,7 @@
                 <div class="col-md-1" style="width: 65px;">Central</div>
                 <div class="col-md-1" style="width: 80px;">Soporte</div>
                 <div class="col-md-1" style="width: 150px;">Disposicion Final</div>
-                <div class="col-md-1" style="width: 95px;">Micro film</div>
+                <div class="col-md-1" style="width: 95px;">Digitalización</div>
                 <div class="col-md-1" style="width: 300px;">Procedimiento</div>
                 <div id="contenedor_retencion"> 
                 </div>

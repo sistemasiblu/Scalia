@@ -2,6 +2,7 @@
 
 $idDependencia = $_POST['idDependencia'];
 $numeroEstante = $_POST['numeroEstante'];
+$tipoInventario = $_POST['tipoInventario'];
 
 $localizacion = DB::Select('
   SELECT 
@@ -38,7 +39,7 @@ for ($i=0; $i < count($estante); $i++)
 { 
   $posEstante = get_object_vars($estante[$i]);
 
-  $boton .= '<a onclick="cargarEstanteDependencia('.$posEstante['Dependencia_idDependencia'].','.$posEstante['numeroEstanteDependenciaLocalizacion'].')" class="btn btn-default"><span>'.$posEstante['numeroEstanteDependenciaLocalizacion'].'</span></a>';
+  $boton .= '<a onclick="cargarEstanteDependencia('.$posEstante['Dependencia_idDependencia'].','.$posEstante['numeroEstanteDependenciaLocalizacion'].',\''.$tipoInventario.'\')" class="btn btn-default"><span>'.$posEstante['numeroEstanteDependenciaLocalizacion'].'</span></a>';
 }
 
     $i = 0;
@@ -98,7 +99,7 @@ for ($i=0; $i < count($estante); $i++)
                         else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'NoDisponible')
                         {
                           $estructura .= "
-                            <div title='Caja cerrada' style='background-color:white; display:inline-block; height:100%; width:100%'>
+                            <div title='Caja llena' style='background-color:white; display:inline-block; height:100%; width:100%'>
                               <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
                         }
 
@@ -136,7 +137,7 @@ for ($i=0; $i < count($estante); $i++)
                             $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." ocupada'";
 
                             $pl = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].' '. $clocalizacion[$i]['posicionUbicacionDocumento'].'"';
-                            $onclick = "onclick='asignarPLRadicado(".$pl.", event);'";
+                            $onclick = ($tipoInventario == 'manual' ? "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Activa",'.$localizacion.");'" : "onclick='asignarPLRadicado(".$pl.", event);'");
                         }
 
                         else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Destruida') 
@@ -166,13 +167,13 @@ for ($i=0; $i < count($estante); $i++)
                             $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Extraviada",'.$localizacion.");'";
                         }
 
-                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Averiada') 
+                        else if ($clocalizacion[$i]['estadoUbicacionDocumento'] == 'Deteriorada') 
                         {
                           $color = '#A9F5F2';   
-                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." averiada'";
+                            $title = "title='Carpeta ".$clocalizacion[$i]['posicionUbicacionDocumento']." deteriorada'";
 
                             $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
-                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Averiada",'.$localizacion.");'";
+                            $onclick = "onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Deteriorada",'.$localizacion.");'";
                         }
 
 

@@ -20,7 +20,7 @@ class Dependencia extends Model
 
 	public function dependenciaLocalizacion() 
 	{
-		return $this->hasMany('App\dependenciaLocalizacion','Dependencia_idDependencia');
+		return $this->hasMany('App\DependenciaLocalizacion','Dependencia_idDependencia');
 	}
 
 	public function retenciondocumental() 

@@ -3,8 +3,6 @@
 
 @section('content')
 @include('alerts.request')
-
-{!! Html::style('css/segmented-controls.css'); !!}
 {!!Html::script('js/dependencia.js')!!}
 
 <?php

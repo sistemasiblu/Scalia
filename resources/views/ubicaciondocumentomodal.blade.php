@@ -12,7 +12,7 @@
   $idUbicacion = isset($_GET['idUbicacion']) ? $_GET['idUbicacion'] : ''; 
   $idDependencia = '';
   $pl = '';
-  if ($idUbicacion != '0' and $_GET['estado'] == 'Prestada' or $idUbicacion != '0' and $_GET['estado'] == 'Extraviada' or $idUbicacion != '0' and $_GET['estado'] == 'Averiada') 
+  if ($idUbicacion != '0' and $_GET['estado'] == 'Activa' or $idUbicacion != '0' and $_GET['estado'] == 'Prestada' or $idUbicacion != '0' and $_GET['estado'] == 'Extraviada' or $idUbicacion != '0' and $_GET['estado'] == 'Deteriorada') 
   {
       $ubicacion = DB::Select('
       SELECT
@@ -22,8 +22,8 @@
         posicionUbicacionDocumento,
         descripcionUbicacionDocumento,
         Tercero_idTercero,
-        "" as nombreTerceroUbicacionDocumento,
-        "" as documentoTerceroUbicacionDocumento,
+        nombre1Tercero as nombreTerceroUbicacionDocumento,
+        documentoTercero as documentoTerceroUbicacionDocumento,
         numeroLegajoUbicacionDocumento,
         numeroFolioUbicacionDocumento,
         fechaInicialUbicacionDocumento,
@@ -38,6 +38,8 @@
         observacionUbicacionDocumento
       FROM
         ubicaciondocumento ud
+          LEFT JOIN
+        Iblu.Tercero t ON ud.Tercero_idTercero = t.idTercero
           LEFT JOIN
         tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoporteDocumental = tsd.idTipoSoporteDocumental
           LEFT JOIN
@@ -173,7 +175,7 @@
       {!!Form::label('documentoTerceroUbicacionDocumento', 'Cedula', array('class' => 'col-sm-2 control-label')) !!}
       <div class="col-sm-10">
         <div class="input-group">
-          <span class="input-group-addon">
+          <span class="input-group-addon" style="background-color: #b7ffc3">
             <i class="fa fa-credit-card"></i>
           </span>
           {!!Form::text('documentoTerceroUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['documentoTerceroUbicacionDocumento'] : null,['class'=>'form-control','placeholder'=>'Ingresa el documento del empleado', 'onchange'=>'llenarMetadatos(this.value)'])!!}
@@ -201,7 +203,7 @@
           <span class="input-group-addon">
             <i class="fa fa-th-large"></i>
           </span>
-          {!!Form::text('numeroLegajoUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['numeroLegajoUbicacionDocumento'] : null,['class'=>'form-control','placeholder'=>'Ingresa el número de legajos', 'required' => 'required', 'readonly'])!!}
+          {!!Form::text('numeroLegajoUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['numeroLegajoUbicacionDocumento'] : 1,['class'=>'form-control','placeholder'=>'Ingresa el número de legajos', 'required' => 'required'])!!}
         </div>
       </div>
     </div>
@@ -285,7 +287,7 @@
           <span class="input-group-addon">
             <i class="fa fa-bars"></i>
           </span>
-          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Averiada' => 'Averiada'],($idUbicacion != 0) ? $datosUbicacion['estadoUbicacionDocumento'] : null,['class' => 'form-control', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
+          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Deteriorada' => 'Deteriorada'],($idUbicacion != 0) ? $datosUbicacion['estadoUbicacionDocumento'] : null,['class' => 'form-control', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
         </div>
       </div>
     </div>

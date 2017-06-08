@@ -24,7 +24,7 @@
 					</div>
 				</a>
 
-				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskocomercial'?>">
+				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/accesodenegado'?>">
 					<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 						<span class="span-button"></span>
 						<img class="img" src="imagenes/kiosko/Comercial.png">
@@ -38,21 +38,21 @@
 					</div>
 				</a>
 
-				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskoinventario'?>">
+				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/accesodenegado'?>">
 					<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 						<span class="span-button"></span>
 						<img class="img" src="imagenes/kiosko/Inventario.png">
 					</div>
 				</a>
 
-				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskocartera'?>">
+				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/accesodenegado'?>">
 					<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 						<span class="span-button"></span>
 						<img class="img" src="imagenes/kiosko/Cartera.png">
 					</div>
 				</a>
 
-				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskocontabilidad'?>">
+				<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/accesodenegado'?>">
 					<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 						<span class="span-button"></span>
 						<img class="img" src="imagenes/kiosko/Contabilidad.png">
