@@ -28,9 +28,15 @@ if ( window.$ ) {
 
 		// init html
 		var table = $('<p/>').append( $('table').clone() ).html();
+		var demoHtml = $.trim( $('div.demo-html').html() );
+
+		if ( demoHtml ) {
+			demoHtml = demoHtml+'\n\n';
+		}
+
 		$('div.tabs div.table').append(
 			'<code class="multiline language-html">\t\t\t'+
-				escapeHtml( table )+
+				escapeHtml( demoHtml + table )+
 			'</code>'
 		);
 		//SyntaxHighlighter.highlight({}, $('#display-init-html')[0]);
@@ -58,7 +64,7 @@ if ( window.$ ) {
 					} catch ( e ) {}
 
 					$('div.tabs div.ajax').append(
-						'<code class="multiline language-js">'+str+'</code>'
+						$('<code class="multiline language-js"/>').text( str )
 					);
 
 					// This can be really slow for large builds

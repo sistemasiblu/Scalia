@@ -1,4 +1,6 @@
 <?php 
+//print_r(@$nota);
+/*return;*/
 $idEstadoDefault = null;
 $nombreEstadoDefault = '';
 foreach ($estado as $key => $value) {
@@ -175,7 +177,8 @@ $fechahora = Carbon\Carbon::now();
 {!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
 {!!Html::style('assets/dropzone/dist/min/dropzone.min.css'); !!}<!--Llamo al dropzone-->
 {!!Html::style('css/dropzone.css'); !!}<!--Llamo al dropzone-->
-
+{!!Html::script('js/movimientocrmnota.js')!!}
+{!!Html::style('css/fichatecnica.css')!!}
 
 
 <script>
@@ -192,12 +195,49 @@ $fechahora = Carbon\Carbon::now();
 	var valorAsistentes = [0,'','','','',''];
 	var valorArchivo = [0,'','',''];
 
+var notas = '<?php echo (isset($nota) ? json_encode($nota) : "");?>';
+    notas = (notas != '' ? JSON.parse(notas) : '');
 
 
-	$(document).ready(function(){
+
+
+    console.log(notas);
+ var valorNota = 
+ [
+    0,
+    "<?php echo \Session::get("idUsuario");?>",
+    "<?php echo \Session::get("nombreUsuario");?>",
+    "<?php echo date('Y-m-d H:i:s');?>",
+    ''
+ ]
+
+	
+
+    //**************************
+    // 
+    //   N O T A S 
+    //
+    //**************************
+    
+
+
+$(document).ready(function(){
+
+	nota = new AtributosNota('nota','contenedor_nota','nota_');
+
+    nota.alto = '100px;';
+    nota.ancho = '100%;';
+    nota.campoid = 'idMovimientoCRMNota';
+    nota.campoEliminacion = 'eliminarNota';
+
+    for(var j=0, k = notas.length; j < k; j++)
+    {
+        nota.agregarNota(JSON.stringify(notas[j]),'L');
+    }
 
 		subclasificacion = "<?php echo @$movimientocrm->ClasificacionCRMDetalle_idClasificacionCRMDetalle; ?>";
-		if($("#ClasificacionCRM_idClasificacionCRM").val() !== '')
+		
+		if($("#ClasificacionCRM_idClasificacionCRM").length > 0 && $("#ClasificacionCRM_idClasificacionCRM").val() !== '')
 			llamarsubclasificacion($("#ClasificacionCRM_idClasificacionCRM").val(), subclasificacion);
 
 		asistentes = new Atributos('asistentes','contenedor_asistentes','asistentes_');
@@ -676,7 +716,7 @@ $fechahora = Carbon\Carbon::now();
 							<li><a data-toggle="tab" href="#solucion">Solución</a></li>
 						<?php
 						}
-
+                       
 						if(strpos($camposVista, 'asistentesMovimientoCRM') !== false)
 						{ 
 						?>
@@ -690,6 +730,11 @@ $fechahora = Carbon\Carbon::now();
 					  		<li><a data-toggle="tab" href="#documentos">Documentos</a></li>
 						<?php
 						}
+						 ?>
+						
+					  		<li><a data-toggle="tab" href="#nota">Seguimiento</a></li>
+						
+                         <?php
 						if(strpos($camposVista, 'vacantesMovimientoCRM') !== false)
 						{
 							?>
@@ -743,6 +788,26 @@ $fechahora = Carbon\Carbon::now();
                             </div>
 						</div>
 					</div>
+
+                     <div id="nota" class="tab-pane fade">
+					    <div class="form-group" id='test'>
+					        <div class="col-sm-12">
+					            <div class="row show-grid" style=" border: 1px solid #C0C0C0;">
+					                <div style="overflow:auto; height:350px;">
+					                    <div style="width: 100%; display: inline-block;">
+					                        <div class="col-md-1" style="width: 40px;height: 42px; cursor:pointer;" onclick="nota.agregarNota(valorNota, 'A');">
+					                          <span class="glyphicon glyphicon-plus"></span>
+					                        </div>
+					                        
+					                        <div id="contenedor_nota">
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					 </div>   
+
 					<?php
 						}
 					if(strpos($camposVista, 'asistentesMovimientoCRM') !== false)
@@ -786,6 +851,11 @@ $fechahora = Carbon\Carbon::now();
 										    </div>  
 										</div>	
  									
+						
+					
+					
+
+
 										
 										<div class="col-sm-12" style="padding: 10px 10px 10px 10px;border: 1px solid; height:300px;">		
 										{!!Form::hidden('archivoMovimientoCRMArray', '', array('id' => 'archivoMovimientoCRMArray'))!!}
@@ -949,21 +1019,3 @@ $fechahora = Carbon\Carbon::now();
 
 @stop
 
-<!-- Grid modal para  cargo (Vacantes) -->
-<div id="ModalVacante" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="width:70%;">
-
-    <!-- Modal content-->
-    <div style="" class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Seleccion Vacantes</h4>
-      </div>
-      <div class="modal-body">
-      <?php 
-        echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/MovimientocrmVacantegridselect"></iframe>'
-      ?>
-      </div>
-    </div>
-  </div>
-</div>

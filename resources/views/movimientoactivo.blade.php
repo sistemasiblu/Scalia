@@ -1,6 +1,8 @@
 @extends('layouts.vista')
 
 <?php 
+/*print_r($tercero);
+return;*/
 $idEstadoDefault = null;
 $nombreEstadoDefault = '';
 foreach ($estado as $key => $value) {
@@ -26,8 +28,39 @@ function mostrarCampo($arrayCampos, $campo, $rolUsuario, $atributo)
   }
   return $sololectura;
 } 
+?>
+<script>
+ function borrarIguales(id,valor)
+ {
+
+alert(valor);
+  //$('#campo_select_append').append('<option value="opcion_nueva_1" selected="selected">Opción nueva 1</option>');
+
+var idcampo=JSON.stringify(id).replace(/\D/g,'');
+//$("#nombreLocalizacionD"+idcampo).append("option[value='"+valor+"'] selected='selected'>Opción nueva 1</option>");
+var x = document.getElementById("#nombreLocalizacionD"+idcampo);
+    var option = document.createElement("option");
+    option.text = valor;
+    x.add(option);
 
 
+var dato=document.getElementById("#nombreLocalizacionO"+idcampo).value;
+alert(dato);
+
+//$("#nombreLocalizacionD"+idcampo).find("option[value='"+valor+"']").remove(); 
+//$("#nombreLocalizacionD"+idcampo).find("option[value='"+valor+"']").remove(); 
+ }
+
+
+ $(document).ready(function() {
+  $("#Tercero_idTercero").select2();
+});
+
+
+
+
+</script>
+<?php
 $id = isset($_GET["idTransaccionActivo"]) ? $_GET["idTransaccionActivo"] : 0;
 $campos = DB::select(
 "select idCampoTransaccion,codigoTransaccionActivo,nombreTransaccionActivo,tipoNumeracionTransaccionActivo,longitudTransaccionActivo,
@@ -128,6 +161,7 @@ else
 ?>
 @section('content')
 @include('alerts.request')
+  {!!Html::script('/js/select2.min.js');!!}
 
 {!!Html::script('js/movimientoactivo.js'); !!}
 {!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
@@ -411,7 +445,7 @@ function  abrirTransaccionActivo(id)
 
 
 
-    
+  
   var movimientoactivodetalle = '<?php echo (isset($movimientoactivodetalle) ? json_encode($movimientoactivodetalle) : "");?>';
   movimientoactivodetalle = (movimientoactivodetalle != '' ? JSON.parse(movimientoactivodetalle) : '');
   console.log(movimientoactivodetalle);
@@ -435,6 +469,8 @@ $(document).ready(function()
   movimiento.requerido=['','','','','','','','','',true];
   movimiento.sololectura=[false,false,false,false,false,true,true,false,false,false];
   movimiento.completar=['off','off','off','off','off','off','off','off','off','off'];
+  movimiento.obligatorio=[false,true,true,false,false,false,false,false,false,false];
+
 
   var idLocalizacion = '<?php echo isset($idLocalizacion) ? $idLocalizacion : "";?>';
   var nombreLocalizacion = '<?php echo isset($nombreLocalizacion) ? $nombreLocalizacion : "";?>';
@@ -442,9 +478,10 @@ $(document).ready(function()
   var codigoActivo = ['onblur','autocompletarfila(this.value,this.id,);'];
   var idcelda=$("#idActivo"+movimiento.campoid).val();
   var limpiartotales =['onblur',"calcularTotales();",'ondrop',"ensayo();"];
+  var borrarIguales =['onblur',"borrarIguales(this.id,this.value);"];
   var cantidadMovimientoActivo = ['onblur',"calcularTotales();"];
   var detalleActivo=['onclick',"detalleactivos(this.value,this.id);'',"];
-  movimiento.funciones=['','','','',codigoActivo,detalleActivo,'',limpiartotales,'',''];
+  movimiento.funciones=['',borrarIguales,'','',codigoActivo,detalleActivo,'',limpiartotales,'',''];
   movimiento.opciones = [[],Localizacion,Localizacion,[],[],[],[],[],[],[]];      
   var idActivo = '<?php echo isset($idActivo) ? $idActivo : "";?>';
   var nombreActivo = '<?php echo isset($nombreActivo) ? $nombreActivo : "";?>';

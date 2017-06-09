@@ -58,7 +58,7 @@
           <span class="input-group-addon">
             <i class="fa fa-pencil-square-o "></i>
           </span>
-          {!!Form::select('Localizacion_idPadre', @$localizacionPadre, @$localizacion->Localizacion_idPadre,['class' => 'form-control'])!!}
+          {!!Form::select('Localizacion_idPadre', @$localizacionPadre, @$localizacion->Localizacion_idPadre,['class' => 'form-control','placeholder'=>'Seleccione'])!!}
         </div>
       </div>
     </div>

@@ -117,9 +117,7 @@ function abrir(){
     var transaccionEncabezado = '<?php echo (isset($transaccionEncabezado) ? json_encode($transaccionEncabezado) : "");?>';
     transaccionEncabezado = (transaccionEncabezado != '' ? JSON.parse(transaccionEncabezado) : '');
 
-    var transaccionDetalle = '<?php echo isset($transaccionDetalle)? json_encode($transaccionDetalle) : "";?>';
-    transaccionDetalle = (transaccionDetalle != '' ? JSON.parse(transaccionDetalle) : '');
-
+    
     var transaccionconcepto = '<?php echo isset($transaccionConcepto)? json_encode($transaccionConcepto) : "";?>';
     transaccionconcepto = (transaccionconcepto != '' ? JSON.parse(transaccionconcepto) : '');
 
@@ -198,18 +196,18 @@ $(document).ready(function()
   permisos=new Atributos('permisos','contenedor-permisos','permisos-');
   permisos.campoid = 'idTransaccionRol';
   permisos.campoEliminacion = 'permisosEliminar';
-  permisos.campos=['idTransaccionRol','nombreRol','TransaccionActivo_idTransaccionActivo', 'Rol_idRol','adicionarTransaccionRol','modificarTransaccionRol','consultarTransaccionRol','anularTransaccionRol','autorizarTransaccionRol',
+  permisos.campos=['idTransaccionRol','nombreRol', 'Rol_idRol','adicionarTransaccionRol','modificarTransaccionRol','consultarTransaccionRol','anularTransaccionRol','autorizarTransaccionRol',
   ];
-  permisos.etiqueta=['input','input','input','input','checkbox','checkbox','checkbox','checkbox','checkbox'];
-  permisos.tipo=['hidden','','hidden','hidden','checkbox','checkbox','checkbox','checkbox','checkbox'];
-  permisos.estilo=['','width: 200px;height: 35px','','','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;'];
+  permisos.etiqueta=['input','input','input','checkbox','checkbox','checkbox','checkbox','checkbox'];
+  permisos.tipo=['hidden','','hidden','checkbox','checkbox','checkbox','checkbox','checkbox'];
+  permisos.estilo=['','width: 200px;height: 35px','','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;','width:45px;height:30px;display:inline-block;'];
 
-  permisos.clase=['','','','','','','','',''];
-  permisos.sololectura=[false,false,false,false,false,false,false,false,false,];
-  permisos.completar=['off','off','off','off','off','off','off','off','off'];
+  permisos.clase=['','','','','','','',''];
+  permisos.sololectura=[false,false,false,false,false,false,false,false,];
+  permisos.completar=['off','off','off','off','off','off','off','off'];
 
-  permisos.opciones = [[],[],[],[],[],[],[],[],[]];      
-  permisos.funciones=['','','','','','','','',''];
+  permisos.opciones = [[],[],[],[],[],[],[],[]];      
+  permisos.funciones=['','','','','','','',''];
 
   var idActivo = '<?php echo isset($idActivo) ? $idActivo : "";?>';
   var nombreActivo = '<?php echo isset($nombreActivo) ? $nombreActivo : "";?>';
@@ -292,9 +290,7 @@ $(document).ready(function()
  {!!Form::label('codigoTransaccionActivo', 'Codigo', array('class' => 'col-sm-2 control-label')) !!}
     <div class="col-sm-6">
       {!!Form::text('codigoTransaccionActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el codigo'])!!}<br>
-       {!!Form::hidden('idTransaccionActivoCampoE', null, array('id' => 'idTransaccionActivoCampoE')) !!}
       {!!Form::hidden('idDetalle', null, array('id' => 'idDetalle')) !!}
-      {!!Form::hidden('idTransaccionActivoCampoD', null, array('id' => 'idTransaccionActivoCampoD')) !!}
       {!!Form::hidden('TransaccionActivo_idTransaccionActivo', null, array('id' => 'TransaccionActivo_idTransaccionActivo')) !!}
       {!!Form::hidden('Rol_idRol', null, array('id' => 'Rol_idRol')) !!}
       {!!Form::hidden('Compania_idCompania', null, array('id' => 'Compania_idCompania')) !!}
@@ -306,7 +302,7 @@ $(document).ready(function()
     </div>
      <br><br><br> {!!Form::label('nombreTransaccionActivo', 'Nombre', array('class' => 'col-sm-2 control-label')) !!}
     <div class="col-sm-6">
-      {!!Form::text('nombreTransaccionActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el nombre'])!!}<br>
+      {!!Form::text('nombreTransaccionActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el nombre'])!!}<br>
     </div>
       <br><br><br>{!!Form::label('formatoTransaccionActivo', 'Formato', array('class' => 'col-sm-2 control-label')) !!} 
     <div class="col-sm-6" >
@@ -331,7 +327,7 @@ $(document).ready(function()
     </div>
      {!!Form::label('estadoTransaccionActivo', 'Estado Por Defecto', array('class' => 'col-sm-4 control-label')) !!} 
     <div class="col-sm-6" >
-      {!!Form::select('estadoTransaccionActivo',['Proceso'=>'Proceso', 'Aceptado'=>'Aceptado', 'Rechazado'=>'Rechazado'],@$transaccionactivo->estadoActivo,['class' => 'form-control', 'style'=>'padding-left:2px;'])!!}
+    {!!Form::select('estadoTransaccionActivo',['Aprobado Total'=>'Aprobado Total','Proceso'=>'Proceso' ],@$transaccionactivo->estadoActivo,['class' => 'form-control', 'style'=>'padding-left:2px;'])!!}
     </div>
  </div>
      <input type="hidden" id="token" value="{{csrf_token()}}"/>

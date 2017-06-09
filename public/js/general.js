@@ -71,6 +71,8 @@ var Atributos = function(nombreObjeto, nombreContenedor, nombreDiv){
     this.nombreOpcion = new Array();
     this.valorOpcion = new Array();
     this.eventoclick = new Array();
+    this.obligatorio = new Array();
+
 
 };
 
@@ -126,6 +128,9 @@ Atributos.prototype.agregarCampos = function(datos, tipo){
                 {
                     input.setAttribute(this.funciones[i][h], this.funciones[i][h+1]);
                 }
+
+                if(this.obligatorio[i] === true)
+                input.setAttribute("required", "required");
             }
 
             div.appendChild(input);
@@ -201,6 +206,9 @@ Atributos.prototype.agregarCampos = function(datos, tipo){
                 {
                     select.setAttribute(this.funciones[i][h], this.funciones[i][h+1]);
                 }
+
+                 if(this.obligatorio[i] === true)
+                select.setAttribute("required", "required");
             } 
 
             option = document.createElement('option');

@@ -188,6 +188,21 @@ class MovimientoCRMController extends Controller
 
         $movimientocrm = \App\MovimientoCRM::All()->last();
 
+        $movCRMUltimo = \App\MovimientoCRM::All()->last();
+
+        echo count($request['idMovimientoCRMNota']);
+        for ($i=0 ; $i < count($request['idMovimientoCRMNota']); $i++)
+        {
+            \App\MovimientoCRMNota::create([
+           
+            'MovimientoCRM_idMovimientoCRM'=>$movCRMUltimo ->idMovimientoCRM,
+            'Users_idUsuario'=>$request['Users_idUsuario'][$i],
+            'fechaMovimientoCRMNota'=>$request['fechaMovimientoCRMNota'][$i],
+            'observacionMovimientoCRMNota'=>$request['observacionMovimientoCRMNota'][$i]
+             ]); 
+
+        }
+
         $this->grabarDetalle($movimientocrm->idMovimientoCRM, $request);
 
         $arrayImage = $request['archivoMovimientoCRMArray'];
@@ -234,7 +249,8 @@ class MovimientoCRMController extends Controller
             ]);
         }
 
-
+         echo '/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM'];
+        return;
         //********************************
         //
         // Envio de Correo con MovimientoCRM
@@ -308,8 +324,8 @@ class MovimientoCRMController extends Controller
             unlink($nombreAdj);
         }
 
-        
-        return redirect('/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM']);
+
+        //return redirect('/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM']);
     }
 
     /**
@@ -359,6 +375,19 @@ class MovimientoCRMController extends Controller
 
         // consultamos los maestros asociados a la compania
         // consultamos los maestros asociados a la compania
+       /* $notacrm= DB::Select('
+            SELECT idMovimientoCRMNota, MovimientoCRM_idMovimientoCRM, Users_idUsuario, fechaMovimientoCRMNota, observacionMovimientoCRMNota
+            FROM movimientocrmnota 
+            WHERE MovimientoCRM_idMovimientoCRM = '.$id);
+
+             for ($i=0 ; $i < count( $notacrm); $i++) 
+        {  
+            $nota[] = get_object_vars($notacrm[$i]);
+        }
+        */
+        $nota= \App\MovimientoCRMNota::where('MovimientoCRM_idMovimientoCRM','=',$id)->get();
+          
+
         $solicitante = DB::table(\Session::get("baseDatosCompania").'.Tercero')->lists('nombre1Tercero as nombreCompletoTercero','idTercero');
         $lineanegocio = \App\LineaNegocio::where('Compania_idCompania','=', \Session::get('idCompania'))->lists('nombreLineaNegocio','idLineaNegocio');
         
@@ -383,7 +412,7 @@ class MovimientoCRMController extends Controller
 
 
 
-        return view('movimientocrm',compact('solicitante', 'categoria','documento','lineanegocio','origen','estado', 'evento','movimientocrmcargo','clasificacion'),['movimientocrm'=>$movimientocrm]);
+        return view('movimientocrm',compact('solicitante', 'categoria','documento','lineanegocio','origen','estado', 'evento','movimientocrmcargo','clasificacion','nota'),['movimientocrm'=>$movimientocrm]);
     }
 
     /**
@@ -414,6 +443,8 @@ class MovimientoCRMController extends Controller
 
 
         $movimientocrm->save();
+         echo '/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM'];
+return;
 
         $this->grabarDetalle($id, $request);
         // HAGO UN INSERT A LOS NUEVOS ARCHIVOS SUBIDOS EN EL DROPZONE
@@ -463,6 +494,10 @@ class MovimientoCRMController extends Controller
         $idsEliminar = explode("," , $request['eliminardocumentocrmcargo']);
         //Eliminar registros de la multiregistro
         \App\MovimientoCRMCargos::whereIn('idMovimientoCRMCargo', $idsEliminar)->delete();
+
+        
+
+
         // Guardamos el detalle de los modulos
         for($i = 0; $i < count($request['idMovimientoCRMCargo']); $i++)
         {
@@ -478,6 +513,8 @@ class MovimientoCRMController extends Controller
 
             $guardar = \App\MovimientoCRMCargos::updateOrCreate($indice, $data);
         } 
+
+
 
          $correos = DB::select('
             SELECT  email as correoElectronicoTercero
@@ -547,8 +584,8 @@ class MovimientoCRMController extends Controller
 
         
         
-
-        return redirect('/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM']);
+      
+        //return redirect('/movimientocrm?idDocumentoCRM='.$request['DocumentoCRM_idDocumentoCRM']);
     }
 
     /**
@@ -606,6 +643,21 @@ class MovimientoCRMController extends Controller
             'correoElectronicoMovimientoCRMAsistente' => $request['correoElectronicoMovimientoCRMAsistente'][$i]);
 
             $respuesta = \App\MovimientoCRMAsistente::updateOrCreate($indice, $data);
+
+        }
+
+        $movCRMUltimo = \App\MovimientoCRM::All()->last();
+
+        echo count($request['idMovimientoCRMNota']);
+        for ($i=0 ; $i < count($request['idMovimientoCRMNota']); $i++)
+        {
+            \App\MovimientoCRMNota::create([
+           
+            'MovimientoCRM_idMovimientoCRM'=>$movCRMUltimo ->idMovimientoCRM,
+            'Users_idUsuario'=>$request['Users_idUsuario'][$i],
+            'fechaMovimientoCRMNota'=>$request['fechaMovimientoCRMNota'][$i],
+            'observacionMovimientoCRMNota'=>$request['observacionMovimientoCRMNota'][$i]
+             ]); 
 
         }
 
@@ -860,6 +912,10 @@ class MovimientoCRMController extends Controller
 
         $html .= '<div id="form-section" >
                         <fieldset id="movimientocrm-form-fieldset"> 
+                         <center><div class="container"><b><h3>'
+                             .$movimiento[0]["nombreDocumentoCRM"].
+                        '</b></h3></center></div><br>
+
                             <div class="form-group" id="test">
                                 <div class="col-sm-6">
                                     <div class="col-sm-4">
@@ -1181,9 +1237,39 @@ class MovimientoCRMController extends Controller
                         </div>
                     </div>';
                         }
+
+    $html .= '<div id="adjunto" class="panel panel-primary">
+        <div class="col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-pencil-square-o"></i> 
+                    Archivos Adjuntos 
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">';
+                 
+                       $archivoSave = DB::Select('SELECT * from movimientocrmarchivo where MovimientoCRM_idMovimientoCRM = '.$idmovimientocrm);
+
+                                for ($i=0; $i <count($archivoSave) ; $i++) 
+                                { 
+                                    $archivoS = get_object_vars($archivoSave[$i]);
+
+                                    $html .= '
+                                    <a title="Visualizar" target="_blank" 
+                                        href="http://'.$_SERVER["HTTP_HOST"].'/imagenes'.$archivoS['rutaMovimientoCRMArchivo'].'">- '
+                                    .str_replace('/movimientocrm/','',$archivoS['rutaMovimientoCRMArchivo']).'
+                                    <br></a>';
+                                                            
+                                }'
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';                     
 if(strpos($camposVista, 'asistentesMovimientoCRM') !== false)
                         { 
-                    
+        
         $html .= '<div id="solucion" class="panel panel-primary">
                         <div class="col-sm-12">
                             <div class="panel panel-primary">
@@ -1202,19 +1288,23 @@ if(strpos($camposVista, 'asistentesMovimientoCRM') !== false)
                                                 <td style="width: 230px;">Correo</td>
                                             </tr>';
                                             
-                                                $asistentes =  (isset($movimientocrm) ? ($movimientocrm->movimientoCRMAsistentes) : array());
+                                                
+                                                $asistentes = DB::select(
+                                                        'SELECT nombreMovimientoCRMAsistente, cargoMovimientoCRMAsistente, telefonoMovimientoCRMAsistente, correoElectronicoMovimientoCRMAsistente
+                                                        FROM movimientocrmasistente
+                                                        where MovimientoCRM_idMovimientoCRM = '.$idmovimientocrm);
+print_r($asistentes);
 
-                                                foreach ($asistentes as $key => $value) {
-                                                    $html .= '<tr><td>'.$value['nombreMovimientoCRMAsistente'].'</td>';
-                                                    $html .= '<td>'.$value['cargoMovimientoCRMAsistente'].'</td>';
-                                                    $html .= '<td>'.$value['telefonoMovimientoCRMAsistente'].'</td>';
-                                                    $html .= '<td>'.$value['correoElectronicoMovimientoCRMAsistente'].'</td>';
+                                                for($i = 0; $i < count($asistentes); $i++)
+                                                {
+                                                    //$datos = get_object_vars($campos[$i]); 
+                                                    
+                                                    $html .= '<tr><td>'.get_object_vars($asistentes[$i])['nombreMovimientoCRMAsistente'].'</td>';
+                                                    $html .= '<td>'.get_object_vars($asistentes[$i])['cargoMovimientoCRMAsistente'].'</td>';
+                                                    $html .= '<td>'.get_object_vars($asistentes[$i])['telefonoMovimientoCRMAsistente'].'</td>';
+                                                    $html .= '<td>'.get_object_vars($asistentes[$i])['correoElectronicoMovimientoCRMAsistente'].'</td>';
                                                     $html .= '</tr>';
                                                 }
-
-
-                                                
-                                                
                                             
                             $html .= '</table>
                                     </div>

@@ -16,7 +16,7 @@ for($i = 0; $i < count($campos); $i++)
 
 ?>
 @extends('layouts.formato')
-<h3 id="titulo"><center><?php echo '('.$datos["numeroMovimientoActivo"].') '.$datos["numeroMovimientoActivo"];?></center></h3>
+
 
 @section('contenido')
 <?php 

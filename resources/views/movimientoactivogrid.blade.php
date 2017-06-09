@@ -262,9 +262,28 @@ var valormovimiento = [0,0,''];
         var table = $('#tmovimientoactivo').DataTable( {
             "order": [[ 2, "desc" ]],
             "aProcessing": true,
+
             "aServerSide": true,
             "stateSave":true,
+             dom: 'Bfrtip',
+           /* buttons: [
+        'excel', 'print'
+    ],*/
+  /* "buttons": [
+       { "extend": 'excel', "text":'Exportar',"className": 'btn-primary' }
+   ],*/
+   "buttons": [
+       { "extend": 'excel', "text":' <i style="width:20px;" class="fa fa-file-text" aria-hidden="true"></i>',"className": 'btn-primary',
 
+
+        },
+        {
+            "extend": 'pdf', "text":' <i style="width:20px;" class="fa fa-file-pdf-o" aria-hidden="true"></i>',"className": 'btn-primary'
+        }
+
+   ],
+ /*  <span class="glyphicons glyphicons-download-alt"></span>
+<i style="width:20px;" class="fa-file-text" aria-hidden="true"></i>*/
             "ajax": "{!! URL::to ('/datosMovimientoActivo?idTransaccionActivo="+id+"&TipoEstado="+TipoEstado+"&modificar="+modificar+"&eliminar="+eliminar+"&consultar="+consultar+"&aprobar="+aprobar+"')!!}",
             "language": {
                         "sProcessing":     "Procesando...",

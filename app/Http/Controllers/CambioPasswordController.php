@@ -8,13 +8,12 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Session;
 use Flash;
-<<<<<<< HEAD
+
 use Crypt;
 use Hash;
 use decrypt;
 use password_verify;
-=======
->>>>>>> 281ff4e585714cf601c5dc16fad246c2ed8b2580
+
 use App\Http\Requests\CambioPasswordRequest;
 
 
@@ -27,7 +26,7 @@ class CambioPasswordController extends Controller
      */
     public function index()
     {
-<<<<<<< HEAD
+
         $password = Hash::make('toby2553');
          //echo $us;
          //echo $password;
@@ -56,8 +55,8 @@ class CambioPasswordController extends Controller
         {
     // in case if "$crypt_password_string" actually hides "1234567"
         }*/
-=======
->>>>>>> 281ff4e585714cf601c5dc16fad246c2ed8b2580
+
+
          return View('cambiopassword');
    
     }
@@ -101,13 +100,13 @@ class CambioPasswordController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-<<<<<<< HEAD
+
     {   
 
-=======
+
     {
         //
->>>>>>> 281ff4e585714cf601c5dc16fad246c2ed8b2580
+
     }
 
     /**

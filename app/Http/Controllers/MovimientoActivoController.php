@@ -59,8 +59,42 @@ class MovimientoActivoController extends Controller
     //$usercrea=\Session::get("idUsuario");
     $users=\App\User::all()->lists('name','id');
     $tercero = DB::table($compania.".Tercero")->lists('nombre1Tercero as nombreCompletoTercero','idTercero');
-    //$tipoactivo=\App\TipoActivo::lists('nombreTipoActivo','idTipoActivo')->prepend('Selecciona');
     $concepto=\App\ConceptoActivo::lists('nombreConceptoActivo','idConceptoActivo');
+    
+/*
+   
+
+  
+  /*$conceptos = DB::select('select conceptoactivo.nombreConceptoActivo,conceptoactivo.idConceptoActivo from transaccionactivo 
+    inner join transaccionconcepto 
+    on transaccionconcepto.TransaccionActivo_idTransaccionActivo=transaccionactivo.idTransaccionActivo          inner join conceptoactivo 
+    on transaccionconcepto.ConceptoActivo_idConceptoActivo=conceptoactivo.idConceptoActivo
+    where transaccionconcepto.TransaccionActivo_idTransaccionActivo='.$idTransaccion);
+  for ($i=0 ; $i < count( $conceptos); $i++) 
+    {  
+        $concepto[] =get_object_vars($conceptos[$i]);
+    }
+*/
+         
+
+/* $conceptos = DB::table('transaccionactivo')
+            ->join('transaccionconcepto', 'transaccionconcepto.TransaccionActivo_idTransaccionActivo', '=', 'transaccionactivo.idTransaccionActivo')
+            ->join('conceptoactivo', 'transaccionconcepto.ConceptoActivo_idConceptoActivo', '=', 'conceptoactivo.idConceptoActivo')
+            ->select('conceptoactivo.nombreConceptoActivo','transaccionconcepto.ConceptoActivo_idConceptoActivo')
+            ->where('transaccionconcepto.TransaccionActivo_idTransaccionActivo','=',$idTransaccion)
+            ->get();*/
+
+       //$concepto = get_object_vars($conceptos); 
+
+           
+
+/* for ($i=0 ; $i < count( $conceptos); $i++) 
+    {  
+        $concepto = get_object_vars($conceptos[$i]);
+    }
+*/
+     
+
     $transaccionactivo=\App\TransaccionActivo::lists('nombreTransaccionActivo','idTransaccionActivo');
     
     return view('movimientoactivo',compact('concepto','transaccionactivo','nombrelocalizacion','idLocalizacion','users','tercero','documentoInterno','idTransaccion','idLocalizacion','nombreLocalizacion','estado'));
@@ -119,7 +153,13 @@ class MovimientoActivoController extends Controller
   
     $movimientoultimo = \App\MovimientoActivo::All()->last();
 
-   
+   if($request['estadoMovimientoActivo']=='Aprobado Total')
+   {
+    $estado='Aprobado';
+   }
+   else
+   $estado="";
+
     for ($i=0 ; $i < count($request['idMovimientoActivoDetalle']); $i++)
     {
 
@@ -132,6 +172,7 @@ class MovimientoActivoController extends Controller
          'cantidadMovimientoActivoDetalle'=>$request['cantidadMovimientoActivoDetalle'][$i],
          'observacionMovimientoActivoDetalle'=>$request['observacionMovimientoActivoDetalle'][$i],
          'MovimientoActivo_idDocumentoInterno'=>($request['MovimientoActivo_idDocumentoInterno'][$i]  != '' ? $request['MovimientoActivo_idDocumentoInterno']: null), 
+         'estadoMovimientoActivoDetalle'=>$estado,
 
 
          ]); 
@@ -218,6 +259,15 @@ class MovimientoActivoController extends Controller
     $tercero = DB::table($compania.".Tercero")->lists('nombre1Tercero as nombreCompletoTercero','idTercero');
     //$tipoactivo=\App\TipoActivo::lists('nombreTipoActivo','idTipoActivo')->prepend('Selecciona');
     $concepto=\App\ConceptoActivo::lists('nombreConceptoActivo','idConceptoActivo');
+   
+    /*$concepto = DB::table('transaccionactivo')
+            ->join('transaccionconcepto', 'transaccionconcepto.TransaccionActivo_idTransaccionActivo', '=', 'transaccionactivo.idTransaccionActivo')
+            ->join('conceptoactivo', 'transaccionconcepto.ConceptoActivo_idConceptoActivo', '=', 'conceptoactivo.idConceptoActivo')
+            ->select('conceptoactivo.nombreConceptoActivo,conceptoactivo.idConceptoActivo')
+            ->where('transaccionconcepto.TransaccionActivo_idTransaccionActivo','=',$idTransaccion)
+            ->get();*/
+
+
     $transaccionactivo=\App\TransaccionActivo::lists('nombreTransaccionActivo','idTransaccionActivo');
     
 
@@ -241,6 +291,11 @@ class MovimientoActivoController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $this->AfectarInventario($id,'D');
+
+
+
        $accionTranAct = DB::select(
     "SELECT accionTransaccionActivo
         FROM  transaccionactivo T 
@@ -295,7 +350,75 @@ class MovimientoActivoController extends Controller
         }
           
 
-        $this->AfectarInventario($id,'D');
+        $this->AfectarInventario($id,'C');
+
+        $this->EnviarCorreo($request['idUsuarioCrea'],$request['numeroMovimientoActivo'],$movimientoactivo->idMovimientoActivo, $request['TransaccionActivo_idTransaccionActivo']);
+
+         /*$correos = DB::select('
+            SELECT  email as correoElectronicoTercero
+                FROM    users U 
+                WHERE   (U.Tercero_idAsociado = '.$request['idUsuarioCrea'].'
+                        and
+                        email != "" )
+            UNION DISTINCT
+            SELECT  email as correoElectronicoTercero 
+                FROM transaccionrol TR
+                LEFT JOIN users U
+                ON TR.Rol_idRol = U.Rol_idRol
+                WHERE   autorizarTransaccionRol = 1 and 
+                        TransaccionActivo_idTransaccionActivo = '.$request['TransaccionActivo_idTransaccionActivo'].' and 
+                        U.Tercero_idAsociado IS NOT NULL and 
+                        email IS NOT NULL and 
+                        email != "" and 
+                        U.Compania_idCompania = '.\Session::get("idCompania"));
+        $datos['correos'] = array();
+        for($c = 0; $c < count($correos); $c++)
+        {
+            $datos['correos'][] = get_object_vars($correos[$c])['correoElectronicoTercero'];
+        }
+
+        if(count($correos) > 0)
+        {
+            $solicitante = DB::table(\Session::get("baseDatosCompania").'.Tercero')->lists('nombre1Tercero as nombreCompletoTercero');
+            $idTransaccionActivo= $request['TransaccionActivo_idTransaccionActivo'];
+            $datos['asunto'] = Session::get('baseDatosCompania').' Modificación Inventario Activo: '.$request['nombreTransaccionActivo'];
+            $datos['mensaje'] ='Se ha generado el reporte del estado de Inventario de Activos:'.$request['nombreTransaccionActivo'];
+            //$datos['mensaje'] .=',Generado por:'.$solicitante[0]["nombreCompletoTercero"];
+            $datos['mensaje'] .=', los detalles los encontrará en el archivo adjunto.';
+
+            $contenidoArchivo =  '<!DOCTYPE html>
+            <html>
+            <head>
+
+                <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+                <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+                
+
+                <title>Scalia</title>
+            </head>
+            <body>
+                <p> '.$this->generarHTMLFormato($movimientoactivo->idMovimientoActivo, $idTransaccionActivo).'</p>
+            </body>
+            </html>';
+            $nombreAdj=$request['nombreTransaccionActivo'].'.html';
+            $adj=fopen($nombreAdj,"w");
+            fputs($adj, $contenidoArchivo );
+            fclose($adj);
+
+            $datos['adjunto'] = $nombreAdj;
+             Mail::send('correomovimientoactivo',$datos,function($msj) use ($datos)
+            {
+                
+                $msj->to($datos['correos']);
+                $msj->subject($datos['asunto']);
+                
+                $msj->attach($datos['adjunto']);
+                
+            });
+            unlink($nombreAdj);
+        }
+*/
 
     //return redirect('/movimientoactivo?idTransaccionActivo='.$request['TransaccionActivo_idTransaccionActivo']);
     
@@ -326,6 +449,78 @@ class MovimientoActivoController extends Controller
         
         \App\MovimientoActivo::destroy($id);
         return redirect('/movimientoactivo?idTransaccionActivo='.$movimientoactivo['TransaccionActivo_idTransaccionActivo']);
+
+    }
+
+
+    function EnviarCorreo($user,$transaccion,$movimiento,$idTrans)
+    {
+
+     $correos = DB::select('
+            SELECT  email as correoElectronicoTercero
+                FROM    users U 
+                WHERE   (U.Tercero_idAsociado = '.$user.'
+                        and
+                        email != "" )
+            UNION DISTINCT
+            SELECT  email as correoElectronicoTercero 
+                FROM transaccionrol TR
+                LEFT JOIN users U
+                ON TR.Rol_idRol = U.Rol_idRol
+                WHERE   autorizarTransaccionRol = 1 and 
+                        TransaccionActivo_idTransaccionActivo = '.$transaccion.' and 
+                        U.Tercero_idAsociado IS NOT NULL and 
+                        email IS NOT NULL and 
+                        email != "" and 
+                        U.Compania_idCompania = '.\Session::get("idCompania"));
+        $datos['correos'] = array();
+        for($c = 0; $c < count($correos); $c++)
+        {
+            $datos['correos'][] = get_object_vars($correos[$c])['correoElectronicoTercero'];
+        }
+
+        if(count($correos) > 0)
+        {
+            $solicitante = DB::table(\Session::get("baseDatosCompania").'.Tercero')->lists('nombre1Tercero as nombreCompletoTercero');
+            $idTransaccionActivo= $transaccion;
+            $datos['asunto'] = Session::get('baseDatosCompania').' Modificación Inventario Activo: '.$transaccion;
+            $datos['mensaje'] ='Se ha generado el reporte del estado de Inventario de Activos:'.$transaccion;
+            //$datos['mensaje'] .=',Generado por:'.$solicitante[0]["nombreCompletoTercero"];
+            $datos['mensaje'] .=', los detalles los encontrará en el archivo adjunto.';
+
+            $contenidoArchivo =  '<!DOCTYPE html>
+            <html>
+            <head>
+
+                <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+                <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+                
+
+                <title>Scalia</title>
+            </head>
+            <body>
+                <p> '.$this->generarHTMLFormato($movimiento,$idTrans).'</p>
+            </body>
+            </html>';
+            $nombreAdj=$transaccion.'.html';
+            $adj=fopen($nombreAdj,"w");
+            fputs($adj, $contenidoArchivo );
+            fclose($adj);
+
+            $datos['adjunto'] = $nombreAdj;
+             Mail::send('correomovimientoactivo',$datos,function($msj) use ($datos)
+            {
+                
+                $msj->to($datos['correos']);
+                $msj->subject($datos['asunto']);
+                
+                $msj->attach($datos['adjunto']);
+                
+            });
+            unlink($nombreAdj);
+        }
+
 
     }
 
@@ -405,10 +600,53 @@ echo json_encode($html);
  protected function generarHTMLFormato($idmovimientoactivo, $id)
 {
 
- $movimientoactivo = DB::select(
+$movimientoactivo = DB::select(
+"SELECT 
+movimientoactivo.numeroMovimientoActivo,
+movimientoactivo.fechaElaboracionMovimientoActivo, 
+movimientoactivo.fechaInicioMovimientoActivo, 
+movimientoactivo.fechaFinMovimientoActivo, 
+Tercero.nombre1Tercero as tercero,
+transaccion.nombreTransaccionActivo as transaccion,
+conceptoactivo.nombreConceptoActivo,
+movimientoactivo.documentoInternoMovimientoActivo,
+movimientoactivo.documentoExternoMovimientoActivo,
+transaccion.idTransaccionActivo as documentoInterno,
+movimientoactivo.estadoMovimientoActivo,
+movimientoactivo.observacionMovimientoActivo,
+movimientoactivo.totalUnidadesMovimientoActivo,
+movimientoactivo.totalArticulosMovimientoActivo,
+UsersCrea.name as UsersCrea,
+UsersCambia.name as UsersCambia,
+movimientoactivo.fechaCambioEstado, 
+compania.nombreCompania
+                
+FROM
+movimientoactivo
+    LEFT JOIN
+".\Session::get("baseDatosCompania").".Tercero 
+ ON movimientoactivo.Tercero_idTercero = Tercero.idTercero
+LEFT JOIN
+transaccionactivo 
+ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo
+LEFT JOIN transaccionactivo transaccion
+ ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo 
+LEFT JOIN transaccionactivo documentoInterno
+ ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo
+LEFT JOIN conceptoactivo
+ ON movimientoactivo.ConceptoActivo_idConceptoActivo = conceptoactivo.idConceptoActivo
+LEFT JOIN users UsersCrea
+ ON movimientoactivo.Users_idCrea = UsersCrea.id
+LEFT JOIN users UsersCambia
+ ON movimientoactivo.Users_idCrea = UsersCambia.id
+LEFT JOIN compania
+ ON movimientoactivo.Compania_idCompania = compania.idCompania 
+WHERE idMovimientoActivo = $idmovimientoactivo");
+
+ /*$movimientoactivo = DB::select(
     "SELECT * 
     FROM movimientoactivo 
-    WHERE idMovimientoActivo = $idmovimientoactivo");
+    WHERE idMovimientoActivo = $idmovimientoactivo");*/
 
 
 $html = '';
@@ -433,11 +671,12 @@ for($i = 0; $i < count($campos); $i++)
 {
     $datos = get_object_vars($campos[$i]); 
     $camposVista = $datos["nombreCampoTransaccion"].',';
+    $transaccion = $datos["nombreTransaccionActivo"];
 }
 
 
 $idMovimientoActivo = (isset($movimientoactivo->idMovimientoActivo) ? $movimientoactivo->idMovimientoActivo : 0);
-$idTransaccion = $_GET["idTransaccionActivo"];
+//$idTransaccion = $_GET["idTransaccionActivo"];
 
 
 
@@ -448,12 +687,43 @@ $idTransaccion = $_GET["idTransaccionActivo"];
         }
 
 
+    $movimientoactivod = DB::select(
+    "select idMovimientoActivoDetalle, MovimientoActivo_idMovimientoActivo, LocO.nombreLocalizacion as nombreLocalizacionO, LocD.nombreLocalizacion as nombreLocalizacionD, Activo_idActivo as idActivo, cantidadMovimientoActivoDetalle, observacionMovimientoActivoDetalle, codigoActivo, nombreActivo, serieActivo, MovimientoActivo_idDocumentoInterno 
+    from movimientoactivodetalle M 
+    inner join activo
+    on M.Activo_idActivo=activo.idActivo
+    left join localizacion LocO
+    on M.Localizacion_idOrigen=LocO.idLocalizacion
+    left join localizacion LocD
+    on M.Localizacion_idDestino=LocD.idLocalizacion
+    where M.MovimientoActivo_idMovimientoActivo=$idmovimientoactivo");
+
+                 
+    $movimientoactivodetalle=array();
+    for($i = 0; $i < count($movimientoactivod); $i++) 
+    {
+      $movimientoactivodetalle[] = get_object_vars($movimientoactivod[$i]);
+
+  
+    }
+   
+  
+
     $html .= '<div id="form-section" >
                 <fieldset id="movimientoactivo-form-fieldset"> 
 
+                         <center>
+                         <div class="container">
+                         <b><h3>'.$transaccion.'</b></h3>
+                         </div>
+                         </center>
+                        <br>
+
+
+                          
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Número
+                                    <b>Número</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
@@ -465,7 +735,7 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Fecha Elaboracion
+                                    <b>Fecha Elaboracion</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
@@ -476,11 +746,11 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Tercero
+                                    <b>Tercero</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["Tercero_idTercero"].
+                                    .$movimiento[0]["tercero"].
                                     '</div>
                                 </div>
                             </div>
@@ -489,11 +759,11 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Usuario Creador
+                                    <b>Usuario Creador</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
+                                    .$movimiento[0]["UsersCrea"].
                                     '</div>
                                 </div>
                             </div>
@@ -501,35 +771,22 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Tipo Documento
+                                    <b>Tipo Documento</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
+                                    .$movimiento[0]["transaccion"].
                                     '</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Num Documento Interno
+                                    <b>Num Documento Interno</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
-                                    '</div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-sm-6">
-                                <div class="col-sm-4">
-                                    Num Documento Externo
-                                </div>
-                                <div class="col-sm-8">
-                                    <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
+                                    .$movimiento[0]["documentoInterno"].
                                     '</div>
                                 </div>
                             </div>
@@ -537,22 +794,11 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Fecha Inicio
+                                    <b>Num Documento Externo</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
-                                    '</div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="col-sm-4">
-                                    Fecha Fin
-                                </div>
-                                <div class="col-sm-8">
-                                    <div class="input-group">'
-                                    .$movimiento[0]["Users_idCrea"].
+                                    .$movimiento[0]["documentoExternoMovimientoActivo"].
                                     '</div>
                                 </div>
                             </div>
@@ -560,7 +806,30 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Estado
+                                    <b>Fecha Inicio</b>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group">'
+                                    .$movimiento[0]["fechaInicioMovimientoActivo"].
+                                    '</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="col-sm-4">
+                                    <b>Fecha Fin</b>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group">'
+                                    .$movimiento[0]["fechaFinMovimientoActivo"].
+                                    '</div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                                <div class="col-sm-4">
+                                    <b>Estado</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
@@ -572,108 +841,70 @@ $idTransaccion = $_GET["idTransaccionActivo"];
 
                             <div class="col-sm-6">
                                 <div class="col-sm-4">
-                                    Concepto
+                                    <b>Concepto</b>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="input-group">'
-                                    .$movimiento[0]["estadoMovimientoActivo"].
+                                    .$movimiento[0]["nombreConceptoActivo"].
                                     '</div>
                                 </div>
-                            </div>
+                            </div></div>
+
+              
+                    
+              
+             
+             <center>
+             <br><h3><b>ACTIVOS</b></h3>
+          
+<div class="panel-body">
+            <table class="table table-bordered" >
+                <tr style="background-color:#337ab7;color:white;">
+                    <td style="width: 150px;">Loc origen</td>
+                    <td style="width: 150px;">Loc Destino</td>
+                    <td style="width: 130px;">Codigo</td>
+                    <td style="width: 130px;">Serial</td>
+                    <td style="width: 280px;">Descripcion</td>
+                    <td style="width: 100px;">Cantidad</td>
+                    <td style="width: 230px;">Observacion</td> 
+                </tr>';
+
+            for ($c=0 ;$c<count($movimientoactivodetalle) ;$c++)
+            {                   
+                $html .= '<tr><td>'.$movimientoactivodetalle[$c]['nombreLocalizacionO'].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]['nombreLocalizacionO'].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]["codigoActivo"].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]["serieActivo"].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]["nombreActivo"].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]["cantidadMovimientoActivoDetalle"].'</td>';
+                $html .= '<td>'.$movimientoactivodetalle[$c]["observacionMovimientoActivoDetalle"].'</td>';
+                $html .= '</tr>';
+             } 
+
+                                                   
+            $html.='</table>
+    
+
+</div>
 
 
-                <div id="detalles" class="panel panel-primary">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <i class="fa fa-pencil-square-o"></i> 
-                                Detalles 
-                            </div>
-                            <div class="panel-body">
-                                <div class="col-sm-12">
-                                    <table class="display table-bordered" >
-                                            <tr class="class="panel-heading" >
-                                                <td style="width: 330px;">Loc origen</td>
-                                                <td style="width: 270px;">Loc Destino</td>
-                                                <td style="width: 150px;">Codigo</td>
-                                                <td style="width: 230px;">Serial</td>
-                                                <td style="width: 230px;">Descripcion</td>
-                                                <td style="width: 230px;">Cantidad</td>
-                                                <td style="width: 230px;">Observacion</td> 
-                                            </tr>
-                                        <div class="panel-body">';
-                                            $html .= '<tr><td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '</tr>
-                                        </div>    
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div style="margin-top:1cm;position:center;width:98%;" class="panel panel-primary">
+      <div class="panel-heading">
+      Observaciones
+      </div>
+      <div class="panel-body">
+       
+      </div>
+    </div>
+    
 
-
-                <div id="detalles" class="panel panel-primary">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <i class="fa fa-pencil-square-o"></i> 
-                                Detalles 
-                            </div>
-                            <div class="panel-body">
-                                <div class="col-sm-12">
-                                    <table class="display table-bordered" >
-                                            <tr class="class="btn-primary" >
-                                                <td style="width: 330px;">Loc origen</td>
-                                                <td style="width: 270px;">Loc Destino</td>
-                                                <td style="width: 150px;">Codigo</td>
-                                                <td style="width: 230px;">Serial</td>
-                                                <td style="width: 230px;">Descripcion</td>
-                                                <td style="width: 230px;">Cantidad</td>
-                                                <td style="width: 230px;">Observacion</td> 
-                                            </tr>
-                                        <div class="panel-body">';
-                                            $html .= '<tr><td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '<td>'.$movimiento[0]["estadoMovimientoActivo"].'</td>';
-                                            $html .= '</tr>
-                                        </div>    
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                   
+              
 
 
 
-                    <div id="detalles" class="panel panel-primary">
-                        <div class="col-sm-12">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                    <i class="fa fa-pencil-square-o"></i> 
-                                    Detalles 
-                                </div>
-                                <div class="panel-body">
-                                    
-                                    <div class="col-sm-12">
-                                          '.$movimiento[0]["observacionMovimientoActivo"].'
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
+                        
 
 
                    
@@ -712,7 +943,13 @@ function AprobacionActivos()
     ON movimientoactivodetalle.Activo_idActivo=activo.idActivo
     WHERE
     MovimientoActivo_idMovimientoActivo=".$id);
+
+    $activos=array();
    
+    if(count($activo)!=0)
+
+    {
+
      for ($i=0 ; $i < count( $activo); $i++) 
     {  
         $activos[] = get_object_vars($activo[$i]);
@@ -722,7 +959,13 @@ function AprobacionActivos()
     $rechazo=\App\RechazoActivo::all();
 
 
+
+    }
     echo json_encode($activos);
+
+
+
+
 
     //return array($activos,$rechazo);
 
@@ -780,20 +1023,38 @@ function ActualizarMovimientoActivo()
 
    for ($i=0 ; $i < count($datos); $i++)
     {
+
+  
+    if ( $datos[$i][2]=="")
+
+    {
+      $rechazo="null";
+   
+    }
+
+    else
+    {
+
+    $rechazo=$datos[$i][2];
+
+    }
+
+   
     
     $idActivo = str_replace('"','',$datos[$i][0]);
     $estadoD= str_replace('"','',$datos[$i][1]);
-    $rechazo= str_replace('"','',$datos[$i][2]);
+    //$rechazo= str_replace('"','',$datos[$i][2]);
     $idMovAct = str_replace('"','',$datos[$i][3]);
     $idMovActD=$datos[$i][4];
 
-  /* $movAct=DB::SELECT(
-    "update movimientoactivodetalle 
-    set estadoMovimientoActivoDetalle='".$datos[$i][1]."', RechazoActivo_idRechazoActivo=".$datos[$i][2]." 
-    where idMovimientoActivoDetalle IN($idMovActD)");*/
+  
 
-    $estadoD= ($estadoD != '' ? $estadoD : null);
-    $rechazo= ($rechazo != '' ? $rechazo : null);
+   $movAct=DB::SELECT(
+    "update movimientoactivodetalle 
+    set estadoMovimientoActivoDetalle='".$estadoD."', RechazoActivo_idRechazoActivo=".$rechazo." 
+    where idMovimientoActivoDetalle IN($idMovActD)");
+
+    
 
      if ($estadoD=="") 
     {   $contV++;
@@ -833,50 +1094,31 @@ $estadoE="";
    
     }
 
-     
-    echo $estadoE;
+
+    
+   $movimientoactivo = \App\MovimientoActivo::find($idMovAct);
+       $movimientoactivo->update(
+       [
+         'estadoMovimientoActivo'=>$estadoE,
+            'Users_idCambioEstado'=>Session::get('idUsuario'),
+            'fechaCambioEstado'=>Carbon::now(),
+         ]);
+
+    $movimientoactivo->save();
+    echo json_encode("Se ha cambiado el estado a:".$estadoE);
+
+
+/*echo $estadoE;
 
     echo "<BR>Aprobados:".$contA;
 
     echo "Rechazados:".$contR;
-    echo "Vacios:".$contV;
-
-
-             
-
-
-
-
-
-   
-    
-    // $movimientoactivo = \App\MovimientoActivo::find($idMovAct);
-    //     $movimientoactivo->update(
-    //     [
-    //         'estadoMovimientoActivo'=>$estadoE,
-    //         'Users_idCambioEstado'=>Session::get('idUsuario'),
-    //         'fechaCambioEstado'=>Carbon::now(),
-    //     ]);
-
-    //     $movimientoactivo->save();
-
-
+    echo "Vacios:".$contV;*/
       
 
-        /*echo "<br><br><center>
-        <h1>Se han Guardado los Cambios</h1>";*/
-        /* ?>
-        <script>
-        setTimeout("location.href='http://190.248.133.146:8000/scalia'",1000)
-        </script>  
-        <?php*/
-
-
-        
-
-
        
-              
+          $this->AfectarInventario($idMovAct,'C');
+   
        
     }
 
@@ -907,7 +1149,7 @@ $estadoE="";
         $parametro = get_object_vars($parametro[0]);
 
         // si el estado no es aprobado, debe retornar
-        if($parametro["estadoMovimientoActivo"] != "Aprobado" )
+        if($parametro["estadoMovimientoActivo"] != "Aprobado Total" )
         {
             echo 'El movimiento no está aprobado, id '.$idMov;
             return;
@@ -921,8 +1163,8 @@ $estadoE="";
 
         // si la accion es entrada, guardamos la cantidad en el campo entradasInventarioActivo, 
         // si la accion es salida, guardamos la cantidad en el campo salidasFinalInventarioActivo
-        $Entrada=        "(".($parametro["accionTransaccionActivo"] == 'Entrada' ? 'cantidadMovimientoActivoDetalle' : '0')."*".($accion == 'D' ? '(-1)' : '(1)').") ";
-        $Salida=         "(".($parametro["accionTransaccionActivo"] == 'Salida' ? 'cantidadMovimientoActivoDetalle' : '0')."*".($accion == 'D' ? '(-1)' : '(1)').")";
+        $Entrada= "(".($parametro["accionTransaccionActivo"] == 'Entrada' ? 'cantidadMovimientoActivoDetalle' : '0')."*".($accion == 'D' ? '(-1)' : '(1)').") ";
+        $Salida=  "(".($parametro["accionTransaccionActivo"] == 'Salida' ? 'cantidadMovimientoActivoDetalle' : '0')."*".($accion == 'D' ? '(-1)' : '(1)').")";
 
 
 
@@ -948,27 +1190,7 @@ $estadoE="";
             salidasInventarioActivo=$Salida,
             saldoFinalInventarioActivo=saldoInicialInventarioActivo+entradasInventarioActivo-salidasInventarioActivo");
 
-        echo " 
-            INSERT INTO inventarioactivo 
-            (Periodo_idPeriodo, Activo_idActivo, Localizacion_idLocalizacion, 
-            saldoInicialInventarioActivo, entradasInventarioActivo, salidasInventarioActivo, saldoFinalInventarioActivo) 
-            SELECT 
-                MONTH(fechaElaboracionMovimientoActivo) AS Periodo,
-                movimientoactivodetalle.Activo_idActivo,
-                movimientoactivodetalle.Localizacion_idOrigen,
-                0, $Entrada, $Salida,0
-            FROM movimientoactivodetalle
-            inner join movimientoactivo
-            on movimientoactivodetalle.MovimientoActivo_idMovimientoActivo=movimientoactivo.idMovimientoActivo 
-            left join Iblu.Periodo
-            on movimientoactivo.fechaElaboracionMovimientoActivo>=fechaInicioPerido and movimientoactivo.fechaElaboracionMovimientoActivo<=fechafinperiodo
-            on duplicate key update
-            saldoInicialInventarioActivo=0, 
-            entradasInventarioActivo=$Entrada,
-            salidasInventarioActivo=$Salida,
-            saldoFinalInventarioActivo=saldoInicialInventarioActivo+entradasInventarioActivo-salidasInventarioActivo
-
-            WHERE MovimientoActivo_idMovimientoActivo=".$idMov;
+     
 
    
 

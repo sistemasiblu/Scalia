@@ -1,11 +1,14 @@
 function configurarGrid(idTabla, rutaAjax)
 { 
 
-        var table = $('#'+idTabla).DataTable( {
-            "order": [[ 2, "desc" ]],
+       var table = $('#'+idTabla).DataTable( {
             "aProcessing": true,
             "aServerSide": true,
-            "stateSave":true,
+            /*scrollY:170,*/
+            dom: 'Bfrtip',
+            buttons: [
+        'copy', 'excel', 'pdf'
+    ],
             "ajax": rutaAjax, 
             "language": {
                         "sProcessing":     "Procesando...",
@@ -32,6 +35,9 @@ function configurarGrid(idTabla, rutaAjax)
                         }
                     }
         });
+
+       
+    //$('#tabel_daftar_all').dataTable().rowGrouping();
          
 
         
@@ -116,3 +122,8 @@ function recargaPagina()
 {
     location.reload();
 }
+
+$(document).ready(function() {
+    
+    new $.fn.dataTable.FixedHeader( table );
+} );

@@ -95,8 +95,8 @@ function imprimirFormato(idMov, idDoc)
               success: function(data)
               {
                
-             /* var datos=data;
-              alert(datos.lenght);*/
+                if (data.length>0) 
+                {
               
                     var html= "<table id='Activos' class='display table-bordered' width='75%'>";
                         html+="<tr class='btn-primary active'>";
@@ -174,7 +174,12 @@ function imprimirFormato(idMov, idDoc)
 
                 $("#ContenidoAprobacionActivos").html(html);
                 $('#ModalAprobacionActivo').modal('show');
+                }
+                else
+                {
+                  alert("Este Movimiento no tiene Activos Asociados");
 
+                }
 
        
                         
@@ -296,39 +301,24 @@ function VerificacionComponentes(idActivo,nombreActivo,serialActivo)
 
 
 function ActualizarMovimientoActivo(contador,idAct,idMov)
-    {
+    { 
 
-      //alert(idMovD);
-        //alert(idMovD);
-                //alert(id);
-
+    
       var valor=Array();
       for (var s = 0; s < contador; s++) 
       {
-        //alert('EstadoMovimientoActivo'+i);
-        //var s=document.getElementById("EstadoMovimientoActivo"+i).value;
-        //alert(i);
-
-
-       
-
-
+        
 
         var id=$("#idMovimientoActivoDetalle"+s).val();
         var RechazoActivo= $("#RechazoActivo_idRechazoActivo"+s).val();
         var EstadoActivo= $("#EstadoMovimientoActivo"+s).val();
-        //var idMovD=$("#idMovimientoActivoDetalle"+s).val();
        
-
         valor.push([idAct,EstadoActivo,RechazoActivo,idMov,id]);
       
-
 
       }
     
   
-         console.log(valor);
-
         $.ajax(
         {
 
@@ -344,7 +334,34 @@ function ActualizarMovimientoActivo(contador,idAct,idMov)
         success: function(data)
         {
   
-        //alert(data);
+        alert(data);
+           /*$.ajax(
+          {
+
+          headers: {'X-CSRF-TOKEN': token},
+          dataType: "json",
+          url:'/AfectarInventario',
+          data:{Movimiento: idMov,accion:'C'},
+          type:  'get',
+          beforeSend: function()
+          {
+
+          },
+          success: function(data)
+          {
+    
+          
+
+          },
+          error:    function(xhr,err)
+          {
+              alert('Se ha producido un error: ' +err);
+          }
+          });*/
+
+        $("#ModalAprobacionActivo").modal("hide");
+        location.reload();
+
         },
         error:    function(xhr,err)
         {
@@ -352,7 +369,6 @@ function ActualizarMovimientoActivo(contador,idAct,idMov)
         }
         });
 
-        //$('#ModalAprobacionActivo').modal('close');
 
 
 

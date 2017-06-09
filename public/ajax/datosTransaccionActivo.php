@@ -1,6 +1,11 @@
 <?php
 
-$transaccionactivo = DB::select("select *from transaccionactivo");
+$transaccionactivo = DB::select("select 
+    idTransaccionActivo, codigoTransaccionActivo, nombreTransaccionActivo, nombreTransaccionGrupo 
+    from transaccionactivo
+    inner join transacciongrupo
+    on transaccionactivo.TransaccionGrupo_idTransaccionGrupo=transacciongrupo.idTransaccionGrupo
+    ");
 
 $row = array();
 
@@ -16,7 +21,7 @@ foreach ($transaccionactivo as $key => $value)
     $row[$key][] = $valores['idTransaccionActivo'];
     $row[$key][] = $valores['codigoTransaccionActivo'];
     $row[$key][] = $valores['nombreTransaccionActivo']; 
-    $row[$key][] = $valores['TransaccionGrupo_idTransaccionGrupo'];
+    $row[$key][] = $valores['nombreTransaccionGrupo'];
       
 }
 

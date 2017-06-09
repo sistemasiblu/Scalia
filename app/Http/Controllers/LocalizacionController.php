@@ -29,7 +29,7 @@ class LocalizacionController extends Controller
      */
     public function create()
     {   
-        $localizacionPadre=\App\Localizacion::lists('nombreLocalizacion','idLocalizacion')->prepend('Selecciona');
+        $localizacionPadre=\App\Localizacion::lists('nombreLocalizacion','idLocalizacion');
         return view('localizacion',['localizacionPadre'=>$localizacionPadre]);
     }
 
@@ -45,8 +45,10 @@ class LocalizacionController extends Controller
     [
       'codigoLocalizacion'=>$request['codigoLocalizacion'],
       'nombreLocalizacion'=>$request['nombreLocalizacion'],
-      'Localizacion_idPadre'=>$request['Localizacion_idPadre'],
+      'Localizacion_idPadre'=>($request['Localizacion_idPadre']  != '' ? $request['Localizacion_idPadre']: null),
       'observacionLocalizacion'=>$request['observacionLocalizacion'],
+
+
 
     ]);
 
@@ -90,7 +92,8 @@ class LocalizacionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
+        
         $localizacion=\App\Localizacion::find($id);
         $localizacion->fill($request->all());
         $localizacion->save();

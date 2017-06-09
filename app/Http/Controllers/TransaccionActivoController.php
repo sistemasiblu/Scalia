@@ -75,16 +75,7 @@ class TransaccionActivoController extends Controller
 
     }
 
-    echo count($request['CampoTransaccion_idCampoTransaccionD']);
-    for ($i=0 ; $i < count($request['CampoTransaccion_idCampoTransaccionD']); $i++)
-    {
-        \App\TransaccionActivoCampo::create([
-        'TransaccionActivo_idTransaccionActivo'=>$transaccionactivoultimo->idTransaccionActivo,
-        'CampoTransaccion_idCampoTransaccion'=>$request['CampoTransaccion_idCampoTransaccionD'][$i], 
-        'obligatorioTransaccionActivoCampo' =>$request['obligatorioTransaccionActivoCampoD'][$i],         
-         ]); 
-
-    }
+   
 
     echo count($request['idTransaccionConcepto']);
     for ($i=0 ; $i < count($request['idTransaccionConcepto']); $i++)
@@ -162,23 +153,7 @@ class TransaccionActivoController extends Controller
         $transaccionEncabezado[] = get_object_vars($encabezado[$i]);
     }
 
-    $detalle=DB::Select(
-        "select 
-       idTransaccionActivoCampo as idTransaccionActivoCampoD,
-        CampoTransaccion_idCampoTransaccion as CampoTransaccion_idCampoTransaccionD, 
-        campotransaccion.descripcionCampoTransaccion as descripcionCampoTransaccionD, 
-        obligatorioTransaccionActivoCampo as obligatorioTransaccionActivoCampoD
-        from transaccionactivo
-        inner join transaccionactivocampo
-        on transaccionactivocampo.TransaccionActivo_idTransaccionActivo=transaccionactivo.idTransaccionActivo
-         inner join campotransaccion
-        on transaccionactivocampo.CampoTransaccion_idCampoTransaccion=campotransaccion.idCampoTransaccion
-        where tipoCampoTransaccion='Detalle' and TransaccionActivo_idTransaccionActivo=".$id);
-
-    for ($i=0 ; $i < count( $detalle); $i++) 
-    {  
-        $transaccionDetalle[] = get_object_vars($detalle[$i]);
-    }
+    
 
     $concepto=DB::Select(
         "select 
@@ -212,7 +187,7 @@ class TransaccionActivoController extends Controller
         $transaccionRol[] = get_object_vars($rol[$i]);
     }
 
-        return view('transaccionactivo',['transaccionactivo'=>$transaccionactivo],compact('transacciongrupo','transaccionEncabezado','transaccionDetalle','transaccionConcepto','transaccionRol'));
+        return view('transaccionactivo',['transaccionactivo'=>$transaccionactivo],compact('transacciongrupo','transaccionEncabezado','transaccionConcepto','transaccionRol'));
     }
 
     /**
@@ -230,10 +205,10 @@ class TransaccionActivoController extends Controller
 
         $idsEncabezadoEliminar = explode(',', $request['encabezadoEliminar']);
         \App\TransaccionActivoCampo::whereIn('idTransaccionActivoCampo',$idsEncabezadoEliminar)->delete();
-        for ($i=0 ; $i < count($request['idTransaccionActivoCampo']); $i++)
+        for ($i=0 ; $i < count($request['idTransaccionActivoCampoE']); $i++)
         {
            $indice = array(
-            'idTransaccionActivoCampo' => $request['idTransaccionActivoCampo'][$i]);
+            'idTransaccionActivoCampo' => $request['idTransaccionActivoCampoE'][$i]);
 
            $data = array(
             'TransaccionActivo_idTransaccionActivo' => $id, 

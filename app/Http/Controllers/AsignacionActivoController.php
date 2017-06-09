@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use DB;
 
 class AsignacionActivoController extends Controller
 {
@@ -25,9 +26,34 @@ class AsignacionActivoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
+    {  
+        $compania=\Session::get("nombreCompania");
+        $idTercero= DB::table($compania.".Tercero")->where('tipoTercero','like','*05*')->lists('idTercero');
+        $nombreTercero= DB::table($compania.".Tercero")->where('tipoTercero','like','*05*')->lists('nombre1Tercero');
+
+         //$idTer= DB::select("select  idTercero from $compania.Tercero where tipoTercero like '*05*'");
+        //$nombreTer= DB::select("select  nombre1Tercero from $compania.Tercero where tipoTercero like '*05*'");
+        //$nombreTer= DB::table($compania.".Tercero")->where('tipoTercero','like','*05*')->lists('nombre1Tercero');
+  /* $idTercero=Array();
+       for ($i=0 ; $i < count( $idTer); $i++) 
+    {  
+        $idTercero[] = get_object_vars($idTer[$i]);
+    }
+    */
+    /*$nombreTercero=Array();
+     for ($i=0 ; $i < count( $nombreTer); $i++) 
+    {  
+        $nombreTercero[] = get_object_vars($nombreTer[$i]);
+    }*/
+
+
+
+   $idTercero=json_encode($idTercero);
+    $nombreTercero=json_encode($nombreTercero);
+    
+
         $transaccionactivo=\App\TransaccionActivo::lists('nombreTransaccionActivo','idTransaccionActivo');
-        return view('asignacionactivo',compact('transaccionactivo'));
+        return view('asignacionactivo',compact('transaccionactivo','idTercero','nombreTercero'));
 
     }
 

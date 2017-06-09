@@ -1,4 +1,6 @@
-<script type="text/javascript">
+<script language="javascript" type="text/javascript">
+   
+
     $(document).ready( function () 
     {
 
@@ -22,6 +24,12 @@
 {!!Html::script('js/movimientocrm.js'); !!}
 {!!Html::script('js/grid.js'); !!}
 
+
+
+{!!Html::script('DataTables/media/js/dataTables.fixedColumns.min.js'); !!}
+{!!Html::script('DataTables/media/js/dataTables.fixedColumns.js'); !!}
+{!!Html::style('DataTables/media/css/fixedColumns.dataTables.css'); !!}
+{!!Html::style('DataTables/media/css/fixedColumns.dataTables.min.css'); !!}
 <?php 
     $TipoEstado = (isset($_GET["TipoEstado"]) ? $_GET["TipoEstado"] : 'Nuevo');
 
@@ -109,9 +117,7 @@ for($i = 0; $i < count($campos); $i++)
 
 ?>
 @extends('layouts.grid')
-@section('titulo')<h3 id="titulo"><center><?php 
-echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
-($TipoEstado == '' ? 'Todos' : $TipoEstado).']';?></center></h3>@stop
+
 @section('content')
 
 
@@ -149,9 +155,12 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
 </script>
 
 
-        <div class="container">
+        <div style="top:0px;" class="container">
             <div class="row">
                 <div class="container">
+                <?php 
+                            echo '<center>('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
+                            ($TipoEstado == '' ? 'Todos' : $TipoEstado).']</center>';?>
                     <a href="#" onclick="cambiarEstado(<?php echo $id;?>,'', modificar, eliminar, consultar, aprobar);" title="Mostrar Todos">
                         <img  src='images/iconoscrm/sin_filtro.png' style="width:28px; height:28px;">
                     <a href="#" onclick="cambiarEstado(<?php echo $id;?>,'Nuevo', modificar, eliminar, consultar, aprobar);" title="Mostrar Nuevas">
@@ -172,10 +181,16 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
                     <a href="#" onclick="cambiarEstado(<?php echo $id;?>,'Exitoso', modificar, eliminar, consultar, aprobar);" title="Mostrar Finalizadas Con Exito / Exitosas">
                         <img  src='images/iconoscrm/estado_exitoso.png' style="width:28px; height:28px;">
                     </a>
+
+                   
+                        
+                       
+                   
+                  
                     <a style="float: right;" href="#" onclick="mostrarTableroCRM(<?php echo $id;?>);" title="Mostrar Nuevas">
                         <img  src='images/iconoscrm/dashboardcrm.png' style="width:36px; height:36px;">
                     </a>
-                                 
+                          
                     <div class="btn-group" style="margin-left: 94%;margin-bottom:4px" title="Columns">
 
                         <button type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
@@ -194,13 +209,18 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
 
                            
                         </ul>
-                    </div>
-                    <div class="col-md-12" style="overflow: auto;">
-                    <table id="tmovimientocrm" name="tmovimientocrm" class="display table-bordered" width="100%">
-                        <thead>
-                            <tr class="btn-primary active">
+                   
 
-                            <th style="width: 100px; padding: 1px 8px;" data-orderable="false">
+                    </div>
+                  <!--   <div class="col-md-12" style="overflow: auto;"> -->
+                    
+                      <div>
+                    <table  class="display table-bordered" id="tmovimientocrm"  name="tmovimientocrm"  width="100%">
+
+                        <thead style="height: 10px;" class="fijo">
+                            <tr   class="btn-primary active">
+
+                            <th style="width: 100px; padding: 1px 5px;" data-orderable="false">
                                 <a href=<?php echo "movimientocrm/create?idDocumentoCRM=".$id."&aprobador=".$aprobador;?>><span title="Agregar" style= "display: <?php echo $visible;?> color:white " class="glyphicon glyphicon-plus"></span></a>
                                  <a href=""><span onclick="recargaPage();" title="Recargar Pagina" style="color:white" class="glyphicon glyphicon-refresh"></span></a>
                                  <a><span title="Borrar Filtros" class="glyphicon glyphicon-remove-sign" style="color:white; cursor:pointer;" id="btnLimpiarFiltros"></span></a>
@@ -213,8 +233,10 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
                                 ?>
                             </tr>
                         </thead>
-                                        <tfoot>
-                            <tr class="btn-default active">
+                           </div>
+                          <tfoot>
+                                       
+                            <tr  class="btn-default active">
                                 <th style="width:40px;padding: 1px 8px;">
                                     &nbsp;
                                 </th>
@@ -225,8 +247,10 @@ echo '('.$datos["codigoDocumentoCRM"].') '.$datos["nombreDocumentoCRM"].'<br>['.
                                     }
                                 ?>
                             </tr>
-                        </tfoot>        
+                       
+                        </tfoot>       
                     </table>
+                    
                     </div>
                 </div>
             </div>

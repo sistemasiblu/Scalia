@@ -1,0 +1,40 @@
+.canecaNota
+  {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    height: 10%;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .nombreUsuarioNota
+  {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 10px;
+    width: 40%;
+    margin: 2px 2px 2px 2px;
+  }
+
+  .fechaNota
+  {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 10px;
+    width: 20%;
+    margin: 2px 2px 2px 2px;
+  }
+
+
+.textoNota
+  {
+    position: relative;
+    font-size: 10px;
+    width: 98%;
+    height: 65%;
+    margin: 2px 2px 2px 2px;
+  }
+
+  

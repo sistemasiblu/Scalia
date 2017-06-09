@@ -1,7 +1,21 @@
 <?php 
+//print_r($idTercero);
+//print_r($nombreTercero);
+//return;
+           
+
+//return;
 
 ?>
+<script>
+//var idTercero = '<?php //echo $idTercero;?>';
+var idTercero = '<?php echo (isset($idTercero) ? json_encode($idTercero) : "");?>';
+idTercero = (idTercero != '' ? JSON.parse(idTercero) : '');
+//var nombreTercero = '<?php //echo json_encode($nombreTercero);?>';
+//var Tercero = [idTercero,nombreTercero];
 
+
+</script>
 @include('alerts/request')
 
 @if(isset($rechazoactivo))
@@ -24,6 +38,10 @@
   <title>ASIGNACION ACTIVO</title>
 
  <script>
+ 
+//var responsable = '<?php //echo (isset($users) ? json_encode($users) : "");?>';
+  //responsable = (responsable != '' ? JSON.parse(responsable) : '');
+
 
  var movimientoactivodetalle="";
 
@@ -34,18 +52,33 @@ $(document).ready(function()
   detalle=new Atributos('detalle','contenedor-detalle','detalle-');
   detalle.campoid = 'idTransaccionActivoCampoE';
   detalle.campoEliminacion = 'encabezadoEliminar';
-  detalle.campos=['idTransaccionActivoCampoE', 'CampoTransaccion_idCampoTransaccionE', 'descripcionCampoTransaccionE','gridTransaccionActivoCampoE','vistaTransaccionActivoCampoE','obligatorioTransaccionActivoCampoE'];
-  detalle.etiqueta=['input','input','input','checkbox','checkbox','checkbox'];
-  detalle.tipo=['hidden','hidden','','checkbox','checkbox','checkbox'];
-  detalle.estilo=['','','width:200px; height:35px;','width:100px; height:31px;display: inline-block;','width:100px; height:31px;display: inline-block;','width:100px; height:31px;display: inline-block;'];
+  detalle.campos=['idAsignacionActivo', 'numeroAsignacionActivo', 'fechaHoraAsignacionActivo', 'TransaccionActivo_idTransaccionActivo', 'documentoInternoAsignacionActivo', 'Users_idCrea'];
+  detalle.etiqueta=['input','input','input','input','select'];
+  detalle.tipo=['','','','','',''];
+  detalle.estilo=['width:200px; height:35px;','width:200px; height:35px;','width:300px; height:35px;','width:200px; height:35px','width:300px; height:35px;'];
   detalle.clase=['','','','','',''];
-  detalle.sololectura=[false,false,true,true,true];
+  detalle.sololectura=[true,true,true,true,true];
   detalle.completar=['off','off','off','off','off'];
-  detalle.opciones = [[],[],[],[],[]];      
-  detalle.funciones=['','','','',''];
+//var idTercero = '<?php //echo json_encode(@$idTercero);?>';
+var idTercero = '<?php echo $idTercero;?>';
+//idTercero = (idTercero != '' ? JSON.parse(idTercero) : '');
+var nombreTercero = '<?php echo $nombreTercero;?>';
+//nombreTercero = (nombreTercero != '' ? JSON.parse(nombreTercero) : '');
+//var nombreTercero = '<?php //echo json_encode(@$nombreTercero);?>';
+//var Tercero = [JSON.parse(idTercero),JSON.parse(nombreTercero)];
+var Tercero = [JSON.parse(idTercero),JSON.parse(nombreTercero)];
 
-  var idActivo = '<?php echo isset($idActivo) ? $idActivo : "";?>';
-  var nombreActivo = '<?php echo isset($nombreActivo) ? $nombreActivo : "";?>';
+console.log(Tercero);
+//var Tercero = [idTercero,nombreTercero];
+//alert()
+  //detalle.opciones = [[],[],[],[],[Tercero]]; 
+  //detalle.opciones = [[],[],[],[],[]];
+  //detalle.opciones = [[],[],[],[],[Tercero]];       
+  detalle.funciones=['','','','',''];
+detalle.opciones=[[],[],[],[],[Tercero]]
+//detalle.opciones=[[],[],[],[],[['M','F'] ,['Masculino','Femenino'] ]]
+
+  
 
   for(var j=0; j < movimientoactivodetalle.length; j++)
   {
@@ -54,14 +87,7 @@ $(document).ready(function()
 
 });
 
-
- function abrirModalMovimiento()
-  {
-      $('#ModalMovimiento').modal('show');
-
-    }
-
-    function  abrirTransaccionActivo(id)
+function  abrirTransaccionActivo(id)
 {
   //alert('entra');
   if ($('#TransaccionActivo_idTransaccionActivo').val()=="")
@@ -72,7 +98,110 @@ $(document).ready(function()
   {
     //$('#ModalTransaccionActivo').modal('show');
     var lastIdx = null;
-    $("#tmovimientoactivo").DataTable().ajax.url("http://"+location.host+"/datosTransaccionActivoSelect?id="+id).load();
+    $("#tmovimientoactivo").DataTable().ajax.url("http://"+location.host+"/datosMovimientoActivoSelect?id="+id).load();
+    // Abrir modal
+    $("#ModalTransaccionActivo").modal('show');
+
+        
+    $('a.toggle-vis').on( 'click', function (e) 
+    {
+      e.preventDefault();
+
+      // Get the column API object
+      var column = table.column( $(this).attr('data-column') );
+
+      // Toggle the visibility
+      column.visible( ! column.visible() );
+    });
+
+    $('#tmovimientoactivo tbody').on( 'mouseover', 'td', function () 
+    {
+        var colIdx = table.cell(this).index.column();
+
+        if ( colIdx !== lastIdx ) 
+        {
+            $( table.cells().nodes() ).removeClass( 'highlight' );
+            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        }
+    })
+    .on( 'mouseleave', function () 
+    {
+        $( table.cells().nodes() ).removeClass( 'highlight' );
+    });
+
+
+    var table = $('#tmovimientoactivo').DataTable();
+   
+      // Apply the search
+    table.columns().every( function () 
+    {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'blur change', function () 
+        {
+            if ( that.search() !== this.value ) 
+            {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    })
+
+    $('#tmovimientoactivo tbody').on( 'click', 'tr', function () 
+    {
+      $(this).toggleClass('selected');
+    });
+   
+    $('#botonSeleccionar').click(function() 
+    {
+
+      
+          var datos = table.rows('.selected').data();
+          var docInterno= "";
+          var idInterno= "";
+          for (var i = 0; i < datos.length; i++) 
+          {
+            docInterno+=datos[i][1]+',';
+            idInterno+=datos[i][0]+',';
+            var valoresD = new Array(0,datos[i][1],datos[i][2]);
+                detalle.agregarCampos(valoresD,'A');
+          window.parent.$("#ModalTransaccionActivo").modal("hide");
+          }
+
+          docInterno=docInterno.substring(0,docInterno.length-1);
+          idInterno=idInterno.substring(0,idInterno.length-1);
+          window.parent.$("#documentoInternoAsignacionActivo").val(docInterno);
+
+          var valoresD = new Array(0,datos[i][1],datos[i][2],0,0,0,0);
+                detalle.agregarCampos(valoresD,'A');
+          window.parent.$("#ModalTransaccionActivo").modal("hide");
+          window.parent.calcularTotales();
+
+    });
+
+
+  }
+}//fin function abrirTransaccionActivo
+
+ function abrirModalMovimiento()
+  {
+      $('#ModalMovimiento').modal('show');
+
+  }
+
+    function  abrirTransaccionActivo1(id)
+{
+  
+  if ($('#TransaccionActivo_idTransaccionActivo').val()=="")
+  {
+    alert("Debe Seleccionar un Tipo de Documento");
+  }
+  else
+  {
+    //$('#ModalTransaccionActivo').modal('show');
+    var lastIdx = null;
+    $("#tmovimientoactivo").DataTable().ajax.url("http://"+location.host+"/datosMovimientoActivoSelect?id="+id).load();
     // Abrir modal
     $("#ModalTransaccionActivo").modal('show');
 
@@ -161,19 +290,60 @@ $(document).ready(function()
         $(this).toggleClass('selected');
     } );
  
-     $('#botonActivo').click(function() {
+     $('#botonActivo').click(function() 
+     {
+        
         var datos = table.rows('.selected').data();
+          var docInterno= "";
+          var idInterno= "";
+          for (var i = 0; i < datos.length; i++) 
+          {
+            docInterno+=datos[i][1]+',';
+            idInterno+=datos[i][0]+',';
+          }
 
-        for (var i = 0; i < datos.length; i++) 
-        {
-              
-        }
+          docInterno=docInterno.substring(0,docInterno.length-1);
+          idInterno=idInterno.substring(0,idInterno.length-1);
+          window.parent.$("#documentoInternoMovimientoActivo").val(docInterno);
 
-        } );
+          var token = document.getElementById('token').value;
+          $.ajax(
+          {
+              headers: {'X-CSRF-TOKEN': token},
+              dataType: "json",
+              url:'/ConsultarPendientesMovimientoActivoDetalle',
+              data:{idMovimientoActivo: idInterno},
+              type:  'get',
+              beforeSend: function(){
+              },
 
+              success: function(data)
+              {
+              for (var i = 0; i < data.length; i++) 
+              {
 
+              var valoresD = new Array(0,JSON.stringify(data[i]['nombreLocalizacionO']).replace(/"/g,""),JSON.stringify(data[i]['nombreLocalizacionD']).replace(/"/g,""),JSON.stringify(data[i]['Activo_idActivo']).replace(/"/g,""),JSON.stringify(data[i]['codigoActivo']).replace(/"/g,""),JSON.stringify(data[i]['serieActivo']).replace(/"/g,""),JSON.stringify(data[i]['nombreActivo']).replace(/"/g,""),JSON.stringify(data[i]['cantidadMovimientoActivoDetalle']).replace(/"/g,""),JSON.stringify(data[i]['observacionMovimientoActivoDetalle']).replace(/"/g,""),JSON.stringify(data[i]['MovimientoActivo_idMovimientoActivo']).replace(/"/g,""));
+               detalle.agregarCampos(valoresD,'A');
+                calcularTotales();
 
+              }
+                console.log(valoresD);
+                 
+              },
+              error:    function(xhr,err)
+              {
+                  alert('Se ha producido un error: ' +err);
+              }
+          })
+
+         
+
+    });
+ 
   }
+    //window.parent.$("#ModalTransaccionActivo").modal("hide");
+          //window.parent.calcularTotales();
+
 }//fin function abrirTransaccionActivo
 
 
@@ -211,14 +381,14 @@ $(document).ready(function()
      <div class="col-sm-6">
        {!!Form::text('TransaccionActivo_idTransaccionActivo',@$transaccionactivo->longitudTransaccionActivo,['class'=>'form-control','placeholder'=>''])!!}
      </div>
-       {!!Form::label('TransaccionActivo_idTransaccionActivo', 'Documento Referencia', array('class' => 'col-sm-6 control-label')) !!}
+       {!!Form::label('documentoInternoAsignacionActivo', 'Documento Referencia', array('class' => 'col-sm-6 control-label')) !!}
      
-     <div class="col-sm-6" onclick="abrirTransaccionActivo($('#TransaccionActivo_idDocumentoInterno').val());" style="cursor:pointer;">
+     <div class="col-sm-6" onclick="abrirTransaccionActivo($('#TransaccionActivo_idTransaccionActivo').val());" style="cursor:pointer;">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="fa fa-pencil-square-o"></i>
         </span>
-          {!!Form::text('hastaTransaccionActivo',@$transaccionactivo->hastaTransaccionActivo,['class'=>'form-control','placeholder'=>''])!!}
+          {!!Form::text('documentoInternoAsignacionActivo',@$transaccionactivo->documentoInternoAsignacionActivo,['class'=>'form-control','placeholder'=>''])!!}
          
       </div>
     </div>
@@ -236,6 +406,7 @@ $(document).ready(function()
               <div class="col-sm-12">
                 <div class="row show-grid">
                   <div class="col-md-1" style="width: 40px;height: 35px;" >
+                   <span class="glyphicon glyphicon-minus" style="cursor:pointer;" onclick="detalle.agregarCampos(valorDetalle,'A')" ></span>
                     <span class="glyphicon glyphicon-plus" onclick="abrirModalMovimiento();"></span> 
 
                   </div>
@@ -342,7 +513,7 @@ $(document).ready(function()
                     </table>
 
                     <div class="modal-footer">
-                        <button id="botonActivo" name="botonActivo" type="button" class="btn btn-primary" >Seleccionar</button>
+                        <button id="botonSeleccionar" name="botonSeleccionar" type="button" class="btn btn-primary" >Seleccionar</button>
                     </div>
 
                 </div>

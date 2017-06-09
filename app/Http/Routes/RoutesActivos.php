@@ -16,8 +16,8 @@ Route::resource('planmantenimiento','PlanMantenimientoController');
 Route::resource('transaccionactivo','TransaccionActivoController');
 Route::resource('rechazoactivo','RechazoActivoController');
 Route::resource('asignacionactivo','AsignacionActivoController');
-
-
+Route::resource('frecuenciamedicion','FrecuenciaMedicionController');
+Route::resource('protocolomantenimiento','ProtocoloMantenimientoController');
 
 Route::group(['middleware' => 'auth'], function () 
 {
@@ -107,6 +107,12 @@ Route::get('datosTransaccionActivoSelect', function()
 
 });
 
+Route::get('datosMovimientoActivoSelect', function()
+{
+    include public_path().'/ajax/datosMovimientoActivoSelect.php';
+
+});
+
 Route::get('ConsultarPendientesMovimientoActivoDetalle', function()
 {
     include public_path().'/ajax/ConsultarPendientesMovimientoActivoDetalle.php';
@@ -127,6 +133,16 @@ Route::get('datosConceptoActivo', function()
 Route::get('consultarPermisosActivos', function()
 {
     include public_path().'/ajax/consultarPermisosActivos.php';
+});
+
+Route::get('datosFrecuenciaMedicion', function()
+{
+    include public_path().'/ajax/datosFrecuenciaMedicion.php';
+});
+
+Route::get('datosProtocoloMantenimiento', function()
+{
+    include public_path().'/ajax/datosProtocoloMantenimiento.php';
 });
 
 Route::get('mostrarpartesgridselect', function()
@@ -217,6 +233,7 @@ Route::get('campostransacciondetallegridselect', function()
     return view('campostransacciondetallegridselect');
     
 }); 
+
 Route::get('tags', function (Illuminate\Http\Request  $request) 
 {
         $term = $request->term ?: '';
@@ -268,3 +285,7 @@ return $pdf->stream();
 });
 
 
+Route::get('chart', function()
+{
+    return view('dashboardcrmGoogleCharts');
+});
