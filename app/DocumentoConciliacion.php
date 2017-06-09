@@ -17,4 +17,14 @@ class DocumentoConciliacion extends Model
     {
     	return $this->hasMany('App\DocumentoConciliacionComercial','DocumentoConciliacion_idDocumentoConciliacion');
     }
+
+    function DocumentoConciliacionCartera()
+    {
+    	return $this->hasMany('App\DocumentoConciliacionCartera','DocumentoConciliacion_idDocumentoConciliacion');
+    }
+
+    function DocumentoConciliacionCredito()
+    {
+    	return $this->hasMany('App\DocumentoConciliacionCredito','DocumentoConciliacion_idDocumentoConciliacion');
+    }
 }

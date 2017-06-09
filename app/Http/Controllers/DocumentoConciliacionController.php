@@ -111,14 +111,16 @@ class DocumentoConciliacionController extends Controller
         //     ->select(DB::raw('idDocumentoConciliacionComercial', 'ValorConciliacion_idValorConciliacion', 'nombreValorConciliacion', 'cuentasLocalDocumentoConciliacionComercial', 'cuentasNiifDocumentoConciliacionComercial'));
 
         $comercial = DB::select(
-            'SELECT idDocumentoConciliacionComercial, ValorConciliacion_idValorConciliacion, nombreValorConciliacion,cuentasLocalDocumentoConciliacionComercial, cuentasNiifDocumentoConciliacionComercial
+            'SELECT idDocumentoConciliacionComercial, ValorConciliacion_idValorConciliacion AS ValorConciliacion_idValorConciliacionCom, 
+                    nombreValorConciliacion AS nombreValorConciliacionCom,cuentasLocalDocumentoConciliacionComercial, cuentasNiifDocumentoConciliacionComercial
             FROM documentoconciliacioncomercial
             LEFT JOIN valorconciliacion
             ON ValorConciliacion_idValorConciliacion = idValorConciliacion
             WHERE DocumentoConciliacion_idDocumentoConciliacion = '.$id);
 
         $cartera = DB::select(
-            'SELECT idDocumentoConciliacionCartera, ValorConciliacion_idValorConciliacion, nombreValorConciliacion,cuentasLocalDocumentoConciliacionCartera, cuentasNiifDocumentoConciliacionCartera
+            'SELECT idDocumentoConciliacionCartera, ValorConciliacion_idValorConciliacion AS ValorConciliacion_idValorConciliacionCar, 
+                    nombreValorConciliacion AS nombreValorConciliacionCar,cuentasLocalDocumentoConciliacionCartera, cuentasNiifDocumentoConciliacionCartera
             FROM documentoconciliacioncartera
             LEFT JOIN valorconciliacion
             ON ValorConciliacion_idValorConciliacion = idValorConciliacion
@@ -168,18 +170,19 @@ class DocumentoConciliacionController extends Controller
 
         // en el formulario hay un campo oculto en el que almacenamos los id que se eliminan separados por coma
         // en este documentoconciliacion lo convertimos en array y eliminamos dichos id de la tabla de detalle
-        $idsEliminar = explode(',', $request['eliminarDocumentoComercial']);
+        $idsEliminar = explode(',', $request['eliminarDocumentoConciliacionComercial']);
         \App\DocumentoConciliacionComercial::whereIn('idDocumentoConciliacionComercial',$idsEliminar)->delete();
 
-        $contadorDetalle = count($request['ValorConciliacion_idValorConciliacion']);
+        $contadorDetalle = count($request['ValorConciliacion_idValorConciliacionCom']);
+            
         for($i = 0; $i < $contadorDetalle; $i++)
         {
-            $indice = array(
-             'idDocumentoConciliacionComercial' => $request['idDocumentoConciliacionComercial'][$i]);
+            
+            $indice = array('idDocumentoConciliacionComercial' => $request['idDocumentoConciliacionComercial'][$i]);
 
             $data = array(
             'DocumentoConciliacion_idDocumentoConciliacion' => $id,
-            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacion'][$i],
+            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacionCom'][$i],
             'cuentasLocalDocumentoConciliacionComercial' => $request['cuentasLocalDocumentoConciliacionComercial'][$i],
             'cuentasNiifDocumentoConciliacionComercial' => $request['cuentasNiifDocumentoConciliacionComercial'][$i] );
 
@@ -192,10 +195,10 @@ class DocumentoConciliacionController extends Controller
 
         // en el formulario hay un campo oculto en el que almacenamos los id que se eliminan separados por coma
         // en este documentoconciliacion lo convertimos en array y eliminamos dichos id de la tabla de detalle
-        $idsEliminar = explode(',', $request['eliminarDocumentoCartera']);
+        $idsEliminar = explode(',', $request['eliminarDocumentoConciliacionCartera']);
         \App\DocumentoConciliacionCartera::whereIn('idDocumentoConciliacionCartera',$idsEliminar)->delete();
 
-        $contadorDetalle = count($request['ValorConciliacion_idValorConciliacion']);
+        $contadorDetalle = count($request['idDocumentoConciliacionCartera']);
         for($i = 0; $i < $contadorDetalle; $i++)
         {
             $indice = array(
@@ -203,7 +206,7 @@ class DocumentoConciliacionController extends Controller
 
             $data = array(
             'DocumentoConciliacion_idDocumentoConciliacion' => $id,
-            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacion'][$i],
+            'ValorConciliacion_idValorConciliacion' => $request['ValorConciliacion_idValorConciliacionCar'][$i],
             'cuentasLocalDocumentoConciliacionCartera' => $request['cuentasLocalDocumentoConciliacionCartera'][$i],
             'cuentasNiifDocumentoConciliacionCartera' => $request['cuentasNiifDocumentoConciliacionCartera'][$i] );
 

@@ -16,6 +16,6 @@ class DocumentoConciliacionComercial extends Model
 
     function DocumentoConciliacion()
     {
-    	return $this->hasMany('App\DocumentoConciliacion','idDocumentoConciliacion');
+    	return $this->hasOne('App\DocumentoConciliacion','idDocumentoConciliacion');
     }
 }

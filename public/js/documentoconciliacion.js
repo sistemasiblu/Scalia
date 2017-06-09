@@ -1,16 +1,76 @@
 
+var valorDetalle = [0,0,'','',''];
+
+$(document).ready(function(){
+    
+    comercial = new Atributos('comercial','contenedor_comercial','comercial_');
+    
+    comercial.altura = '36px;';
+    comercial.campoid = 'idDocumentoConciliacionComercial';
+    comercial.campoEliminacion = 'eliminarDocumentoConciliacionComercial';
+
+    comercial.campos = ['idDocumentoConciliacionComercial', 'ValorConciliacion_idValorConciliacionCom', 'nombreValorConciliacionCom', 'cuentasLocalDocumentoConciliacionComercial', 'cuentasNiifDocumentoConciliacionComercial'];
+    comercial.etiqueta = ['input','input','input','input','input'];
+    comercial.tipo = ['hidden','hidden','text','text','text'];
+    comercial.estilo = ['','','width: 20%;height:35px;','width: 36%;height:35px;','width: 36%;height:35px;'];
+    comercial.clase = ['','','','',''];
+    comercial.sololectura = [false,false,true,false,false];
+    
+    for(var j=0, k = DocumentoConciliacionComercial.length; j < k; j++)
+    {
+        comercial.agregarCampos(JSON.stringify(DocumentoConciliacionComercial[j]),'L');
+    }
+
+
+
+    cartera = new Atributos('cartera','contenedor_cartera','cartera_');
+    
+    cartera.altura = '36px;';
+    cartera.campoid = 'idDocumentoConciliacionCartera';
+    cartera.campoEliminacion = 'eliminarDocumentoConciliacionCartera';
+
+    cartera.campos = ['idDocumentoConciliacionCartera', 'ValorConciliacion_idValorConciliacionCar', 'nombreValorConciliacionCar', 'cuentasLocalDocumentoConciliacionCartera', 'cuentasNiifDocumentoConciliacionCartera'];
+    cartera.etiqueta = ['input','input','input','input','input'];
+    cartera.tipo = ['hidden','hidden','text','text','text'];
+    cartera.estilo = ['','','width: 20%;height:35px;','width: 36%;height:35px;','width: 36%;height:35px;'];
+    cartera.clase = ['','','','',''];
+    cartera.sololectura = [false,false,true,false,false];
+    
+    for(var j=0, k = DocumentoConciliacionCartera.length; j < k; j++)
+    {
+        cartera.agregarCampos(JSON.stringify(DocumentoConciliacionCartera[j]),'L');
+    }
+   
+});
+
 function abrirModalValor(tipo)
 {
-         window.parent.$("#tvalorSelect tbody tr").each( function () 
-    {
-        $(this).removeClass('selected');
-    });
+    $(this).removeClass("selected");
+    
+    $("#divTabla").html('');
+
+    estructuraTabla = '<table id="tvalorSelect" name="tvalorSelect" class="display table-bordered" width="100%">'+
+                          '<thead>'+
+                              '<tr class="btn-default active">'+
+                                  '<th><b>ID</b></th>'+
+                                  '<th><b>Valor</b></th> '+       
+                              '</tr>'+
+                          '</thead>'+
+                          '<tfoot>'+
+                              '<tr class="btn-default active">'+
+
+                                  '<th>ID</th>'+
+                                  '<th>Valor</th> '+                            
+                              '</tr>'+
+                          '</tfoot>'+
+                      '</table>';
+
+    $("#divTabla").html(estructuraTabla);
+
 	var lastIdx = null;
     window.parent.$("#tvalorSelect").DataTable().ajax.url('http://'+location.host+"/datosValorConciliacionSelect?tipo="+tipo).load();
      // Abrir modal
     window.parent.$("#ModalValor").modal()
-
-    
 
     $("a.toggle-vis").on( "click", function (e) {
         e.preventDefault();
@@ -74,10 +134,41 @@ function abrirModalValor(tipo)
         for (var i = 0; i < datos.length; i++) 
         {
             var valores = new Array(0, datos[i][0],datos[i][1],'','');
+
             if(tipo == 'comercial')
-                window.parent.comercial.agregarCampos(valores,'A');  
+            {
+                resultCom = false;
+                for(cont = 0; cont < comercial.contador; cont++)
+                {
+                    if($('#ValorConciliacion_idValorConciliacionCom'+cont).val() == datos[i][0])
+                    {
+                        resultCom = true;
+                        cont = comercial.contador;
+                    }
+                }
+
+                if(resultCom === false)
+                {
+                    window.parent.comercial.agregarCampos(valores,'A');
+                }
+            }
             else
-                window.parent.cartera.agregarCampos(valores,'A');  
+            {
+                resultCar = false;
+                for(cont = 0; cont < cartera.contador; cont++)
+                {
+                  if($('#ValorConciliacion_idValorConciliacionCar'+cont).val() == datos[i][0])
+                  {
+                    resultCar = true;
+                    cont = cartera.contador;
+                  }
+                }
+
+                if(resultCar === false)
+                {
+                    window.parent.cartera.agregarCampos(valores,'A');
+                }                  
+            }
         }
         window.parent.$("#ModalValor").modal("hide");
     });

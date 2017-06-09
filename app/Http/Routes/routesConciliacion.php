@@ -23,6 +23,10 @@ Route::get('datosValorConciliacionSelect', function()
     include public_path().'/ajax/datosValorConciliacionSelect.php';
 });
 
+Route::get('datosConciliacionComercial', function()
+{
+    include public_path().'/ajax/datosConciliacionComercial.php';
+});
 
 /***************************Rutas de los controladores**************************/
 
@@ -30,10 +34,27 @@ Route::group(['middleware' => 'auth'], function ()
 {
     // Route::resource('sectorempresa','SectorEmpresaController');
     Route::resource('documentoconciliacion','DocumentoConciliacionController');
-    
+    Route::resource('conciliacioncomercial','ConciliacionComercialController');
 
 });
 
 /***************************Rutas AJAX**************************/
 Route::get('valorconciliaciongridselect','DocumentoConciliacionController@indexValorConciliacionGrid');
 
+
+Route::post('guardarConciliacionComercial', function()
+{
+    include public_path().'/ajax/guardarConciliacionComercial.php';
+});
+
+Route::post('guardarObservacionConciliacionComercial', function()
+{
+    include public_path().'/ajax/guardarObservacionConciliacionComercial.php';
+});
+
+Route::post('ConsultarInformacionConciliacionComercial', function()
+{
+    include public_path().'/ajax/ConsultarInformacionConciliacionComercial.php';
+});
+
+// Route::resource('consultarInformacion','FiltroDocumentoConciliacionController@consultarInformacion');
