@@ -52,9 +52,9 @@ Route::post('guardarObservacionConciliacionComercial', function()
     include public_path().'/ajax/guardarObservacionConciliacionComercial.php';
 });
 
-Route::post('ConsultarInformacionConciliacionComercial', function()
+Route::post('consultarInformacionConciliacionComercial', function()
 {
-    include public_path().'/ajax/ConsultarInformacionConciliacionComercial.php';
+    include public_path().'/ajax/consultarInformacionConciliacionComercial.php';
 });
 
 // Route::resource('consultarInformacion','FiltroDocumentoConciliacionController@consultarInformacion');

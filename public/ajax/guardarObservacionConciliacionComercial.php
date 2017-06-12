@@ -25,13 +25,13 @@
 		else
 		{
 			$query = "DELETE 
-					FROM conciliacioncomercialdocumento 
+					FROM conciliacioncomercialmovimiento 
 					WHERE ConciliacionComercial_idConciliacionComercial = '$idConCom'
-							AND Documento_idDocumento = $idDoc ";
+							AND Movimiento_idMovimiento = $idDoc ";
 			// echo $query;
 			$resp = DB::delete($query);
 			
-			$query = "INSERT INTO conciliacioncomercialdocumento VALUES(0,$idConCom,$idDoc,'$observacion')";
+			$query = "INSERT INTO conciliacioncomercialmovimiento VALUES(0,$idConCom,$idDoc,'$observacion')";
 			// echo $query;
 			$resp = DB::insert($query);
 		}

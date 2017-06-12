@@ -162,11 +162,10 @@
       <?php 
        //echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/valorconciliaciongridselect"></iframe>'
       ?>
-              <div class="container">
-            <div class="row">
-                <div class="container">
+          <div class="container" style="width: 100%;height: 90%;overflow-y:scroll;">
+            <!-- <div class="row"> -->
                     <div id="divTabla" name="divTabla">
-                      <table id="tvalorSelect" name="tvalorSelect" class="display table-bordered" width="100%">
+                      <table id="tvalorSelect" name="tvalorSelect" class="display table-bordered" width="70%">
                           <thead>
                               <tr class="btn-default active">
 
@@ -186,8 +185,7 @@
                     <div class="modal-footer">
                         <button id="botonCampo" name="botonCampo" type="button" class="btn btn-primary" >Seleccionar</button>
                     </div>
-                </div>
-            </div>
+            <!-- </div> -->
         </div>
 
       </div>

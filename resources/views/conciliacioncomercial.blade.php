@@ -125,7 +125,7 @@
       </center>
       </div>
 
-    <div id="resultadoDocumento" name="resultadoDocumento">      
+    <div id="resultadoConciliacion" name="resultadoConciliacion">      
     </div>
 
   </fieldset>
@@ -144,9 +144,9 @@
 	{!! Form::close() !!}
 </div>
 @stop
-<!-- Modal Resultado Consulta-->
-<div id="ModalResultadoConsulta" class="modal fade" role="dialog">
-    <div class="modal-dialog" style="height: 100%">
+<!-- Modal Resultado Documento-->
+<div id="ModalResultadoDocumento" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%;height: 100%">
         <!-- Modal content-->
         <div class="modal-content" style="width: 100%;">
             <div class="modal-header btn-default active" style="border-radius: 3px;">
@@ -155,7 +155,30 @@
             </div>
             <div class="modal-body" style="height:500px;">
                 <div class="container" style="width: 100%;height: 100%;overflow-y:scroll;">
-                    <div id="resultadoConsulta" name="resultadoConsulta">
+                    <div id="resultadoDocumento" name="resultadoDocumento">
+                        
+                    </div>                                               
+                </div> 
+            </div>
+            <div class="modal-footer btn-default active" style="border-radius: 3px; text-align:center;">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Fin Modal --> 
+<!-- Modal Resultado Movimiento-->
+<div id="ModalResultadoMovimiento" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%;height: 100%">
+        <!-- Modal content-->
+        <div class="modal-content" style="width: 100%;">
+            <div class="modal-header btn-default active" style="border-radius: 3px;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>&nbsp; Información</h4>
+            </div>
+            <div class="modal-body" style="height:500px;">
+                <div class="container" style="width: 100%;height: 100%;overflow-y:scroll;">
+                    <div id="resultadoMovimiento" name="resultadoMovimiento">
                         
                     </div>                                               
                 </div> 
