@@ -249,6 +249,7 @@
 
 	//SE CONSULTA EL DETALLE DE LA CONCILIACION GUARDADA AGRUPADA POR DOCUMENTO
 	$concomdoc = DB::select("SELECT idDocumento, nombreDocumento, 
+							IFNULL(observacionConciliacionComercialDocumento,'') AS observacionConciliacionComercialDocumento,
 							SUM(valorComercialConciliacionComercialDetalle) AS valorComercialConciliacionComercialDetalle,
 							SUM(valorContableConciliacionComercialDetalle) AS valorContableConciliacionComercialDetalle,
 							SUM(valorComercialConciliacionComercialDetalle-valorContableConciliacionComercialDetalle) AS diferencia
@@ -257,7 +258,10 @@
 							ON conciliacioncomercialdetalle.Movimiento_idMovimiento = Movimiento.idMovimiento 
 							LEFT JOIN ".\Session::get("baseDatosCompania").".Documento 
 							ON Movimiento.Documento_idDocumento = Documento.idDocumento 
-							WHERE ConciliacionComercial_idConciliacionComercial = $idConciliacionComercial 
+							LEFT JOIN conciliacioncomercialdocumento 
+								ON conciliacioncomercialdetalle.ConciliacionComercial_idConciliacionComercial = conciliacioncomercialdocumento.ConciliacionComercial_idConciliacionComercial
+									AND Documento.idDocumento = conciliacioncomercialdocumento.Documento_idDocumento 
+							WHERE conciliacioncomercialdetalle.ConciliacionComercial_idConciliacionComercial = $idConciliacionComercial 
 							GROUP BY idDocumento");
 
     $datosConComDoc = array();
@@ -278,10 +282,17 @@
     	$idDoc = $datosConComDoc['idDocumento'][$cont];
     	$idConCom = $idConciliacionComercial;
 
+    	$style = " style='cursor: pointer;'";
+
+    	if($datosConComDoc['diferencia'][$cont] != 0)
+    	{
+    		$style = " style='color: red; cursor: pointer;'";
+    	}
+
     	$tabla .= "<tr>
     					<td>
-    						<a href='javascript:consultarInformacionDoc($idDoc,1);'>
-    							<label>".$datosConComDoc['nombreDocumento'][$cont]."</label>
+    						<a href='javascript:consultarInformacion($idDoc,1);'>
+    							<label $style>".$datosConComDoc['nombreDocumento'][$cont]."</label>
 							</a>
     					</td>
     					<td>
@@ -291,10 +302,10 @@
     						".number_format($datosConComDoc['valorContableConciliacionComercialDetalle'][$cont], 2, '.', ',')."
     					</td>
     					<td>
-    						".number_format($datosConComDoc['diferencia'][$cont], 2, '.', ',')."
+    						<label $style>".number_format($datosConComDoc['diferencia'][$cont], 2, '.', ',')."</label>
     					</td>
     					<td>
-    						<input type='text' id='observacionConciliacionComercialDocumento$cont' name='observacionConciliacionComercialDocumento$cont' value='' style='width:100%' onchange='guardarObservacion($idDoc,$idConCom,this.value,1);'>
+    						<input type='text' id='observacionConciliacionComercialDocumento$cont' name='observacionConciliacionComercialDocumento$cont' value='".$datosConComDoc['observacionConciliacionComercialDocumento'][$cont]."' style='width:100%' onchange='guardarObservacion($idDoc,$idConCom,this.value,1);'>
     					</td>
     				</tr>";
 		$cont++;
@@ -309,14 +320,5 @@
     echo json_encode($respuesta);
 
 	return;
-
-
-	// DB::Select('INSERT INTO Iblu.Evento VALUES(0, '.$tercero.', "'.$codigo.'", "'.$evento.'", "'.$fechaIni.'", "'.$fechaFin.'", '.$dias.')');
-
-	echo json_encode("Guardado correctamente.");
-
-    $respuesta = array("valid"=>$valid,"errores"=>$errores);
-    
-    echo json_encode($respuesta);
 	
 ?>

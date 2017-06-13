@@ -15,6 +15,13 @@ $(document).ready(function(){
         $("#Documento_idDocumento").val(arrayDocumentos).trigger("chosen:updated");        
     }
 
+    idConCom = $("#Documento_idDocumento").val();
+
+    if(idConCom > 0)
+    {
+        consultarInformacion(0,3);
+    }
+
 });
 
 function validarProceso()
@@ -53,7 +60,7 @@ function validarProceso()
     $('#btnGuardar').html('Procesando...'); 
 
     $.ajax({
-        async: false,
+        async: true,
         url:'/guardarConciliacionComercial',
         headers: {'X-CSRF-TOKEN': token},
         type: 'POST',
@@ -80,14 +87,14 @@ function validarProceso()
             {
                 $("#idConciliacionComercial").val(0);
                 alert(respuesta.informacion);
-                $("#resultadoDocumento").html('');
+                $("#resultadoConciliacion").html('');
                 return;
             }
 
             $("#idConciliacionComercial").val(respuesta.idConciliacionComercial);
-            $("#resultadoDocumento").html(respuesta.tabla);
+            $("#resultadoConciliacion").html(respuesta.tabla);
 
-            clasificartabla();
+            clasificartabla('tconciliacioncomercialdocumento');
 
         },
         error:    function(xhr,err){ 
@@ -99,15 +106,13 @@ function validarProceso()
     
 }
 
-function clasificartabla()
+function clasificartabla(nombreTabla)
 {
 
     var lastIdx = null;
 
-    window.parent.$("#tconciliacioncomercialdocumento").DataTable();
-     // Abrir modal
-    window.parent.$("#ModalValor").modal()
-
+    window.parent.$("#"+nombreTabla).DataTable();
+    
     $("a.toggle-vis").on( "click", function (e) {
         e.preventDefault();
  
@@ -118,7 +123,7 @@ function clasificartabla()
         column.visible( ! column.visible() );
     } );
 
-    window.parent.$("#tconciliacioncomercialdocumento tbody").on( "mouseover", "td", function () 
+    window.parent.$("#"+nombreTabla+" tbody").on( "mouseover", "td", function () 
     {
         var colIdx = table.cell(this).index().column;
 
@@ -133,14 +138,14 @@ function clasificartabla()
 
 
     // Setup - add a text input to each footer cell
-    window.parent.$("#tconciliacioncomercialdocumento tfoot th").each( function () 
+    window.parent.$("#"+nombreTabla+" tfoot th").each( function () 
     {
-        var title = window.parent.$("#tconciliacioncomercialdocumento thead th").eq( $(this).index() ).text();
+        var title = window.parent.$("#"+nombreTabla+" thead th").eq( $(this).index() ).text();
         $(this).html( "<input type='text' placeholder='Buscar por "+title+"'/>" );
     });
  
     // DataTable
-    var table = window.parent.$("#tconciliacioncomercialdocumento").DataTable();
+    var table = window.parent.$("#"+nombreTabla).DataTable();
  
     // Apply the search
     table.columns().every( function () 
@@ -163,7 +168,7 @@ function guardarObservacion(idDoc,idConCom,observacion,tipo)
     var token = $("#token").val();
 
     $.ajax({
-        async: false,
+        async: true,
         url:'/guardarObservacionConciliacionComercial',
         headers: {'X-CSRF-TOKEN': token},
         type: 'POST',
@@ -195,170 +200,59 @@ function guardarObservacion(idDoc,idConCom,observacion,tipo)
     });      
 }
 
-function consultarInformacionDoc(idDoc,tipo)
+function consultarInformacion(idDoc,tipo)
 {     
     var token = $("#token").val();
-    $("#ModalResultadoConsulta").modal('show');
-    alert('consultar informacion');
-    // $.ajax({
-    //     async: false,
-    //     url:'/ConsultarInformacionConciliacionComercial',
-    //     headers: {'X-CSRF-TOKEN': token},
-    //     type: 'POST',
-    //     dataType: 'json',
-    //     data: {
-    //         "idDoc": idDoc,
-    //         "tipo": tipo
-    //     },
-    //     beforeSend: function(){
-    //         //Lo que se hace antes de enviar el formulario
-    //         },
-    //     success: function(respuesta){
-    //         //lo que se si el destino devuelve algo
+    idConCom = $("#idConciliacionComercial").val();
+
+    if(tipo == 1)
+    {
+        tipoConsulta = 'Documento';
+        nombreTabla = 'tconciliacioncomercialmovimiento';
+        $("#ModalResultado"+tipoConsulta).modal('show');
+    }
+    else if(tipo == 2)
+    {
+        tipoConsulta = 'Movimiento';
+        nombreTabla = 'tconciliacioncomercialdetalle';
+        $("#ModalResultado"+tipoConsulta).modal('show');
+    }
+    else if(tipo == 3)
+    {
+        tipoConsulta = 'Conciliacion';
+        nombreTabla = 'tconciliacioncomercialdocumento';
+    }
+
+    $.ajax({
+        async: true,
+        url:'/consultarInformacionConciliacionComercial',
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            "idConCom": idConCom,
+            "idDoc": idDoc,
+            "tipo": tipo
+        },
+        beforeSend: function(){
+            //Lo que se hace antes de enviar el formulario
+            },
+        success: function(respuesta){
+            //lo que se si el destino devuelve algo
             
-    //         if(respuesta.valid === true)
-    //         {
-    //            alert('Se actualizo la observacion.');
-    //         }
-    //         else
-    //         {
-    //             alert('Error. No se guardo la observacion.');
-    //         }
-    //     },
-    //     error:    function(xhr,err){ 
-    //         alert("Error");
-    //     }
-    // });      
-}
-
-function abrirModalValor(tipo)
-{
-    $(this).removeClass("selected");
-    
-    $("#divTabla").html('');
-
-    estructuraTabla = '<table id="tvalorSelect" name="tvalorSelect" class="display table-bordered" width="100%">'+
-                          '<thead>'+
-                              '<tr class="btn-default active">'+
-                                  '<th><b>ID</b></th>'+
-                                  '<th><b>Valor</b></th> '+       
-                              '</tr>'+
-                          '</thead>'+
-                          '<tfoot>'+
-                              '<tr class="btn-default active">'+
-
-                                  '<th>ID</th>'+
-                                  '<th>Valor</th> '+                            
-                              '</tr>'+
-                          '</tfoot>'+
-                      '</table>';
-
-    $("#divTabla").html(estructuraTabla);
-
-	var lastIdx = null;
-    window.parent.$("#tvalorSelect").DataTable().ajax.url('http://'+location.host+"/datosValorConciliacionSelect?tipo="+tipo).load();
-     // Abrir modal
-    window.parent.$("#ModalValor").modal()
-
-    $("a.toggle-vis").on( "click", function (e) {
-        e.preventDefault();
- 
-        // Get the column API object
-        var column = table.column( $(this).attr("data-column") );
- 
-        // Toggle the visibility
-        column.visible( ! column.visible() );
-    } );
-
-    window.parent.$("#tvalorSelect tbody").on( "mouseover", "td", function () 
-    {
-        var colIdx = table.cell(this).index().column;
-
-        if ( colIdx !== lastIdx ) {
-            $( table.cells().nodes() ).removeClass( "highlight" );
-            $( table.column( colIdx ).nodes() ).addClass( "highlight" );
-        }
-    }).on( "mouseleave", function () 
-    {
-        $( table.cells().nodes() ).removeClass( "highlight" );
-    } );
-
-
-    // Setup - add a text input to each footer cell
-    window.parent.$("#tvalorSelect tfoot th").each( function () 
-    {
-        var title = window.parent.$("#tvalorSelect thead th").eq( $(this).index() ).text();
-        $(this).html( "<input type='text' placeholder='Buscar por "+title+"'/>" );
-    });
- 
-    // DataTable
-    var table = window.parent.$("#tvalorSelect").DataTable();
- 
-    // Apply the search
-    table.columns().every( function () 
-    {
-        var that = this;
- 
-        $( "input", this.footer() ).on( "blur change", function () {
-            if ( that.search() !== this.value ) {
-                that
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    })
-
-    window.parent.$('#tvalorSelect tbody').on( 'click', 'tr', function () {
-        $(this).toggleClass('selected');
-
-        var datos = table.rows('.selected').data();
-
-
-    } );
-
-    window.parent.$('#botonCampo').click(function() {
-        var datos = table.rows('.selected').data();  
-
-        for (var i = 0; i < datos.length; i++) 
-        {
-            var valores = new Array(0, datos[i][0],datos[i][1],'','');
-
-            if(tipo == 'comercial')
+            if(respuesta.valid === false)
             {
-                resultCom = false;
-                for(cont = 0; cont < comercial.contador; cont++)
-                {
-                    if($('#ValorConciliacion_idValorConciliacionCom'+cont).val() == datos[i][0])
-                    {
-                        resultCom = true;
-                        cont = comercial.contador;
-                    }
-                }
-
-                if(resultCom === false)
-                {
-                    window.parent.comercial.agregarCampos(valores,'A');
-                }
+                alert(respuesta.informacion);
+                $("#resultado"+tipoConsulta).html('');
+                return;
             }
-            else
-            {
-                resultCar = false;
-                for(cont = 0; cont < cartera.contador; cont++)
-                {
-                  if($('#ValorConciliacion_idValorConciliacionCar'+cont).val() == datos[i][0])
-                  {
-                    resultCar = true;
-                    cont = cartera.contador;
-                  }
-                }
 
-                if(resultCar === false)
-                {
-                    window.parent.cartera.agregarCampos(valores,'A');
-                }                  
-            }
+            $("#resultado"+tipoConsulta).html(respuesta.tabla);
+
+            clasificartabla(nombreTabla);
+        },
+        error:    function(xhr,err){ 
+            alert("Error");
         }
-        window.parent.$("#ModalValor").modal("hide");
-    });
-
+    });      
 }
