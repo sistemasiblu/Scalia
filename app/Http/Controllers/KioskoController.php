@@ -307,7 +307,21 @@ class KioskoController extends Controller
                     WHERE
                         idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
 
-                return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'componentes', 'observaciones', 'especificacioneshs', 'medidas', 'tallas', 'materias', 'procesos', 'procesoscolor'));
+                // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE ADJUNTOS DE LA FICHA TECNICA
+                $adjuntos = DB::Select('
+                    SELECT 
+                        codigoAlternoFichaTecnicaAdjunto,
+                        nombreFichaTecnicaAdjunto,
+                        fechaFichaTecnicaAdjunto,
+                        observacionFichaTecnicaAdjunto,
+                        archivoFichaTecnicaAdjunto
+                    FROM
+                        Iblu.FichaTecnicaAdjunto
+                    WHERE
+                        FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica'].'
+                    ORDER BY codigoAlternoFichaTecnicaAdjunto');
+
+                return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'componentes', 'observaciones', 'especificacioneshs', 'medidas', 'tallas', 'materias', 'procesos', 'procesoscolor', 'adjuntos'));
         }
 
         //--------------------------------------------------

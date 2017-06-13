@@ -182,7 +182,7 @@ for ($i=0; $i < count($estante); $i++)
                         {
                             $estructura .="
                             <div style='background-color:".$color."; display:inline-block; cursor:pointer; height:100%; width:".$ancho."%' ".$title." ".$onclick.">
-                                ".$clocalizacion[$i]['posicionUbicacionDocumento']."
+                                <a onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].','.$clocalizacion[$i]['idUbicacionDocumento'].',event, "Activa",'.$localizacion.");'>".$clocalizacion[$i]['posicionUbicacionDocumento']."</a>
                             </div>";
                         }
 

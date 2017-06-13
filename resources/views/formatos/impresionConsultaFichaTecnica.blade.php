@@ -560,6 +560,47 @@ function base64($archivo)
 		}
 		?>
 
+		<!-- IMPRIMO LOS ADJUNTOS DEL INFORME DE FICHA TECNICA DENTRO DE UN PANEL -->
+  		<div class="panel panel-primary">
+		<div class="panel-heading" style="height:45px;"><h4>Adjuntos</h4></div>
+		  <div class="panel-body">
+		  <?php 
+		  	echo '
+		  		<table  class="table table-striped table-bordered table-hover">
+					<thead class="thead-inverse">
+						<tr class="table-info">
+							<th>Código Alterno</th>
+							<th>Título</th>
+							<th>Fecha</th>
+							<th>Observaciones</th>
+							<th>Adjuntos</th>
+						</tr>
+					</thead>
+					<tbody>';
+						for ($i=0; $i < count($adjuntos); $i++) 
+						{ 
+							$adj = get_object_vars($adjuntos[$i]);
+							echo '
+							<tr>
+								<td>'.$adj["codigoAlternoFichaTecnicaAdjunto"].'</td>
+								<td>'.$adj["nombreFichaTecnicaAdjunto"].'</td>
+								<td>'.$adj["fechaFichaTecnicaAdjunto"].'</td>
+								<td>'.$adj["observacionFichaTecnicaAdjunto"].'</td>
+								<td>
+									<a target="_blank" 
+                                        href="http://190.248.133.146:8001/iblu/documentos_terceros/'.$adj['archivoFichaTecnicaAdjunto'].'">
+                                        '.$adj['archivoFichaTecnicaAdjunto'].'
+                                    </a>
+								</td>
+							</tr>';
+						}
+				echo '
+					</tbody>
+				</table>'
+		  ?>
+		  </div>
+		</div>
+
 </div>
 
   		

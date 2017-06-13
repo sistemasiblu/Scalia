@@ -1,5 +1,21 @@
 <?php 
 
+			// use Mail;
+// include '../../vendor/laravel/framework/src/Illuminate/Support/Facades/Mail.php';
+			$mail = array();
+            	$destinatario = 'santiago.viana@ciiblu.com';
+
+
+            	$mail['destinatario'] = explode(';', $destinatario);
+            	$mail['asunto'] = 'Cron';
+            	$mail['mensaje'] = 'Se ejecutó el cron';
+
+            	Mail::send('emails.contact',$mail,function($msj) use ($mail)
+            	{
+	                $msj->to($mail['destinatario']);
+	                $msj->subject($mail['asunto']);
+            	}); 
+
 		#Se hace un update a la tabla compra donde primero se obtiene el id de movimiento que está en saya
 		#para luego actualizar ese id en la tabla compra en el campo Movimiento_idMovimiento
 		DB::update(
@@ -7,7 +23,7 @@
 			LEFT JOIN Iblu.Movimiento
 			ON numeroMovimiento = numeroCompra AND Documento_idDocumento = 28
 			SET compra.Movimiento_idMovimiento = Movimiento.idMovimiento
-			WHERE (compra.Movimiento_idMovimiento = 1 or compra.Movimiento_idMovimiento IS NULL) AND 
+			WHERE (compra.Movimiento_idMovimiento = 1 or compra.Movimiento_idMovimiento IS NULL or compra.Movimiento_idMovimiento = 0) AND 
 					compra.DocumentoImportacion_idDocumentoImportacion = 1');	
 
 		#Se hace otro update a la tabla compra para actalizar las temporadas que estén NULL o con ID 1
@@ -136,7 +152,7 @@
 	                </tr>
 	            </table>';
 
-            	$destinatario = 'extiblu4@ciiblu.com;extiblu11@ciiblu.com;comercioextiblu@ciiblu.com;comercio4@ciiblu.com;comercio1@ciiblu.com;mariae.palacio@ciiblu.com;claudiagomez@ciiblu.com;yudyrendon@ciiblu.com;victoria.perez@ciiblu.com';
+            	$destinatario = 'santiago.viana@ciiblu.com';
 
 
             	$mail['destinatario'] = explode(';', $destinatario);
@@ -146,11 +162,11 @@
             	{
 	                $msj->to($mail['destinatario']);
 	                $msj->subject($mail['asunto']);
-	                for($i=0; $i < count($adjunto); $i++)
-	                {
-	                    $archivos = get_object_vars($adjunto[$i]);
-	                    $msj->attach($archivos['archivoRadicadoVersion']);
-	                }
+	                // for($i=0; $i < count($adjunto); $i++)
+	                // {
+	                //     $archivos = get_object_vars($adjunto[$i]);
+	                //     $msj->attach($archivos['archivoRadicadoVersion']);
+	                // }
             	}); 
 
             	#Por último actualizo el campo de correo de compra para 
