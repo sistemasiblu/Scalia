@@ -1,6 +1,6 @@
 
 @extends('layouts.grid')
-@section('titulo')<h3 id="titulo"><center>APROBACION ACTIVO</center></h3>@stop
+@section('titulo')<h3 id="titulo"><center>ASIGNACION ACTIVO</center></h3>@stop
 
 @section('content')
 <style>
@@ -45,11 +45,12 @@ border-radius: 4px;
                          <a href="#"><span onclick="recargaPage()" class="glyphicon glyphicon-refresh"></span></a>
                         </th>
                         <th><b>ID</b></th>
-                        <th><b>Código</b></th>
-                        <th><b>Nombre</b></th>
-                        <th><b>Tipo</b></th>
-                        <th><b>Tipo</b></th>
-                        <th><b>Tipo</b></th>
+                        <th><b>Numero</b></th>
+                        <th><b>Fecha Asignacion</b></th>
+                        <th><b>Transaccion</b></th>
+                        <th><b>Documento Interno</b></th>
+                        <th><b>Usuario Creador</b></th>
+                       
                         
                     </tr>
                 </thead>
@@ -57,12 +58,12 @@ border-radius: 4px;
                     <tr class="btn-default active">
                         <th style="width:40px;padding: 1px 8px;"></th>
                             &nbsp;
-                        <th>ID</th>
-                        <th>Codigo</th>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Nombre</th>
-                        <th>Nombre</th>
+                         <th>ID</th>
+                        <th>Numero</th>
+                        <th>Fecha Asignacion</th>
+                        <th>Transaccion</th>
+                        <th>Documento Interno</th>
+                        <th>Usuario Creador</th>
 
 
                     </tr>
@@ -98,7 +99,7 @@ var table = $('#tasignacionactivo').DataTable(
     "aProcessing": true,
     "aServerSide": true,
     "stateSave":true,
-    "ajax": "{!! URL::to ('/datosAprobacionActivo')!!}",
+    "ajax": "{!! URL::to ('/datosAsignacionActivo')!!}",
     "language": 
     {
                 "sProcessing":     "Procesando...",

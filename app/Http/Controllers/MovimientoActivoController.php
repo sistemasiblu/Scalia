@@ -179,9 +179,15 @@ class MovimientoActivoController extends Controller
 
 
         $this->AfectarInventario($movimientoultimo->idMovimientoActivo,'C');
+       
 
     }
-    //return redirect('/movimientoactivo?idTransaccionActivo='.$request['TransaccionActivo_idTransaccionActivo']);
+
+     $movimientoactivo = \App\MovimientoActivo::find($movimientoultimo->idMovimientoActivo);
+
+
+        $this->EnviarCorreo($movimientoultimo->Users_idCrea,$movimientoultimo->numeroMovimientoActivo,$movimientoactivo->idMovimientoActivo,$request['TransaccionActivo_idTransaccionActivo']);
+    return redirect('/movimientoactivo?idTransaccionActivo='.$request['TransaccionActivo_idTransaccionActivo']);
     }
 
     /**
@@ -354,73 +360,9 @@ class MovimientoActivoController extends Controller
 
         $this->EnviarCorreo($request['idUsuarioCrea'],$request['numeroMovimientoActivo'],$movimientoactivo->idMovimientoActivo, $request['TransaccionActivo_idTransaccionActivo']);
 
-         /*$correos = DB::select('
-            SELECT  email as correoElectronicoTercero
-                FROM    users U 
-                WHERE   (U.Tercero_idAsociado = '.$request['idUsuarioCrea'].'
-                        and
-                        email != "" )
-            UNION DISTINCT
-            SELECT  email as correoElectronicoTercero 
-                FROM transaccionrol TR
-                LEFT JOIN users U
-                ON TR.Rol_idRol = U.Rol_idRol
-                WHERE   autorizarTransaccionRol = 1 and 
-                        TransaccionActivo_idTransaccionActivo = '.$request['TransaccionActivo_idTransaccionActivo'].' and 
-                        U.Tercero_idAsociado IS NOT NULL and 
-                        email IS NOT NULL and 
-                        email != "" and 
-                        U.Compania_idCompania = '.\Session::get("idCompania"));
-        $datos['correos'] = array();
-        for($c = 0; $c < count($correos); $c++)
-        {
-            $datos['correos'][] = get_object_vars($correos[$c])['correoElectronicoTercero'];
-        }
+        
 
-        if(count($correos) > 0)
-        {
-            $solicitante = DB::table(\Session::get("baseDatosCompania").'.Tercero')->lists('nombre1Tercero as nombreCompletoTercero');
-            $idTransaccionActivo= $request['TransaccionActivo_idTransaccionActivo'];
-            $datos['asunto'] = Session::get('baseDatosCompania').' Modificación Inventario Activo: '.$request['nombreTransaccionActivo'];
-            $datos['mensaje'] ='Se ha generado el reporte del estado de Inventario de Activos:'.$request['nombreTransaccionActivo'];
-            //$datos['mensaje'] .=',Generado por:'.$solicitante[0]["nombreCompletoTercero"];
-            $datos['mensaje'] .=', los detalles los encontrará en el archivo adjunto.';
-
-            $contenidoArchivo =  '<!DOCTYPE html>
-            <html>
-            <head>
-
-                <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-                <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
-                
-
-                <title>Scalia</title>
-            </head>
-            <body>
-                <p> '.$this->generarHTMLFormato($movimientoactivo->idMovimientoActivo, $idTransaccionActivo).'</p>
-            </body>
-            </html>';
-            $nombreAdj=$request['nombreTransaccionActivo'].'.html';
-            $adj=fopen($nombreAdj,"w");
-            fputs($adj, $contenidoArchivo );
-            fclose($adj);
-
-            $datos['adjunto'] = $nombreAdj;
-             Mail::send('correomovimientoactivo',$datos,function($msj) use ($datos)
-            {
-                
-                $msj->to($datos['correos']);
-                $msj->subject($datos['asunto']);
-                
-                $msj->attach($datos['adjunto']);
-                
-            });
-            unlink($nombreAdj);
-        }
-*/
-
-    //return redirect('/movimientoactivo?idTransaccionActivo='.$request['TransaccionActivo_idTransaccionActivo']);
+    return redirect('/movimientoactivo?idTransaccionActivo='.$request['TransaccionActivo_idTransaccionActivo']);
     
 
     }
@@ -483,8 +425,8 @@ class MovimientoActivoController extends Controller
         {
             $solicitante = DB::table(\Session::get("baseDatosCompania").'.Tercero')->lists('nombre1Tercero as nombreCompletoTercero');
             $idTransaccionActivo= $transaccion;
-            $datos['asunto'] = Session::get('baseDatosCompania').' Modificación Inventario Activo: '.$transaccion;
-            $datos['mensaje'] ='Se ha generado el reporte del estado de Inventario de Activos:'.$transaccion;
+            $datos['asunto'] = Session::get('baseDatosCompania').' Reporte Inventario Movimiento Activo, Num: '.$transaccion;
+            $datos['mensaje'] ='Se ha generado el reporte de Inventario del Movimiento de Activo Num: '.$transaccion;
             //$datos['mensaje'] .=',Generado por:'.$solicitante[0]["nombreCompletoTercero"];
             $datos['mensaje'] .=', los detalles los encontrará en el archivo adjunto.';
 
@@ -607,11 +549,11 @@ movimientoactivo.fechaElaboracionMovimientoActivo,
 movimientoactivo.fechaInicioMovimientoActivo, 
 movimientoactivo.fechaFinMovimientoActivo, 
 Tercero.nombre1Tercero as tercero,
-transaccion.nombreTransaccionActivo as transaccion,
+movimientoactivo.TransaccionActivo_idTransaccionActivo,
 conceptoactivo.nombreConceptoActivo,
-movimientoactivo.documentoInternoMovimientoActivo,
+movimientoactivo.documentoInternoMovimientoActivo as documentoInterno,
 movimientoactivo.documentoExternoMovimientoActivo,
-transaccion.idTransaccionActivo as documentoInterno,
+transaccionDocInterno.nombreTransaccionActivo as transaccion,
 movimientoactivo.estadoMovimientoActivo,
 movimientoactivo.observacionMovimientoActivo,
 movimientoactivo.totalUnidadesMovimientoActivo,
@@ -626,13 +568,10 @@ movimientoactivo
     LEFT JOIN
 ".\Session::get("baseDatosCompania").".Tercero 
  ON movimientoactivo.Tercero_idTercero = Tercero.idTercero
-LEFT JOIN
-transaccionactivo 
-ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo
-LEFT JOIN transaccionactivo transaccion
+LEFT JOIN transaccionactivo transaccionDocInterno
+ON movimientoactivo.TransaccionActivo_idDocumentoInterno = transaccionDocInterno.idTransaccionActivo
+LEFT JOIN transaccionactivo 
  ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo 
-LEFT JOIN transaccionactivo documentoInterno
- ON movimientoactivo.TransaccionActivo_idTransaccionActivo = transaccionactivo.idTransaccionActivo
 LEFT JOIN conceptoactivo
  ON movimientoactivo.ConceptoActivo_idConceptoActivo = conceptoactivo.idConceptoActivo
 LEFT JOIN users UsersCrea
@@ -892,9 +831,9 @@ $idMovimientoActivo = (isset($movimientoactivo->idMovimientoActivo) ? $movimient
       <div class="panel-heading">
       Observaciones
       </div>
-      <div class="panel-body">
-       
-      </div>
+      <div class="panel-body">'
+        .$movimiento[0]["observacionMovimientoActivo"].
+      '</div>
     </div>
     
 

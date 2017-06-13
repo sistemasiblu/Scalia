@@ -1,3 +1,7 @@
+<?php
+//print_r($protMantTarea);
+//return;
+?>
 @extends('layouts.vista')
 
 
@@ -11,14 +15,12 @@
 @include('alerts.request')
   {!!Html::script('/js/select2.min.js');!!}
 
-{!!Html::script('js/movimientoactivo.js'); !!}
 {!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
 {!!Html::style('assets/dropzone/dist/min/dropzone.min.css'); !!}
 
 <script>
 
-  
-  var protocolomantenimiento = '<?php echo (isset($protocolomantenimiento) ? json_encode($protocolomantenimiento) : "");?>';
+var protocolomantenimiento = '<?php echo (isset($protMantTarea) ? json_encode($protMantTarea) : "");?>';
   protocolomantenimiento = (protocolomantenimiento != '' ? JSON.parse(protocolomantenimiento) : '');
   console.log(protocolomantenimiento);
 
@@ -28,40 +30,38 @@ $(document).ready(function()
 {
 
   protocolo=new Atributos('protocolo','contenedor-protocolo','protocolo_');
-  protocolo.campoid = 'idMovimientoActivoDetalle';
-  protocolo.campoEliminacion = 'movimientoEliminar';
+  protocolo.campoid = 'idProtocoloMantenimientoTarea';
+  protocolo.campoEliminacion = 'protocoloEliminar';
   protocolo.campos=['idProtocoloMantenimientoTarea', 'ProtocoloMantenimiento_idProtocoloMantenimiento', 'descripcionProtocoloMantenimientoTarea', 'minutosProtocoloMantenimientoTarea', 'FrecuenciaMedicion_idFrecuenciaMedicion', 'TipoServicio_idTipoServicio', 'requiereParoProtocoloMantenimientoTarea'];
   protocolo.etiqueta=['input','input','input','input','select','select','checkbox'];
-  protocolo.tipo=['hidden','','','','','','checkbox'];
+  protocolo.tipo=['hidden','hidden','','','','','checkbox'];
   //movimiento.tipo=['','','','','','','','','','',''];
  //movimiento.value=['','','','','','','','','','','',];
-  protocolo.estilo=['','width: 110px; height:35px;','width:110px; height:35px;','width:100px;  height:35px;','width:210px; height:35px;','width:200px; height:35px;'];
+  protocolo.estilo=['','','width:350px; height:35px;','width:100px;  height:35px;','width:200px; height:35px;','width:200px; height:35px;','width:97px; height:30px;display: inline-block;'];
   protocolo.clase=['','','','','','',''];
-  protocolo.requerido=['','','','','','',true];
-  protocolo.sololectura=[false,false,false,false,false,false,false];
+  protocolo.requerido=[false,false,true,true,true,true,false];
+
+  var idFrecuencia = '<?php echo isset($idFrecuencia) ? $idFrecuencia : "";?>';
+  var nombreFrecuencia = '<?php echo isset($nombreFrecuencia) ? $nombreFrecuencia : "";?>';
+  var Frecuencia = [JSON.parse(idFrecuencia),JSON.parse(nombreFrecuencia)];
+  var idTipoServicio = '<?php echo isset($idTipoServicio) ? $idTipoServicio : "";?>';
+  var nombreTipoServicio = '<?php echo isset($nombreTipoServicio) ? $nombreTipoServicio : "";?>';
+  var TipoServicio = [JSON.parse(idTipoServicio),JSON.parse(nombreTipoServicio)];
+  protocolo.opciones=['','','','',Frecuencia,TipoServicio,''];
+  protocolo.sololectura=[false,false,false,false,false,true,true];
   protocolo.completar=['off','off','off','off','off','off','off'];
-  protocolo.obligatorio=[false,false,false,false,true,true,false];
+  protocolo.obligatorio=[false,false,true,true,true,true,false];
 
 
-  /*var idLocalizacion = '<?php //echo isset($idLocalizacion) ? $idLocalizacion : "";?>';
-  var nombreLocalizacion = '<?php //echo isset($nombreLocalizacion) ? $nombreLocalizacion : "";?>';
-  var Localizacion = [JSON.parse(idLocalizacion),JSON.parse(nombreLocalizacion)];
-  var codigoActivo = ['onblur','autocompletarfila(this.value,this.id,);'];*/
-  /*var idcelda=$("#idActivo"+movimiento.campoid).val();
-  var limpiartotales =['onblur',"calcularTotales();",'ondrop',"ensayo();"];
-  var borrarIguales =['onblur',"borrarIguales(this.id,this.value);"];
-  var cantidadMovimientoActivo = ['onblur',"calcularTotales();"];*/
-  //var detalleActivo=['onclick',"detalleactivos(this.value,this.id);'',"];
-  //protocolo.funciones=['',borrarIguales,'','',codigoActivo,detalleActivo,'',limpiartotales,'',''];
-  //protocolo.opciones = [[],Localizacion,Localizacion,[],[],[],[],[],[],[]];      
- 
-
-  for(var j=0; j < protocolomantenimiento.length; j++)
+ for(var j=0; j < protocolomantenimiento.length; j++)
   {
     protocolo.agregarCampos(JSON.stringify(protocolomantenimiento[j]),'L');
   }
 
 });
+
+
+
 
 </script>
 
@@ -78,7 +78,8 @@ $(document).ready(function()
 
   <div class="container">
   <br><br><br><br>
-
+{!!Form::hidden('idProtocoloMantenimiento', null, array('id' => 'idProtocoloMantenimiento'))!!}
+{!!Form::hidden('protocoloEliminar', null, array('id' => 'protocoloEliminar'))!!}
 
 
 
@@ -96,7 +97,7 @@ $(document).ready(function()
                   <span class="input-group-addon">
                     <i class="fa fa-barcode"></i>
                   </span>
-                  {!!Form::text('nombreProtocoloMantenimiento',@$protocolomantenimiento->nombreProtocoloMantenimiento ,[ 'class'=>'form-control','placeholder'=>'Ingresa la descripcion'])!!}
+                  {!!Form::text('nombreProtocoloMantenimiento',@$protocolomantenimiento->nombreProtocoloMantenimiento ,[ 'required'=>'required','class'=>'form-control','placeholder'=>'Ingresa la descripcion'])!!}
                 </div>
               </div>
           
@@ -147,11 +148,12 @@ $(document).ready(function()
           <div class="row show-grid">
              
              <div class="col-md-1" style="width: 40px;height: 55px;"><span class="glyphicon glyphicon-plus" title="Adicionar" style='cursor:pointer;' onclick="protocolo.agregarCampos(valorprotocolo,'A')" ></span> 
+              
             <span class="glyphicon glyphicon-trash" title="Elimar Todo" style='cursor:pointer;' onclick="protocolo.borrarTodosCampos()" ></span> </div>
 
-             <div class="col-md-1" style="width: 110px;height: 55px;"><b>Tarea</b></div>
-             <div class="col-md-1" style="width: 110px;height: 55px;"><b>Tiempo(Min)</b></div>
-             <div class="col-md-1" style="width: 100px;height: 55px;"><b>Frecuencia</b></div>
+            <div class="col-md-1" style="width: 350px;height: 55px;"><b>Tarea</b></div>
+             <div class="col-md-1" style="width: 100px;height: 55px;"><b>Tiempo(Min)</b></div>
+             <div class="col-md-1" style="width: 200px;height: 55px;"><b>Frecuencia</b></div>
              <div class="col-md-1" style="width: 200px;height: 55px;"><b>Especialidad</b></div>
              <div class="col-md-1" style="width: 90px;height: 55px;"><b>Req.Paro</b></div>
              <div  id="contenedor-protocolo"></div>
@@ -164,6 +166,8 @@ $(document).ready(function()
 
 
 </div>
+
+
 
 
 

@@ -51,6 +51,11 @@ Route::get('datosAsignacionActivo', function()
 {
     include public_path().'/ajax/datosAsignacionActivo.php';
 });
+
+Route::get('datosAprobacionActivo', function()
+{
+    include public_path().'/ajax/datosAprobacionActivo.php';
+});
 Route::get('datosRechazoActivo', function()
 {
     include public_path().'/ajax/datosRechazoActivo.php';

@@ -39,7 +39,7 @@ tfoot input
                            <a href="#"><span onclick="recargaPage()" class="glyphicon glyphicon-refresh"></span></a>
                        </th>
                        <th><b>ID</b></th>
-                       <th><b>Código</b></th>
+                       <th><b>Nombre</b></th>
                        <th><b>Tipo Activo</b></th>
                        <th><b>Tipo Accion</b></th>
                        
@@ -50,7 +50,6 @@ tfoot input
                     <th style="width:40px;padding: 1px 8px;">
                         &nbsp;</th>
                     <th>ID</th>
-                    <th>Codigo</th>
                     <th>Nombre</th>
                     <th>Tipo Activo</th>
                     <th>Tipo Accion</th>
@@ -85,7 +84,7 @@ var table = $('#tprotocolomantenimiento').DataTable(
     "aProcessing": true,
     "aServerSide": true,
     "stateSave":true,
-    "ajax": "{!! URL::to ('/datosFrecuenciaMedicion')!!}",
+    "ajax": "{!! URL::to ('/datosProtocoloMantenimiento')!!}",
     "language": 
     {
         "sProcessing":     "Procesando...",
