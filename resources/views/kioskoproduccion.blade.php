@@ -22,6 +22,7 @@
 					<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskoproduccionfichatecnica'?>">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>FICHA TÉCNICA</b>
 							<img class="img" src="imagenes/kiosko/Ficha_Tecnica.png">
 						</div>
 					</a>
@@ -29,6 +30,7 @@
 					<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskoproduccionordenproduccion'?>">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>OP</b>
 							<img class="img" src="imagenes/kiosko/Orden_Produccion.png">
 						</div>
 					</a>
@@ -36,6 +38,7 @@
 					<a href="<?php echo 'http://'.$_SERVER["HTTP_HOST"].'/kioskoproduccionordencompra'?>">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>OC</b>
 							<img class="img" src="imagenes/kiosko/Orden_Compra.png">
 						</div>
 					</a>

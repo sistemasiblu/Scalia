@@ -141,10 +141,7 @@ Route::post('mostrarDetalleTemporada', function()
     include public_path().'/ajax/mostrarDetalleTemporada.php';
 });
 
-Route::get('actualizarIdMovimientoCompra', function()
-{
-    include public_path().'/ajax/actualizarIdMovimientoCompra.php';
-});
+
 
 Route::post('llenarMetadatosCompraTemporada', function()
 {

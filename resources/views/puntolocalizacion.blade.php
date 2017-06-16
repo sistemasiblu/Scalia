@@ -23,6 +23,11 @@
           dependencialocalizacion dl
               LEFT JOIN
           dependencia d ON dl.Dependencia_idDependencia = d.idDependencia
+            LEFT JOIN
+          dependenciapermiso depp ON d.idDependencia = depp.Dependencia_idDependencia
+            LEFT JOIN
+          users ud ON depp.Rol_idRol = ud.Rol_idRol
+      WHERE ud.id = '.\Session::get("idUsuario").'
       GROUP BY idDependencia');  
 
     $clocalizacion = array();
@@ -43,7 +48,7 @@
     $select .= '</select>';
   ?>
 
-  <div class="form-group col-md-10" id='test'>
+  <div class="form-group col-md-8" id='test'>
     {!!Form::label('Dependencia', 'Dependencia', array('class' => 'col-sm-2 control-label')) !!}
     <div class="col-sm-10">
       <div class="input-group">
@@ -61,7 +66,8 @@
   $style = 'width: 13px; height: 13px; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; display:inline-block;'
 ?>
 
-  <div class="form-group col-md-2" id='test'>
+  <div class="form-group col-md-4" id='test'>
+  <span>Convención de colores</span>
     <div class="btn-group" title="Convención de colores">
         <button type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
             <i class="fa fa-pie-chart"></i> 

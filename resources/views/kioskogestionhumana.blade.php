@@ -31,6 +31,7 @@
 					<a onclick="abrirModalCertificadoLaboral();">
 						<div class="col-md-5 col-sm-5 col-lg-5 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>CERTIFICADO LABORAL</b>
 							<img class="img" src="imagenes/kiosko/Certificado_Laboral.png">
 						</div>
 					</a>
@@ -38,6 +39,7 @@
 					<a onclick="abrirModalReciboPago();">
 						<div class="col-md-5 col-sm-5 col-lg-5 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>COMPROBANTE NÓMINA</b>
 							<img class="img" src="imagenes/kiosko/Recibo_Pago.png">
 						</div>
 					</a>

@@ -313,7 +313,21 @@ class ConsultaProduccionController extends Controller
                         WHERE
                             idFichaTecnica = '.$idFichaTecnica['idFichaTecnica']);
 
-                    return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'componentes', 'observaciones', 'especificacioneshs', 'medidas', 'tallas', 'materias', 'procesos', 'procesoscolor'));
+                    // REALIZO LA CONSULTA PARA OBTENER LOS CAMPOS PARA EL INFORME DE ADJUNTOS DE LA FICHA TECNICA
+                    $adjuntos = DB::Select('
+                        SELECT 
+                            codigoAlternoFichaTecnicaAdjunto,
+                            nombreFichaTecnicaAdjunto,
+                            fechaFichaTecnicaAdjunto,
+                            observacionFichaTecnicaAdjunto,
+                            archivoFichaTecnicaAdjunto
+                        FROM
+                            Iblu.FichaTecnicaAdjunto
+                        WHERE
+                            FichaTecnica_idFichaTecnica = '.$idFichaTecnica['idFichaTecnica'].'
+                        ORDER BY codigoAlternoFichaTecnicaAdjunto');
+
+                    return view('formatos.impresionConsultaFichaTecnica',compact('encabezado','imagen','centroproduccion', 'componentes', 'observaciones', 'especificacioneshs', 'medidas', 'tallas', 'materias', 'procesos', 'procesoscolor', 'adjuntos'));
             break;
 
             // CONSULTA PARA EL FORMATO DE IMPRESION DE ORDEN DE PRODUCCION
@@ -395,7 +409,226 @@ class ConsultaProduccionController extends Controller
                     ' GROUP BY (nombre1Color) 
                     ORDER BY (nombre1Color)');
 
-                return view('formatos.impresionConsultaProduccion',compact('datosproduccion','tallas'));
+                 $explosionmateriales = DB::Select('
+                    SELECT 
+                        referenciaProducto, nombreLargoProducto, consumoUnitarioOrdenProduccionMaterial, cantidadBomOrdenProduccionMaterial, nombreCentroProduccion
+                    FROM
+                        Iblu.OrdenProduccion OP
+                            LEFT JOIN
+                        Iblu.OrdenProduccionMaterial OPM ON OP.idOrdenProduccion = OPM.OrdenProduccion_idOrdenProduccion
+                            LEFT JOIN
+                        Iblu.Producto P ON OPM.Producto_idMaterial = P.idProducto
+                            LEFT JOIN
+                        Iblu.CentroProduccion CP ON OPM.CentroProduccion_idCentroProduccion = CP.idCentroProduccion
+                    WHERE
+                        idOrdenProduccion ='. $idOP['idOrdenProduccion'].'
+                    ORDER BY nombreCentroProduccion');
+
+                $centrocantidadop = DB::Select("
+                SELECT 
+                    numeroOrdenProduccion,
+                    IPP.cantidadOrdenProduccion,
+                    GROUP_CONCAT(nombreCentroProduccion
+                        SEPARATOR '  /  ') AS nombreCentroProduccion,
+                    GROUP_CONCAT(CAST(cantidadRemision AS UNSIGNED)
+                        SEPARATOR '  /  ') AS cantidadRemision,
+                    GROUP_CONCAT(CAST(IFNULL(cantidadRecibo, 0) AS UNSIGNED)
+                        SEPARATOR '  /  ') AS cantidadRecibo
+                FROM
+                    (SELECT 
+                        IPP.OrdenProduccion_idOrdenProduccion,
+                            MAX(ordenOrdenProduccionCentroProduccion) AS ultimoCentroProduccion
+                    FROM
+                        Iblu.InventarioProductoProceso IPP
+                    LEFT JOIN Iblu.OrdenProduccion OP ON IPP.OrdenProduccion_idOrdenProduccion = OP.idOrdenProduccion
+                    LEFT JOIN Iblu.OrdenProduccionCentroProduccion ocp ON IPP.OrdenProduccion_idOrdenProduccion = ocp.OrdenProduccion_idOrdenProduccion
+                        AND IPP.CentroProduccion_idCentroProduccion = ocp.CentroProduccion_idCentroProduccion
+                    WHERE
+                        fechaElaboracionOrdenProduccion >= '2016-01-01'
+                            AND Periodo_idPeriodo = (SELECT 
+                                idPeriodo
+                            FROM
+                                Iblu.Periodo
+                            WHERE
+                                fechaInicialPeriodo <= CURDATE()
+                                    AND fechaFinalPeriodo >= CURDATE())
+                    GROUP BY IPP.OrdenProduccion_idOrdenProduccion) UltCP
+                        LEFT JOIN
+                    (SELECT 
+                        OPP.OrdenProduccion_idOrdenProduccion,
+                            OPP.Producto_idProducto,
+                            OP.Tercero_idTercero,
+                            numeroOrdenProduccion,
+                            fechaElaboracionOrdenProduccion,
+                            documentoReferenciaOrdenProduccion,
+                            SUM(OPP.cantidadOrdenProduccionProducto) AS cantidadOrdenProduccion
+                    FROM
+                        (SELECT 
+                        OrdenProduccion_idOrdenProduccion
+                    FROM
+                        Iblu.InventarioProductoProceso
+                    WHERE
+                        Periodo_idPeriodo = (SELECT 
+                                idPeriodo
+                            FROM
+                                Iblu.Periodo
+                            WHERE
+                                fechaInicialPeriodo <= CURDATE()
+                                    AND fechaFinalPeriodo >= CURDATE())
+                    GROUP BY OrdenProduccion_idOrdenProduccion) IPP
+                    LEFT JOIN Iblu.OrdenProduccion OP ON IPP.OrdenProduccion_idOrdenProduccion = OP.idOrdenProduccion
+                    LEFT JOIN Iblu.OrdenProduccionProducto OPP ON OP.idOrdenProduccion = OPP.OrdenProduccion_idOrdenProduccion
+                    GROUP BY OPP.OrdenProduccion_idOrdenProduccion) IPP ON UltCP.OrdenProduccion_idOrdenProduccion = IPP.OrdenProduccion_idOrdenProduccion
+                        LEFT JOIN
+                    (SELECT 
+                        IPP.OrdenProduccion_idOrdenProduccion,
+                            IPP.CentroProduccion_idCentroProduccion,
+                            ocp.ordenOrdenProduccionCentroProduccion,
+                            MAX(fechaElaboracionProduccionEntrega) AS fechaElaboracionProduccionEntrega,
+                            SUM(PEP.cantidadProduccionEntregaProducto) AS cantidadRemision
+                    FROM
+                        (SELECT 
+                        OrdenProduccion_idOrdenProduccion,
+                            CentroProduccion_idCentroProduccion
+                    FROM
+                        Iblu.InventarioProductoProceso
+                    WHERE
+                        Periodo_idPeriodo = (SELECT 
+                                idPeriodo
+                            FROM
+                                Iblu.Periodo
+                            WHERE
+                                fechaInicialPeriodo <= CURDATE()
+                                    AND fechaFinalPeriodo >= CURDATE())
+                    GROUP BY OrdenProduccion_idOrdenProduccion , CentroProduccion_idCentroProduccion) IPP
+                    LEFT JOIN Iblu.ProduccionEntrega PE ON IPP.OrdenProduccion_idOrdenProduccion = PE.OrdenProduccion_idOrdenProduccion
+                        AND IPP.CentroProduccion_idCentroProduccion = PE.CentroProduccion_idCentroProduccion
+                    LEFT JOIN Iblu.ProduccionEntregaProducto PEP ON PE.idProduccionEntrega = PEP.ProduccionEntrega_idProduccionEntrega
+                    LEFT JOIN Iblu.OrdenProduccionCentroProduccion ocp ON IPP.OrdenProduccion_idOrdenProduccion = ocp.OrdenProduccion_idOrdenProduccion
+                        AND IPP.CentroProduccion_idCentroProduccion = ocp.CentroProduccion_idCentroProduccion
+                    GROUP BY IPP.OrdenProduccion_idOrdenProduccion , IPP.CentroProduccion_idCentroProduccion) Rem ON IPP.OrdenProduccion_idOrdenProduccion = Rem.OrdenProduccion_idOrdenProduccion
+                        AND UltCP.ultimoCentroProduccion = Rem.ordenOrdenProduccionCentroProduccion
+                        LEFT JOIN
+                    (SELECT 
+                        IPP.OrdenProduccion_idOrdenProduccion,
+                            IPP.CentroProduccion_idCentroProduccion,
+                            ocp.ordenOrdenProduccionCentroProduccion,
+                            MAX(fechaElaboracionProduccionRecibo) AS fechaElaboracionProduccionRecibo,
+                            SUM(PRP.cantidadProduccionReciboProducto) AS cantidadRecibo
+                    FROM
+                        (SELECT 
+                        OrdenProduccion_idOrdenProduccion,
+                            CentroProduccion_idCentroProduccion
+                    FROM
+                        Iblu.InventarioProductoProceso
+                    WHERE
+                        Periodo_idPeriodo = (SELECT 
+                                idPeriodo
+                            FROM
+                                Iblu.Periodo
+                            WHERE
+                                fechaInicialPeriodo <= CURDATE()
+                                    AND fechaFinalPeriodo >= CURDATE())
+                    GROUP BY OrdenProduccion_idOrdenProduccion , CentroProduccion_idCentroProduccion) IPP
+                    LEFT JOIN Iblu.ProduccionEntrega PE ON IPP.OrdenProduccion_idOrdenProduccion = PE.OrdenProduccion_idOrdenProduccion
+                        AND IPP.CentroProduccion_idCentroProduccion = PE.CentroProduccion_idCentroProduccion
+                    LEFT JOIN Iblu.ProduccionRecibo PR ON PE.idProduccionEntrega = PR.ProduccionEntrega_idProduccionEntrega
+                    LEFT JOIN Iblu.ProduccionReciboProducto PRP ON PR.idProduccionRecibo = PRP.ProduccionRecibo_idProduccionRecibo
+                    LEFT JOIN Iblu.OrdenProduccionCentroProduccion ocp ON IPP.OrdenProduccion_idOrdenProduccion = ocp.OrdenProduccion_idOrdenProduccion
+                        AND IPP.CentroProduccion_idCentroProduccion = ocp.CentroProduccion_idCentroProduccion
+                    GROUP BY IPP.OrdenProduccion_idOrdenProduccion , IPP.CentroProduccion_idCentroProduccion) Rec ON Rem.OrdenProduccion_idOrdenProduccion = Rec.OrdenProduccion_idOrdenProduccion
+                        AND Rem.CentroProduccion_idCentroProduccion = Rec.CentroProduccion_idCentroProduccion
+                        AND UltCP.ultimoCentroProduccion = Rec.ordenOrdenProduccionCentroProduccion
+                        LEFT JOIN
+                    Iblu.OrdenProduccionDocumentoRef opdf ON opdf.OrdenProduccion_idOrdenProduccion = IPP.OrdenProduccion_idOrdenProduccion
+                        LEFT JOIN
+                    Iblu.Producto p ON IPP.Producto_idProducto = p.idProducto
+                        LEFT JOIN
+                    Iblu.CentroProduccion cp ON Rem.CentroProduccion_idCentroProduccion = cp.idCentroProduccion
+                WHERE
+                    numeroOrdenProduccion like '%".$id."%'
+                GROUP BY numeroOrdenProduccion 
+                UNION SELECT 
+                    numeroOrdenProduccion,
+                    (opp.cantidadOrdenProduccionProducto - PR.cantidadProduccionReciboProducto) AS cantidadOrdenProduccionProducto,
+                    'Liberación' AS nombreCentroProduccion,
+                    0 AS cantidadRemision,
+                    0 AS cantidadRecibo
+                FROM
+                    (SELECT 
+                        OrdenProduccion_idOrdenProduccion,
+                            op.numeroOrdenProduccion,
+                            op.fechaElaboracionOrdenProduccion,
+                            op.estadoOrdenProduccion,
+                            observacionOrdenProduccion,
+                            documentoReferenciaOrdenProduccion,
+                            opp.Producto_idProducto,
+                            Tercero_idTercero,
+                            opp.cantidadOrdenProduccionProducto
+                    FROM
+                        Iblu.OrdenProduccion op
+                    LEFT JOIN Iblu.OrdenProduccionProducto opp ON op.idOrdenProduccion = opp.OrdenProduccion_idOrdenProduccion
+                    WHERE
+                        conceptoOrdenProduccion != 'BOM'
+                            AND estadoOrdenProduccion != 'ANULADO'
+                            AND fechaElaboracionOrdenProduccion >= '2016-01-01'
+                            AND opp.Movimiento_idDocumentoRef != 0) opp
+                        LEFT JOIN
+                    Iblu.ProduccionEntrega E ON opp.OrdenProduccion_idOrdenProduccion = E.OrdenProduccion_idOrdenProduccion
+                        LEFT JOIN
+                    Iblu.ProduccionRecibo R ON E.idProduccionEntrega = R.ProduccionEntrega_idProduccionEntrega
+                        LEFT JOIN
+                    Iblu.ProduccionReciboProducto PR ON R.idProduccionRecibo = PR.ProduccionRecibo_idProduccionRecibo
+                        AND opp.Producto_idProducto = PR.Producto_idProducto
+                        LEFT JOIN
+                    Iblu.CentroProduccion CP ON E.CentroProduccion_idCentroProduccion = CP.idCentroProduccion
+                        LEFT JOIN
+                    Iblu.Producto P ON PR.Producto_idProducto = P.idProducto
+                WHERE
+                    determinanteCorteCentroProduccion = 1
+                        AND opp.cantidadOrdenProduccionProducto > PR.cantidadProduccionReciboProducto
+                        AND numeroOrdenProduccion like '%".$id."%'
+                UNION SELECT 
+                    '' AS numeroOrdenProduccion,
+                    SUM(md.cantidadMovimientoDetalle - IFNULL(opp.cantidadOrdenProduccionProducto, 0)) AS cantidadOrdenProduccionProducto,
+                    'Sin Programar' AS nombreCentroProduccion,
+                    0 AS cantidadRemision,
+                    0 AS cantidadRecibo
+                FROM
+                    Iblu.MovimientoDetalle md
+                        LEFT JOIN
+                    Iblu.Movimiento m ON md.Movimiento_idMovimiento = m.idMovimiento
+                        LEFT JOIN
+                    (SELECT 
+                        OrdenProduccion_idOrdenProduccion,
+                            op.numeroOrdenProduccion,
+                            op.fechaElaboracionOrdenProduccion,
+                            op.estadoOrdenProduccion,
+                            Movimiento_idDocumentoRef,
+                            opp.Producto_idProducto,
+                            SUM(opp.cantidadOrdenProduccionProducto) AS cantidadOrdenProduccionProducto
+                    FROM
+                        Iblu.OrdenProduccion op
+                    LEFT JOIN Iblu.OrdenProduccionProducto opp ON op.idOrdenProduccion = opp.OrdenProduccion_idOrdenProduccion
+                    WHERE
+                        conceptoOrdenProduccion != 'BOM'
+                            AND estadoOrdenProduccion != 'ANULADO'
+                            AND fechaElaboracionOrdenProduccion >= '2016-01-01'
+                            AND opp.Movimiento_idDocumentoRef != 0
+                    GROUP BY Movimiento_idDocumentoRef , Producto_idProducto) opp ON md.Movimiento_idMovimiento = opp.Movimiento_idDocumentoRef
+                        AND md.Producto_idProducto = opp.Producto_idProducto
+                        LEFT JOIN
+                    Iblu.Producto P ON md.Producto_idProducto = P.idProducto
+                WHERE
+                    m.Documento_idDocumento = 14
+                        AND fechaElaboracionMovimiento >= '2016-01-01'
+                        AND estadoWMSMovimiento = 'AUTORIZADO'
+                        AND (md.cantidadMovimientoDetalle - IFNULL(opp.cantidadOrdenProduccionProducto, 0)) > 0
+                        AND numeroOrdenProduccion like '%".$id."%'
+                GROUP BY idMovimiento , codigoAlternoProducto
+                ORDER BY numeroOrdenProduccion");
+
+                return view('formatos.impresionConsultaProduccion',compact('datosproduccion','tallas','explosionmateriales', 'centrocantidadop'));
             break;
 
             case 'Movimiento':

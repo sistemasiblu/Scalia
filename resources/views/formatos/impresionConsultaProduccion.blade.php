@@ -31,6 +31,13 @@ function base64($archivo)
        {
           $camposencabezado[$i] = (array) $datosproduccion[$i];
        }
+
+       $centrocantidad = array();
+  	// por facilidad de manejo convierto el stdclass a tipo array con un cast (array)
+       for ($i = 0, $c = count($centrocantidadop); $i < $c; ++$i) 
+       {
+          $centrocantidad[$i] = (array) $centrocantidadop[$i];
+       }
 ?>
 <div>
 	<!-- IMPRIMO EL ENCABEZADO DEL INFORME DE PRODUCCION -->
@@ -177,6 +184,84 @@ function base64($archivo)
       		echo'</table>';
 	      	echo '</table>';
 		  ?>
+		  </div>
+		</div>
+  	</div>
+
+  	<!-- IMPRIMO CENTRO DE PRODUCCIÓN Y CANTIDADES DE LA ORDEN DE PRODUCCION DENTRO DE UN PANEL -->
+  	<div class="list-group" style="border:1px;">
+		<div class="panel panel-primary">
+		  <div class="panel-heading" style="height:45px;"><h4>Estado OP</h4></div>
+		  <div class="panel-body">
+		  <?php 
+		  echo '
+		  	<div>
+		  		<div style="width:200px; display:inline-block;"><b>Centro de producción:</b> </div>
+		  		<div style="width:400px; display:inline-block; color:red;"><b>'.$centrocantidad[0]['nombreCentroProduccion'].'</b></div>
+		  	</div>
+
+		  	<div>
+		  		<div style="width:200px; display:inline-block;"><b>Cantidad remisionada:</b> </div>
+		  		<div style="width:400px; display:inline-block;">'.$centrocantidad[0]['cantidadRemision'].'</div>
+
+		  		<div style="width:200px; display:inline-block;"><b>Cantidad recibida:</b> </div>
+		  		<div style="width:400px; display:inline-block;">'.$centrocantidad[0]['cantidadRecibo'].'</div>
+		  	</div>';
+
+		  ?>
+		  </div>
+		</div>
+  	</div>
+
+  	<!-- IMPRIMO LA EXPLOSIÓN DE MATERIALES DE LA ORDEN DE PRODUCCION DENTRO DE UN PANEL -->
+  	<div class="list-group" style="border:1px;">
+		<div class="panel panel-primary">
+		  <div class="panel-heading" style="height:45px;"><h4>Explosión de Materiales</h4></div>
+		  <div class="panel-body">
+		  <?php 
+		  	$datos = array();
+		  	// por facilidad de manejo convierto el stdclass a tipo array con un cast (array)
+		       for ($i = 0, $c = count($explosionmateriales); $i < $c; ++$i) 
+		       {
+		          $datos[$i] = (array) $explosionmateriales[$i];
+		       }
+
+		  		echo '<table  class="table table-striped table-bordered table-hover">';
+		  		$i = 0;
+		  		$total = count($explosionmateriales);
+
+		  		while ($i < $total) 
+		  		{
+		  			$centro = $datos[$i]['nombreCentroProduccion'];
+
+		  			echo '
+		  			<thead class="thead-inverse">
+					  	<tr class="table-info">
+							<th colspan="20" style=" background-color:#255986; color:white;">'.$datos[$i]['nombreCentroProduccion'].'</th>
+						</tr>
+						<tr class="table-info">
+							<th>Referencia</th>
+							<th>Descripción</th>
+							<th>Consumo/ Unit</th>
+							<th>Cantidad</th>
+						</tr>
+					</thead>';
+
+					while ($i < $total and $centro == $datos[$i]["nombreCentroProduccion"])
+					{
+						echo 
+						'<tbody>
+							<td>'.$datos[$i]["referenciaProducto"].'</td>
+							<td>'.$datos[$i]["nombreLargoProducto"].'</td>
+							<td style="text-align:right;">'.number_format($datos[$i]["consumoUnitarioOrdenProduccionMaterial"],2,".",",").'</td>
+							<td style="text-align:right;">'.number_format($datos[$i]["cantidadBomOrdenProduccionMaterial"],2,".",",").'</td>
+						</tbody>';
+
+						$i++;
+					}					
+		  		}
+		  		echo '</table>';
+		  	?>
 		  </div>
 		</div>
   	</div>

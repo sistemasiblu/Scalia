@@ -149,6 +149,7 @@ Route::get('datosUbicacionDocumento', function()
     Route::resource('consultaradicadofiltro','ConsultaRadicadoFiltroController');
     Route::resource('tiposoportedocumental','TipoSoporteDocumentalController');
     Route::resource('ubicaciondocumento','UbicacionDocumentoController');
+    Route::resource('filtroinventarioubicacion','FiltroInventarioUbicacionController');
 
 
 
@@ -344,3 +345,5 @@ Route::get('metadatoselect','MetadatoController@indexMetadatoGrid');
 Route::get('ubicaciondocumentomodal','UbicacionDocumentoController@indexModal');
 
 Route::get('eliminarUbicacion/delete/{id}', 'UbicacionDocumentoController@destroy');
+
+Route::resource('consultarInventarioUbicacion','FiltroInventarioUbicacionController@consultarInventarioUbicacion');

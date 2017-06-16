@@ -34,6 +34,7 @@
 					<a onclick="imprimirFichaTecnica(document.getElementById('referenciaFichaTecnica').value,'todo','FichaTecnica')">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>COMPLETA</b>
 							<img class="img" src="imagenes/kiosko/Ficha_Tecnica_Completa.png">
 						</div>
 					</a>
@@ -41,6 +42,7 @@
 					<a onclick="imprimirFichaTecnica(document.getElementById('referenciaFichaTecnica').value,'materiales','FichaTecnica')">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>MATERIALES</b>
 							<img class="img" src="imagenes/kiosko/Ficha_Tecnica_Materiales.png">
 						</div>
 					</a>
@@ -48,6 +50,7 @@
 					<a onclick="imprimirFichaTecnica(document.getElementById('referenciaFichaTecnica').value,'procesos','FichaTecnica')">
 						<div class="col-md-3 col-sm-3 col-lg-3 button btn btn-primary">
 							<span class="span-button"></span>
+							<b>PROCESOS</b>
 							<img class="img" src="imagenes/kiosko/Ficha_Tecnica_Procesos.png">
 						</div>
 					</a>

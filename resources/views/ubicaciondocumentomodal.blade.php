@@ -215,7 +215,7 @@
           <span class="input-group-addon">
             <i class="fa fa-th-list"></i>
           </span>
-          {!!Form::text('numeroFolioUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['numeroFolioUbicacionDocumento'] : null,['class'=>'form-control','placeholder'=>'Ingresa el número de folios'])!!}
+          {!!Form::text('numeroFolioUbicacionDocumento',($idUbicacion != 0) ? $datosUbicacion['numeroFolioUbicacionDocumento'] : 1,['class'=>'form-control','placeholder'=>'Ingresa el número de folios'])!!}
         </div>
       </div>
     </div>
@@ -287,7 +287,7 @@
           <span class="input-group-addon">
             <i class="fa fa-bars"></i>
           </span>
-          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Deteriorada' => 'Deteriorada'],($idUbicacion != 0) ? $datosUbicacion['estadoUbicacionDocumento'] : null,['class' => 'form-control', 'placeholder' => 'Seleccione el estado', 'required' => 'required']) !!}
+          {!! Form::select('estadoUbicacionDocumento', ['Activa' => 'Activa','Destruida' => 'Destruida', 'Prestada' => 'Prestada', 'Extraviada' => 'Extraviada', 'Deteriorada' => 'Deteriorada'],($idUbicacion != 0) ? $datosUbicacion['estadoUbicacionDocumento'] : null,['class' => 'form-control', 'required' => 'required']) !!}
         </div>
       </div>
     </div>

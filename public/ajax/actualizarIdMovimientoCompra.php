@@ -16,6 +16,8 @@
 	                $msj->subject($mail['asunto']);
             	}); 
 
+            	echo 'Se envió el mensaje';
+
 		#Se hace un update a la tabla compra donde primero se obtiene el id de movimiento que está en saya
 		#para luego actualizar ese id en la tabla compra en el campo Movimiento_idMovimiento
 		DB::update(
