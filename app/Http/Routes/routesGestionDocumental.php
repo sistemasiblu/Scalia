@@ -336,6 +336,10 @@ Route::get('gridFormulario}', [
     'as' => 'gridFormulario', 'uses' => 'FormularioController@indexGridFormulario'
 ]);
 
+Route::get('buscarSubSerie','RetencionController@buscarSubSerie');
+
+Route::get('buscarDocumento','RetencionController@buscarDocumento');
+
 Route::get('documentoselect','DocumentoController@indexDocumentoGrid');
 
 Route::get('companiaselect','CompaniaController@indexCompaniaGrid');

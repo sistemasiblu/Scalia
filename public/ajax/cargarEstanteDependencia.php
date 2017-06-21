@@ -90,14 +90,16 @@ for ($i=0; $i < count($estante); $i++)
                         }
                         else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'Disponible')
                         {
-                          $localizacion = '"'.$clocalizacion[$i]['codigoDependencia'].' '.$clocalizacion[$i]['numeroEstanteDependenciaLocalizacion'].' '.$clocalizacion[$i]['numeroNivelDependenciaLocalizacion']. ' '.$clocalizacion[$i]['numeroSeccionDependenciaLocalizacion'].'"';
-
+                          $localizacion = '"'.$clocalizacion[$i]['descripcionDependenciaLocalizacion'].'"';
+                          
                           $estructura .= "
                             <div title='Ubicaciones disponibles' style='background-color:#A9F5A9; display:inline-block; cursor:pointer; height:100%; width:100%' onclick='abrirUbicacion(".$clocalizacion[$i]['idDependenciaLocalizacion'].', 0, event, "inicial", '.$localizacion.");'>
                                 <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
                         }
                         else if($clocalizacion[$i]['capacidadDependenciaLocalizacion'] == 'NoDisponible')
                         {
+                          $localizacion = '"'.$clocalizacion[$i]['descripcionDependenciaLocalizacion'].'"';
+
                           $estructura .= "
                             <div title='Caja llena' style='background-color:white; display:inline-block; height:100%; width:100%'>
                               <a onclick='cerrarCaja(".$clocalizacion[$i]['idDependenciaLocalizacion'].',event'.")'><img src='http://".$_SERVER['HTTP_HOST']."/imagenes/cambiarestado.png' style='width:5%; float:right; cursor:help' title='Abrir o Cerrar Caja'></a>";
@@ -105,7 +107,7 @@ for ($i=0; $i < count($estante); $i++)
 
                           $ubicacion = DB::Select('
                             SELECT 
-                              count(idUbicacionDocumento) as registrosUbicacionDocumento
+                              count(idUbicacionDocumento) + 1 as registrosUbicacionDocumento
                             FROM 
                               ubicaciondocumento 
                             WHERE 

@@ -26,6 +26,7 @@ class DependenciaRequest extends Request
         $localizacion = count($this->get('estadoDependenciaLocalizacion')); 
 
         $validacion = array(
+            'codigoDependencia' => "required|unique:dependencia,codigoDependencia,".$this->get('idDependencia').",idDependencia",
             "nombreDependencia" => "required|string|max:80",
             "abreviaturaDependencia" => "required|string|max:10",
             "directorioDependencia" => "required|string|max:80");

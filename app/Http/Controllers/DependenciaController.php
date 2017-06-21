@@ -49,38 +49,41 @@ class DependenciaController extends Controller
      */
     public function store(DependenciaRequest $request)
     {
-        \App\Dependencia::create([
-        'codigoDependencia' => $request['codigoDependencia'],
-        'nombreDependencia' => $request['nombreDependencia'],
-        'abreviaturaDependencia' => $request['abreviaturaDependencia'],
-        'directorioDependencia' => $request['directorioDependencia'],
-        'Dependencia_idPadre' => ($request['Dependencia_idPadre'] == '' or $request['Dependencia_idPadre'] == 0) ? null : $request['Dependencia_idPadre'],
-        ]);
-
-        $dependencia = \App\Dependencia::All()->last();
-        for($i = 0; $i < count($request['codigoDependenciaLocalizacion']); $i++)
-        {
-            \App\DependenciaLocalizacion::create([
-            'Dependencia_idDependencia' => $dependencia->idDependencia,
-            'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
-            'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
-            'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
-            'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
-            'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
-            'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i],
-            'capacidadDependenciaLocalizacion' => 'Disponible'
+        if($request['respuesta'] != 'falso')
+        {    
+            \App\Dependencia::create([
+            'codigoDependencia' => $request['codigoDependencia'],
+            'nombreDependencia' => $request['nombreDependencia'],
+            'abreviaturaDependencia' => $request['abreviaturaDependencia'],
+            'directorioDependencia' => $request['directorioDependencia'],
+            'Dependencia_idPadre' => ($request['Dependencia_idPadre'] == '' or $request['Dependencia_idPadre'] == 0) ? null : $request['Dependencia_idPadre'],
             ]);
-        }
 
-        for($i = 0; $i < count($request['Rol_idRol']); $i++)
-        {
-            \App\DependenciaPermiso::create([
-            'Dependencia_idDependencia' => $dependencia->idDependencia,
-            'Rol_idRol' => $request['Rol_idRol'][$i],
-            ]);
-        }
+            $dependencia = \App\Dependencia::All()->last();
+            for($i = 0; $i < count($request['codigoDependenciaLocalizacion']); $i++)
+            {
+                \App\DependenciaLocalizacion::create([
+                'Dependencia_idDependencia' => $dependencia->idDependencia,
+                'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
+                'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
+                'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
+                'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
+                'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
+                'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i],
+                'capacidadDependenciaLocalizacion' => 'Disponible'
+                ]);
+            }
 
-        return redirect('/dependencia');
+            for($i = 0; $i < count($request['Rol_idRol']); $i++)
+            {
+                \App\DependenciaPermiso::create([
+                'Dependencia_idDependencia' => $dependencia->idDependencia,
+                'Rol_idRol' => $request['Rol_idRol'][$i],
+                ]);
+            }
+
+            return redirect('/dependencia');
+        }
     }
 
     /**
@@ -118,55 +121,58 @@ class DependenciaController extends Controller
      */
     public function update(DependenciaRequest $request, $id)
     {
-        $indice = array(
-            'idDependencia' => $request['idDependencia']);
-
-        $data = array(
-            'codigoDependencia' => $request['codigoDependencia'],
-            'nombreDependencia' => $request['nombreDependencia'],
-            'abreviaturaDependencia' => $request['abreviaturaDependencia'],
-            'directorioDependencia' => $request['directorioDependencia'],
-            'Dependencia_idPadre' => ($request['Dependencia_idPadre'] == '' or $request['Dependencia_idPadre'] == 0) ? null : $request['Dependencia_idPadre']);
-
-        $preguntas = \App\Dependencia::updateOrCreate($indice, $data);
-        
-        $idsEliminar = explode(',', $request['eliminarDependenciaLocalizacion']);
-        \App\DependenciaLocalizacion::whereIn('idDependenciaLocalizacion',$idsEliminar)->delete();
-        for($i = 0; $i < count($request['codigoDependenciaLocalizacion']); $i++)
-        {
+        if($request['respuesta'] != 'falso')
+        {    
             $indice = array(
-                'idDependenciaLocalizacion' => $request['idDependenciaLocalizacion'][$i]);
+                'idDependencia' => $request['idDependencia']);
 
-            $datos= array(
-                'Dependencia_idDependencia' => $id,
-                'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
-                'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
-                'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
-                'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
-                'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
-                'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i],
-                'capacidadDependenciaLocalizacion' => 'Disponible'
-                );
+            $data = array(
+                'codigoDependencia' => $request['codigoDependencia'],
+                'nombreDependencia' => $request['nombreDependencia'],
+                'abreviaturaDependencia' => $request['abreviaturaDependencia'],
+                'directorioDependencia' => $request['directorioDependencia'],
+                'Dependencia_idPadre' => ($request['Dependencia_idPadre'] == '' or $request['Dependencia_idPadre'] == 0) ? null : $request['Dependencia_idPadre']);
 
-            $guardar = \App\DependenciaLocalizacion::updateOrCreate($indice, $datos);
+            $preguntas = \App\Dependencia::updateOrCreate($indice, $data);
+            
+            $idsEliminar = explode(',', $request['eliminarDependenciaLocalizacion']);
+            \App\DependenciaLocalizacion::whereIn('idDependenciaLocalizacion',$idsEliminar)->delete();
+            for($i = 0; $i < count($request['codigoDependenciaLocalizacion']); $i++)
+            {
+                $indice = array(
+                    'idDependenciaLocalizacion' => $request['idDependenciaLocalizacion'][$i]);
+
+                $datos= array(
+                    'Dependencia_idDependencia' => $id,
+                    'numeroEstanteDependenciaLocalizacion' => $request['numeroEstanteDependenciaLocalizacion'][$i],
+                    'numeroNivelDependenciaLocalizacion' => $request['numeroNivelDependenciaLocalizacion'][$i],
+                    'numeroSeccionDependenciaLocalizacion' => $request['numeroSeccionDependenciaLocalizacion'][$i],
+                    'codigoDependenciaLocalizacion' => $request['codigoDependenciaLocalizacion'][$i],
+                    'descripcionDependenciaLocalizacion' => $request['descripcionDependenciaLocalizacion'][$i],
+                    'estadoDependenciaLocalizacion' => $request['estadoDependenciaLocalizacion'][$i],
+                    'capacidadDependenciaLocalizacion' => 'Disponible'
+                    );
+
+                $guardar = \App\DependenciaLocalizacion::updateOrCreate($indice, $datos);
+            }
+
+            $idsEliminar = explode(',', $request['eliminarDependenciaPermiso']);
+            \App\DependenciaPermiso::whereIn('idDependenciaPermiso',$idsEliminar)->delete();
+            for($i = 0; $i < count($request['Rol_idRol']); $i++)
+            {
+                $indice = array(
+                    'idDependenciaPermiso' => $request['idDependenciaPermiso'][$i]);
+
+                $datos= array(
+                    'Dependencia_idDependencia' => $id,
+                    'Rol_idRol' => $request['Rol_idRol'][$i]
+                    );
+
+                $guardar = \App\DependenciaPermiso::updateOrCreate($indice, $datos);
+            }
+
+            return redirect('/dependencia');
         }
-
-        $idsEliminar = explode(',', $request['eliminarDependenciaPermiso']);
-        \App\DependenciaPermiso::whereIn('idDependenciaPermiso',$idsEliminar)->delete();
-        for($i = 0; $i < count($request['Rol_idRol']); $i++)
-        {
-            $indice = array(
-                'idDependenciaPermiso' => $request['idDependenciaPermiso'][$i]);
-
-            $datos= array(
-                'Dependencia_idDependencia' => $id,
-                'Rol_idRol' => $request['Rol_idRol'][$i]
-                );
-
-            $guardar = \App\DependenciaPermiso::updateOrCreate($indice, $datos);
-        }
-
-        return redirect('/dependencia');
     }
 
     /**

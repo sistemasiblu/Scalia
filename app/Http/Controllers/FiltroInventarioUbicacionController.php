@@ -63,7 +63,8 @@ class FiltroInventarioUbicacionController extends Controller
                         LEFT JOIN
                     tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoportedocumental = tsd.idTipoSoporteDocumental
                 WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'" '.$AND.'
-                GROUP BY idUbicacionDocumento');
+                GROUP BY idUbicacionDocumento
+                ORDER BY posicionUbicacionDocumento');
 
             return view('formatos.impresionInventarioHistorias',compact('historias'));
         }
@@ -93,7 +94,8 @@ class FiltroInventarioUbicacionController extends Controller
                     tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoportedocumental = tsd.idTipoSoporteDocumental
                         left join 
                     compania c ON ud.Compania_idCompania = c.idCompania
-                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'" '.$AND);
+                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'" '.$AND.'
+                ORDER BY posicionUbicacionDocumento ASC');
 
             return view('formatos.impresionInventarioDocumental',compact('otros'));
         }

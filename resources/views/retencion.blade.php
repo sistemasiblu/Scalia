@@ -4,7 +4,7 @@
 @section('content')
 @include('alerts.request')
 
-<!-- {!!Html::script('js/retencion.js')!!} -->
+{!!Html::script('js/retencion.js')!!}
 
 <script>
 
@@ -23,13 +23,13 @@
 
     var dependencia = [JSON.parse(idDependencia), JSON.parse(nombreDependencia)];
     var serie = [JSON.parse(idSerie), JSON.parse(nombreSerie)];
-    var subserie = [JSON.parse(idSubSerie), JSON.parse(nombreSubSerie)];
-    var documento = [JSON.parse(idDocumento), JSON.parse(nombreDocumento)];
+    var subserie = ['', ''];
+    var documento = ['', ''];
     var soporte = [valorSoporte,nombreSoporte];
     var disposicion = [valorDisposicionFinal,nombreDisposicionFinal];
 
-    var eventochange1 = ['onchange','buscarDependencia(this.value);'];
-    var eventochange2 = ['onchange','buscarSubSerie(this.value);'];
+    var eventochange1 = ['onchange','buscarSubSerie(this.value, this.id, 0);'];
+    var eventochange2 = ['onchange','buscarDocumento(this.value, this.id, 0);'];
 
 
     var retenciones = '<?php echo (isset($retencion) ? json_encode($retencion->Retenciondocumental) : "");?>';
@@ -48,22 +48,16 @@
       retencion.etiqueta = ['select', 'select','select','select','input','input','select','select','checkbox','input', 'input'];
       retencion.tipo     = ['', '','','','text','text','','','checkbox','text', 'hidden'];
       retencion.estilo   = ['width: 110px;height:35px;;','width: 90px;height:35px;','width: 100px;height:35px;','width: 160px;height:35px;','width: 65px;height:35px;','width: 65px;height:35px;','width: 80px;height:35px;','width: 150px;height:35px;','width: 95px;height:30px;display:inline-block;','width: 300px;height:35px;', ''];
-      retencion.clase    = ['chosen-select ','chosen-select ','chosen-select ','chosen-select ','','','chosen-select ','chosen-select ','','', ''];
+      retencion.clase    = ['chosen-select','','','','','','','','','',''];
       retencion.opciones = [dependencia, serie, subserie, documento, '', '', soporte, disposicion, '', '', '']      
-      // retencion.nombreDependencia =  JSON.parse(nombreDependencia);
-      // retencion.idDependencia =  JSON.parse(idDependencia);
-      // retencion.nombreSerie =  JSON.parse(nombreSerie);
-      // retencion.idSerie =  JSON.parse(idSerie);
-      // retencion.nombreSubSerie =  JSON.parse(nombreSubSerie);
-      // retencion.idSubSerie =  JSON.parse(idSubSerie);
-      // retencion.nombreDocumento =  JSON.parse(nombreDocumento);
-      // retencion.idDocumento =  JSON.parse(idDocumento);
       retencion.sololectura = [false,false,false,false,false,false,false,false,false,false,false];
-      retencion.funciones = [eventochange1, eventochange2, '', '', '', '', '', '', '', '', ''];
+      retencion.funciones = ['', eventochange1, eventochange2, '', '', '', '', '', '', '', ''];
       
       for(var j=0, k = retenciones.length; j < k; j++)
       {
         retencion.agregarCampos(JSON.stringify(retenciones[j]),'L');
+        buscarSubSerie(retenciones[j]['Serie_idSerie'], 'Serie_idSerie'+j, retenciones[j]['SubSerie_idSubSerie']);
+        buscarDocumento(retenciones[j]['SubSerie_idSubSerie'], 'SubSerie_idSubSerie'+j, retenciones[j]['Documento_idDocumento']);
       }
 
     });

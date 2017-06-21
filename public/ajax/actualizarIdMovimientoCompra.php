@@ -83,7 +83,7 @@
 			    (compra.Ciudad_idPuerto = 1
 			        OR compra.Ciudad_idPuerto IS NULL)');
 
-		return;
+		// return;
 
 		#Estilos para la tabla
 		$styleTableEnc = 'style="border: 1px solid; background-color: #255986; color: white;"';
@@ -104,7 +104,8 @@
 			        compra c
 			    GROUP BY numeroCompra , numeroVersionCompra
 			    ORDER BY numeroCompra , numeroVersionCompra DESC) AS c
-			    GROUP BY numeroCompra) AS comp');
+			    GROUP BY numeroCompra) AS comp
+			WHERE envioCorreoCompra = 0');
 
 		$mail = array();
 		#Recorro todas las compras encontradas
@@ -164,17 +165,17 @@
             	{
 	                $msj->to($mail['destinatario']);
 	                $msj->subject($mail['asunto']);
-	                // for($i=0; $i < count($adjunto); $i++)
-	                // {
-	                //     $archivos = get_object_vars($adjunto[$i]);
-	                //     $msj->attach($archivos['archivoRadicadoVersion']);
-	                // }
+	                for($j=0; $j < count($adjunto); $j++)
+	                {
+	                    $archivos = get_object_vars($adjunto[$j]);
+	                    $msj->attach($archivos['archivoRadicadoVersion']);
+	                }
             	}); 
 
             	#Por último actualizo el campo de correo de compra para 
             	#saber que ya esta compra se ha enviado correo
-            	DB::Select('UPDATE compra SET envioCorreoCompra = 1 
-            		WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
+            	// DB::Select('UPDATE compra SET envioCorreoCompra = 1 
+            	// 	WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
             }
 		}
 			

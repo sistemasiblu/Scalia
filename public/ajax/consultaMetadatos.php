@@ -56,10 +56,10 @@ $datos = get_object_vars($datos[0]);
 
     // $consultaMetadatos = DB::connection($datos['bdSistemaInformacion'])->select(DB::raw($consulta), $valor); 
 
-    $consultaMetadatos = DB::connection($datos['bdSistemaInformacion'])->select(
-        'SELECT '.$campos.' FROM '.$tablaDocumento.' WHERE '.$condicion.' "'.$valor.'"');
+    $consultaMetadatos = DB::select(
+        'SELECT '.$campos.' FROM '.$datos['bdSistemaInformacion'].'.'.$tablaDocumento.' WHERE '.$condicion.' "'.$valor.'"');
 
-    // echo 'SELECT '.$campos.' FROM '.$tablaDocumento.' WHERE '.$condicion.' "'.$valor.'"';
+    // echo 'SELECT '.$campos.' FROM '.$datos['bdSistemaInformacion'].'.'.$tablaDocumento.' WHERE '.$condicion.' "'.$valor.'"';
 
     // return;
 $consultaM = array();

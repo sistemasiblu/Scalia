@@ -32,21 +32,21 @@ for($i = 0; $i < count($datos); $i++)
 
     $(document).ready(function(){
 
-      permisos = new Atributos('permisos','contenedor_permisos','permisos_');
+      protRol = new Atributos('protRol','contenedor_permisos','protRol_');
 
-      permisos.altura = '35px';
-      permisos.campoid = 'idSeriePermiso';
-      permisos.campoEliminacion = 'eliminarSeriePermiso';
+      protRol.altura = '35px';
+      protRol.campoid = 'idSeriePermiso';
+      protRol.campoEliminacion = 'eliminarSeriePermiso';
 
-      permisos.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idSeriePermiso'];
-      permisos.etiqueta = ['input', 'input', 'input'];
-      permisos.tipo     = ['hidden', 'text', 'hidden'];
-      permisos.estilo   = ['', 'width: 900px;height:35px;' ,''];
-      permisos.clase    = ['','', '', ''];
-      permisos.sololectura = [true,true,true];
+      protRol.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idSeriePermiso'];
+      protRol.etiqueta = ['input', 'input', 'input'];
+      protRol.tipo     = ['hidden', 'text', 'hidden'];
+      protRol.estilo   = ['', 'width: 900px;height:35px;' ,''];
+      protRol.clase    = ['','', '', ''];
+      protRol.sololectura = [true,true,true];
       for(var j=0, k = seriepermisos.length; j < k; j++)
       {
-        permisos.agregarCampos(JSON.stringify(seriepermisos[j]),'L');
+        protRol.agregarCampos(JSON.stringify(seriepermisos[j]),'L');
       }
 
     });

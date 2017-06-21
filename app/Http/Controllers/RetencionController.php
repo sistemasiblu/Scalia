@@ -127,45 +127,9 @@ class RetencionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request){
-
-    if(isset($request['dependenciaClasificacionDocumental']))
+    public function show(Request $request)
     {
-        $clasificaciondocumental = DB::table('clasificaciondocumental')
-        ->leftjoin('serie', 'clasificaciondocumental.Serie_idSerie', "=", 'serie.idSerie')
-        ->leftjoin('subserie', 'subserie.Serie_idSerie', "=", 'serie.idSerie')
-        ->leftjoin('documento', 'subserie.Documento_idDocumento', "=", 'documento.idDocumento')
-        ->select (DB::raw('idSerie, nombreSerie'))
-        ->where ('idClasificacionDocumental', "=", $request['dependenciaClasificacionDocumental'])
-        // ->where('Documento_idDocumento', "=", $request['Documento'])
-        ->get();
-
-
-
-        if($request->ajax())
-            {
-                return response()->json([
-                    $clasificaciondocumental
-                ]);
-            }   
-    } 
-
-    if(isset($request['Serie_idSerie']))
-        {
-           $Subserie = DB::table('subserie')
-           ->select(DB::raw('idSubSerie, nombreSubSerie'))
-           ->leftjoin('documento', 'subserie.Documento_idDocumento', "=", 'documento.idDocumento')
-           ->where ('Serie_idSerie', "=", $request['Serie_idSerie'])
-           // ->where ('Documento_idDocumento', "=", $request['Documento'])
-           ->get();
-
-            if($request->ajax())
-            {
-                return response()->json([
-                    $Subserie
-                ]);
-            }               
-        }
+        //
     }
 
     /**
@@ -280,4 +244,56 @@ class RetencionController extends Controller
         \App\Retencion::destroy($id);
         return redirect('/retencion');
     }
+
+    function buscarSubSerie(Request $request)
+    {
+        if(isset($request['Serie_idSerie']))
+        {
+            // $subserie = DB::table('subseriedetalle')
+            // ->select(DB::raw('idSubSerie, nombreSubSerie'))
+            // ->leftjoin('documento', 'subseriedetalle.Documento_idDocumento', "=", 'documento.idDocumento')
+            // ->leftjoin('subserie', 'subseriedetalle.SubSerie_idSubSerie', "=", 'subserie.idSubSerie')
+            // ->where ('Serie_idSerie', "=", $request['Serie_idSerie'])
+            // ->get();
+
+            $subserie = DB::Select('
+                SELECT 
+                    idSubSerie, nombreSubSerie
+                FROM
+                   subserie
+                WHERE Serie_idSerie = '.$request['Serie_idSerie']);
+
+            echo json_encode($subserie);
+
+            // if($request->ajax())
+            // {
+            //     return response()->json([
+            //         $subserie
+            //     ]);
+            // }               
+        }
+    }
+
+    function buscarDocumento(Request $request)
+    {
+        if(isset($request['SubSerie_idSubSerie']))
+        {
+            $documento = DB::table('subseriedetalle')
+            ->select(DB::raw('idDocumento, nombreDocumento'))
+            ->leftjoin('documento', 'subseriedetalle.Documento_idDocumento', "=", 'documento.idDocumento')
+            ->leftjoin('subserie', 'subseriedetalle.SubSerie_idSubSerie', "=", 'subserie.idSubSerie')
+            ->where ('SubSerie_idSubSerie', "=", $request['SubSerie_idSubSerie'])
+            ->get();
+
+            echo json_encode($documento);
+
+                // if($request->ajax())
+                // {
+                //     return response()->json([
+                //         $documento
+                //     ]);
+                // }               
+        }
+    }
 }
+

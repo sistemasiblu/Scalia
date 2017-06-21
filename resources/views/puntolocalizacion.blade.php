@@ -12,6 +12,12 @@
   <fieldset id="ubicacionDocumento-form-fieldset">  
   <input type="hidden" id="token" value="{{csrf_token()}}"/>
 
+<script>
+  $(document).ready( function () {
+
+      setInterval(alert('hola'), 10);
+    });
+</script>
 
   <?php 
     $tipoInventario = $_GET['tipo'];
@@ -37,8 +43,8 @@
       $clocalizacion[$i] = (array) $localizacion[$i];
     }
 
-    $select = '<select class="form-control" onchange="cargarEstanteDependencia(this.value, 001, '.$tipoInventario.')">
-    <option value="" disabled selected>Seleccione una dependencia</option>';
+    $select = '<select id="idDependencia" class="form-control" onchange="cargarEstanteDependencia(this.value, 001, '.$tipoInventario.')">
+    <option value="0">Seleccione una dependencia</option>';
 
     for ($i=0; $i < count($localizacion); $i++) 
     { 

@@ -32,21 +32,21 @@ for($i = 0; $i < count($datos); $i++)
 
     $(document).ready(function(){
 
-      permisos = new Atributos('permisos','contenedor_permisos','permisos_');
+      protRol = new Atributos('protRol','contenedor_permisos','protRol_');
 
-      permisos.altura = '35px';
-      permisos.campoid = 'idSubSeriePermiso';
-      permisos.campoEliminacion = 'eliminarSubSeriePermiso';
+      protRol.altura = '35px';
+      protRol.campoid = 'idSubSeriePermiso';
+      protRol.campoEliminacion = 'eliminarSubSeriePermiso';
 
-      permisos.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idSubSeriePermiso', 'SubSerie_idSubSerie'];
-      permisos.etiqueta = ['input', 'input', 'input', 'input'];
-      permisos.tipo     = ['hidden', 'text', 'hidden', 'hidden'];
-      permisos.estilo   = ['', 'width: 900px;height:35px;' ,'', ''];
-      permisos.clase    = ['','', '', '', ''];
-      permisos.sololectura = [true,true,true, true];
+      protRol.campos   = ['Rol_idRol', 'nombreRolPermiso', 'idSubSeriePermiso', 'SubSerie_idSubSerie'];
+      protRol.etiqueta = ['input', 'input', 'input', 'input'];
+      protRol.tipo     = ['hidden', 'text', 'hidden', 'hidden'];
+      protRol.estilo   = ['', 'width: 900px;height:35px;' ,'', ''];
+      protRol.clase    = ['','', '', '', ''];
+      protRol.sololectura = [true,true,true, true];
       for(var j=0, k = subseriepermisos.length; j < k; j++)
       {
-        permisos.agregarCampos(JSON.stringify(subseriepermisos[j]),'L');
+        protRol.agregarCampos(JSON.stringify(subseriepermisos[j]),'L');
       }
 
     });

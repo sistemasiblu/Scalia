@@ -1,5 +1,6 @@
 function cargarEstanteDependencia(idDependencia, numeroEstante, tipoInventario)
 {
+    alert(tipoInventario);
   var token = document.getElementById('token').value;
 
     $.ajax({
