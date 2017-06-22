@@ -190,7 +190,7 @@
 	                </tr>
 	            </table>';
 
-            	$destinatario = 'comercio1@ciiblu.com;mariae.palacio@ciiblu.com;claudiagomez@ciiblu.com;victoria.perez@ciiblu.com;yudyrendon@ciiblu.com;comercioextiblu@ciiblu.com;extiblu4@ciiblu.com;comercio4@ciiblu.com;extiblu11@ciiblu.com;santiago.viana@ciiblu.com';
+            	$destinatario = 'comercio1@ciiblu.com;mariae.palacio@ciiblu.com;claudiagomez@ciiblu.com;victoria.perez@ciiblu.com;yudyrendon@ciiblu.com;comercioextiblu@ciiblu.com;extiblu4@ciiblu.com;comercio4@ciiblu.com;extiblu11@ciiblu.com';
 
             	$mail['destinatario'] = explode(';', $destinatario);
             	$mail['asunto'] = 'Creación de compra en Scalia';

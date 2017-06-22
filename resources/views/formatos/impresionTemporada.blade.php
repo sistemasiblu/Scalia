@@ -43,15 +43,17 @@ function base64($archivo)
 
 $s = 0;
 $totalTemp = '';
+$totalUnid = '';
 $total = count($consulta);
   echo '
   	<table table class="table table-striped table-bordered table-hover" style="width:100%;">
 	  	<tr>
-			<th colspan="4" style=" background-color:#255986; color:white;"></th>
+			<th colspan="5" style=" background-color:#255986; color:white;"></th>
 		</tr>
 		<tr>
 			<td><b>Temporada</b></td>
 			<td><b>Valor</b></td>
+      <td><b>Unidades</b></td>
 			<td><b>Fecha Inicial</b></td>
 			<td><b>Fecha Final</b></td>
 		<tr>';
@@ -62,11 +64,13 @@ $total = count($consulta);
 		</tr>
 			<td>'.$datos[$s]['nombreTemporada'].'</td>
 			<td style="text-align:right;">'.number_format($datos[$s]['valorCompra'],2,".",",").'</td>
+      <td style="text-align:right;">'.number_format($datos[$s]['cantidadCompra'],2,".",",").'</td>
 			<td>'.$datos[$s]['fechaInicialTemporada'].'</td>
 			<td>'.$datos[$s]['fechaFinaltemporada'].'</td>
 		</tr>';
 
     $totalTemp += $datos[$s]['valorCompra'];
+    $totalUnid += $datos[$s]['cantidadCompra'];
 
 		$s++;
 	}	  
@@ -74,6 +78,7 @@ $total = count($consulta);
     <tr>
         <th colspan="1">TOTALES DE LAS TEMPORADAS</th>
         <th style="text-align:right;" colspan="1">'.number_format($totalTemp,2,".",",").'</th>
+        <th style="text-align:right;" colspan="1">'.number_format($totalUnid,2,".",",").'</th>
         <th colspan="2"></th>
     </tr>        
 	</table>';

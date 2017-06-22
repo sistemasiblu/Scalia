@@ -48,6 +48,7 @@ class FiltroTemporadaController extends Controller
                 idTemporada,
                 nombreTemporada,
                 SUM(valorCompra) AS valorCompra,
+                SUM(cantidadCompra) as cantidadCompra,
                 fechaInicialTemporada,
                 fechaFinaltemporada
             FROM
@@ -56,6 +57,7 @@ class FiltroTemporadaController extends Controller
                 (SELECT 
                     Temporada_idTemporada,
                         numeroCompra,
+                        cantidadCompra,
                         valorCompra,
                         idCompra,
                         numeroVersionCompra
@@ -63,6 +65,7 @@ class FiltroTemporadaController extends Controller
                     (SELECT 
                     Temporada_idTemporada,
                         numeroCompra,
+                        cantidadCompra,
                         valorCompra,
                         idCompra,
                         numeroVersionCompra
