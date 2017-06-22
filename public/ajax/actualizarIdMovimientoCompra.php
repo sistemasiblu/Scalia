@@ -155,8 +155,7 @@
 	                </tr>
 	            </table>';
 
-            	$destinatario = 'santiago.viana@ciiblu.com';
-
+            	$destinatario = 'comercio1@ciiblu.com;mariae.palacio@ciiblu.com;claudiagomez@ciiblu.com;victoria.perez@ciiblu.com;yudyrendon@ciiblu.com;comercioextiblu@ciiblu.com;extiblu4@ciiblu.com;comercio4@ciiblu.com;extiblu11@ciiblu.com;santiago.viana@ciiblu.com';
 
             	$mail['destinatario'] = explode(';', $destinatario);
             	$mail['asunto'] = 'Creación de compra en Scalia';
@@ -174,8 +173,8 @@
 
             	#Por último actualizo el campo de correo de compra para 
             	#saber que ya esta compra se ha enviado correo
-            	// DB::Select('UPDATE compra SET envioCorreoCompra = 1 
-            	// 	WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
+            	DB::Select('UPDATE compra SET envioCorreoCompra = 1 
+            		WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
             }
 		}
 			

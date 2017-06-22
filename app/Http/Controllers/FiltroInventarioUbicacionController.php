@@ -17,13 +17,22 @@ class FiltroInventarioUbicacionController extends Controller
      */
     public function index()
     {
-        return view('filtroinventarioubicacion');
+        $dependencia = DB::Select(
+        'SELECT
+            idDependencia as id, nombreDependencia as nombre
+        FROM
+            dependencialocalizacion dl
+                LEFT JOIN
+            dependencia d ON dl.Dependencia_idDependencia = d.idDependencia
+        GROUP BY idDependencia');
+        $dependencia = $this->convertirArray($dependencia);
+
+        return view('filtroinventarioubicacion', compact('dependencia'));
     }
 
     function convertirArray($dato)
     {
         $nuevo = array();
-        $nuevo[0] = 'Todos';
         for($i = 0; $i < count($dato); $i++) 
         {
           $nuevo[get_object_vars($dato[$i])["id"]] = get_object_vars($dato[$i])["nombre"] ;
@@ -62,7 +71,9 @@ class FiltroInventarioUbicacionController extends Controller
                     dependencialocalizacion dl ON ud.DependenciaLocalizacion_idDependenciaLocalizacion = dl.idDependenciaLocalizacion
                         LEFT JOIN
                     tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoportedocumental = tsd.idTipoSoporteDocumental
-                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'" '.$AND.'
+                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'"
+                AND Dependencia_idDependencia = '.$_GET['dependencia'].' 
+                '.$AND.'
                 GROUP BY idUbicacionDocumento
                 ORDER BY posicionUbicacionDocumento');
 
@@ -94,7 +105,9 @@ class FiltroInventarioUbicacionController extends Controller
                     tiposoportedocumental tsd ON ud.TipoSoporteDocumental_idTipoSoportedocumental = tsd.idTipoSoporteDocumental
                         left join 
                     compania c ON ud.Compania_idCompania = c.idCompania
-                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'" '.$AND.'
+                WHERE tipoUbicacionDocumento = "'.$_GET['tipoInv'].'"
+                AND Dependencia_idDependencia = '.$_GET['dependencia'].' 
+                '.$AND.'
                 ORDER BY posicionUbicacionDocumento ASC');
 
             return view('formatos.impresionInventarioDocumental',compact('otros'));

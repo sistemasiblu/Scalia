@@ -8,13 +8,14 @@ $(document).ready( function () {
     );
 });
 
-function consultarInventario(Tipo, FechaInicial, FechaFinal)
+function consultarInventario(Tipo, Dependencia, FechaInicial, FechaFinal)
 {
 	if (FechaInicial != '' && FechaFinal == '') 
 		alert('Debe llenar la fecha final');
 	else
 	{
 		tipoInv = '';
+		Dep = '';
 		fechaIni = '';
 		fechaFin = '';
 
@@ -23,6 +24,14 @@ function consultarInventario(Tipo, FechaInicial, FechaFinal)
 		else
 		{
 			alert('Debe seleccionar un tipo.');
+			return;
+		}
+
+		if (Dependencia != '')
+			Dep = Dependencia;
+		else
+		{
+			alert('Debe seleccionar una dependencia.');
 			return;
 		}
 
@@ -38,6 +47,6 @@ function consultarInventario(Tipo, FechaInicial, FechaFinal)
 			fechaFin = "'"+FechaFinal+"'";
 		}
 
-		window.open('consultarInventarioUbicacion/?tipoInv='+tipoInv+'&fechaIni='+fechaIni+'&fechaFin='+fechaFin,'_blank','width=2500px, height=700px, scrollbars=yes');
+		window.open('consultarInventarioUbicacion/?tipoInv='+tipoInv+'&dependencia='+Dep+'&fechaIni='+fechaIni+'&fechaFin='+fechaFin,'_blank','width=2500px, height=700px, scrollbars=yes');
 	}
 }

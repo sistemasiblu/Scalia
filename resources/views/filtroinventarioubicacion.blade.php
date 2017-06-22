@@ -26,7 +26,19 @@
         </div>
       </div>
 
-      <br/><br/><br/>
+      {{-- <br/><br/><br/> --}}
+
+      <div class="form-group col-md-6">
+        {!!Form::label('Dependencia', 'Dependencia', array('class' => 'col-sm-4 col-md-2 control-label')) !!}
+        <div class="col-md-8">
+          <div class="input-group">
+            <span class="input-group-addon">
+              <i class="fa fa-list"></i>
+            </span>
+            {!! Form::select('Dependencia', $dependencia ,null,['class' => 'chosen-select form-control', 'id'=>'Dependencia', 'placeholder' => 'Seleccione una dependencia']) !!}
+          </div>
+        </div>
+      </div>
 
       <div class="form-group col-md-6">
         {!!Form::label('fechaInicial', 'Fecha Inicial:', array('class' => 'col-sm-4 col-md-2 control-label')) !!}
@@ -56,6 +68,7 @@
 
         {!!Form::button('Consultar',["class"=>"btn btn-primary", 'onclick' => 'consultarInventario(
         $(\'#tipoInventario\').val(), 
+        $(\'#Dependencia\').val(), 
         $(\'#fechaInicial\').val(),
         $(\'#fechaFinal\').val());'])!!}
 </div>
