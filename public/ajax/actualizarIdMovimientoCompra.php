@@ -2,21 +2,20 @@
 
 			// use Mail;
 // include '../../vendor/laravel/framework/src/Illuminate/Support/Facades/Mail.php';
-			$mail = array();
-            	$destinatario = 'santiago.viana@ciiblu.com';
+			// $mail = array();
+            // 	$destinatario = 'santiago.viana@ciiblu.com';
 
 
-            	$mail['destinatario'] = explode(';', $destinatario);
-            	$mail['asunto'] = 'Cron';
-            	$mail['mensaje'] = 'Se ejecutó el cron';
+            // 	$mail['destinatario'] = explode(';', $destinatario);
+            // 	$mail['asunto'] = 'Cron';
+            // 	$mail['mensaje'] = 'Se ejecutó el cron';
 
-            	Mail::send('emails.contact',$mail,function($msj) use ($mail)
-            	{
-	                $msj->to($mail['destinatario']);
-	                $msj->subject($mail['asunto']);
-            	}); 
+            // 	Mail::send('emails.contact',$mail,function($msj) use ($mail)
+            // 	{
+	        //         $msj->to($mail['destinatario']);
+	        //         $msj->subject($mail['asunto']);
+            // 	}); 
 
-            	echo 'Se envió el mensaje';
 
 		#Se hace un update a la tabla compra donde primero se obtiene el id de movimiento que está en saya
 		#para luego actualizar ese id en la tabla compra en el campo Movimiento_idMovimiento
@@ -91,21 +90,53 @@
         $styleTableBodyN = 'style="border: 1px solid;  text-align: right;"';
 
 		#Consulto todas las compras de las que aún no se ha enviado correo
-		$compras = DB::Select('
-			SELECT 
-			    numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
+		$compras = DB::Select(
+			'SELECT 
+				numeroCompra,
+				envioCorreoCompra,
+				nombreTemporadaCompra,
+				nombreProveedorCompra,
+				formaPagoProveedorCompra,
+				nombreClienteCompra,
+				valorCompra,
+				cantidadCompra,
+				fechaDeliveryCompra,
+				observacionCompra,
+				nombreDocumentoImportacion
 			FROM
-			    (SELECT 
-			        numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
-			    FROM
-			        (SELECT 
-			        	numeroCompra, envioCorreoCompra, nombreTemporadaCompra, nombreProveedorCompra, formaPagoProveedorCompra, nombreClienteCompra, valorCompra, cantidadCompra,fechaDeliveryCompra
-			    FROM
-			        compra c
-			    GROUP BY numeroCompra , numeroVersionCompra
-			    ORDER BY numeroCompra , numeroVersionCompra DESC) AS c
-			    GROUP BY numeroCompra) AS comp
-			WHERE envioCorreoCompra = 0');
+				(SELECT 
+					numeroCompra,
+						envioCorreoCompra,
+						nombreTemporadaCompra,
+						nombreProveedorCompra,
+						formaPagoProveedorCompra,
+						nombreClienteCompra,
+						valorCompra,
+						cantidadCompra,
+						fechaDeliveryCompra,
+						observacionCompra,
+						DocumentoImportacion_idDocumentoImportacion
+				FROM
+					(SELECT 
+					numeroCompra,
+						envioCorreoCompra,
+						nombreTemporadaCompra,
+						nombreProveedorCompra,
+						formaPagoProveedorCompra,
+						nombreClienteCompra,
+						valorCompra,
+						cantidadCompra,
+						fechaDeliveryCompra,
+						observacionCompra,
+						DocumentoImportacion_idDocumentoImportacion
+				FROM
+					compra c
+				GROUP BY numeroCompra , numeroVersionCompra
+				ORDER BY numeroCompra , numeroVersionCompra DESC) AS c
+				GROUP BY numeroCompra) AS comp
+				LEFT JOIN documentoimportacion di ON comp.DocumentoImportacion_idDocumentoImportacion = di.idDocumentoImportacion
+			WHERE
+				envioCorreoCompra = 0');
 
 		$mail = array();
 		#Recorro todas las compras encontradas
@@ -131,7 +162,7 @@
             	$mail['mensaje'] ='Se ha realizado la creación de una nueva compra en Scalia con las siguientes especificaciones: <br><br>
             	<table cellspacing="0" class="table table-striped table-bordered table-hover" style="width:100%;">
 		            <tr>
-		                <th colspan="12" style=" background-color:#255986; color:white;">Compra: '.$compra['numeroCompra'].'</th>
+		                <th colspan="10" style=" background-color:#255986; color:white;">Compra: '.$compra['numeroCompra'].'</th>
 		            </tr>
 		            <tr>
 		                <th '.$styleTableEnc.'>Temporada</th>
@@ -142,6 +173,8 @@
 		                <th '.$styleTableEnc.'>Unidades</th>
 		                <th '.$styleTableEnc.'>Factor</th>
 		                <th '.$styleTableEnc.'>Delivery</th>
+						<th '.$styleTableEnc.'>Observación</th>
+						<th '.$styleTableEnc.'>Compra</th>
 		            </tr>
 		            <tr>
 	                    <td '.$styleTableBody.'>'.$compra["nombreTemporadaCompra"].'</td>
@@ -152,6 +185,8 @@
 	                    <td '.$styleTableBody.'>'.$compra["cantidadCompra"].'</td>
 	                    <td '.$styleTableBody.'>'."".'</td>
 	                    <td '.$styleTableBody.'>'.$compra["fechaDeliveryCompra"].'</td>
+						<td '.$styleTableBody.'>'.$compra["observacionCompra"].'</td>
+						<td '.$styleTableBody.'>'.$compra["nombreDocumentoImportacion"].'</td>
 	                </tr>
 	            </table>';
 
@@ -175,6 +210,8 @@
             	#saber que ya esta compra se ha enviado correo
             	DB::Select('UPDATE compra SET envioCorreoCompra = 1 
             		WHERE numeroCompra = "'.$compra['numeroCompra'].'"');
+
+				echo 'Se envió el mensaje';
             }
 		}
 			
