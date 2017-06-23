@@ -15,7 +15,31 @@
 <script>
   $(document).ready( function () {
 
-      setInterval(alert('hola'), 10);
+      setInterval(function cargarEstanteDependencia(idDependencia, numeroEstante, tipoInventario)
+      {
+        idDependencia = $("#idDependencia").val();
+        numeroEstante = ($("#estanteLocalizacion").val() == '' ? '001' : $("#estanteLocalizacion").val());
+        tipoInventario = <?php echo $_GET['tipo']; ?>;
+        var token = document.getElementById('token').value;
+
+          $.ajax({
+                  headers: {'X-CSRF-TOKEN': token},
+                  dataType: "json",
+                  data: {'idDependencia': idDependencia, 'numeroEstante' : numeroEstante, 'tipoInventario': tipoInventario},
+                  url:   'http://'+location.host+'/cargarEstanteDependencia/',
+                  type:  'post',
+                  beforeSend: function(){
+                      //Lo que se hace antes de enviar el formulario
+                      },
+                  success: function(respuesta){
+                      $("#botones").html(respuesta['boton']);
+                      $("#contenidoEstante").html(respuesta['estructura']);
+                  },
+                  error:    function(xhr,err){ 
+                      alert("Error");
+                  }
+              });
+      }, 30000);
     });
 </script>
 
@@ -43,7 +67,7 @@
       $clocalizacion[$i] = (array) $localizacion[$i];
     }
 
-    $select = '<select id="idDependencia" class="form-control" onchange="cargarEstanteDependencia(this.value, 001, '.$tipoInventario.')">
+    $select = '<select id="idDependencia" class="form-control" onchange="llenarCampoEstante(001); cargarEstanteDependencia(this.value, 001, '.$tipoInventario.')">
     <option value="0">Seleccione una dependencia</option>';
 
     for ($i=0; $i < count($localizacion); $i++) 
@@ -99,6 +123,7 @@
     </div>
     <div id="divContenido" style="height:100%;">
         <div id="contenido_pestanas" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <input type="hidden" id="estanteLocalizacion" value="">
             <?php
                 // echo $menu;
             ?>

@@ -57,23 +57,23 @@ for($i = 0; $i < count($datos); $i++)
     $(document).ready(function(){
 
       var stilocheck = 'width: 70px;height:30px;display:inline-block;';
-      permisos = new Atributos('permisos','contenedor_permisos','permisos_');
+      protRol = new Atributos('protRol','contenedor_permisos','protRol_');
 
-      permisos.altura = '35px';
-      permisos.campoid = 'idDocumentoPermiso';
-      permisos.campoEliminacion = 'eliminarPermiso';
+      protRol.altura = '35px';
+      protRol.campoid = 'idDocumentoPermiso';
+      protRol.campoEliminacion = 'eliminarPermiso';
 
-      permisos.campos   = ['Rol_idRol','nombreRolPermiso', 'cargarDocumentoPermiso', 'descargarDocumentoPermiso','consultarDocumentoPermiso','modificarDocumentoPermiso','imprimirDocumentoPermiso','correoDocumentoPermiso','eliminarDocumentoPermiso','idDocumentoPermiso'];
-      permisos.etiqueta = ['input','input', 'checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','input'];
-      permisos.tipo     = ['hidden','text', 'checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','hidden'];
-      permisos.estilo   = ['width: 600px;height:35px;','width: 600px;height:35px', stilocheck, stilocheck, stilocheck, stilocheck, stilocheck, stilocheck, stilocheck,''];
-      permisos.clase    = ['','','','','','','','','',''];
-      permisos.sololectura = [false,false,false,false,false,false,false,false,false,false];  
-      permisos.nombreRol =  JSON.parse(nombreRol);
-      permisos.idRol =  JSON.parse(idRol);
+      protRol.campos   = ['Rol_idRol','nombreRolPermiso', 'cargarDocumentoPermiso', 'descargarDocumentoPermiso','consultarDocumentoPermiso','modificarDocumentoPermiso','imprimirDocumentoPermiso','correoDocumentoPermiso','eliminarDocumentoPermiso','idDocumentoPermiso'];
+      protRol.etiqueta = ['input','input', 'checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','input'];
+      protRol.tipo     = ['hidden','text', 'checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','checkbox','hidden'];
+      protRol.estilo   = ['width: 600px;height:35px;','width: 600px;height:35px', stilocheck, stilocheck, stilocheck, stilocheck, stilocheck, stilocheck, stilocheck,''];
+      protRol.clase    = ['','','','','','','','','',''];
+      protRol.sololectura = [false,false,false,false,false,false,false,false,false,false];  
+      protRol.nombreRol =  JSON.parse(nombreRol);
+      protRol.idRol =  JSON.parse(idRol);
       for(var j=0, k = documentopermiso.length; j < k; j++)
       {
-        permisos.agregarCampos(JSON.stringify(documentopermiso[j]),'L');
+        protRol.agregarCampos(JSON.stringify(documentopermiso[j]),'L');
       }
         
     });

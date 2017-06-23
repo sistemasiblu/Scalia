@@ -39,7 +39,7 @@ for ($i=0; $i < count($estante); $i++)
 { 
   $posEstante = get_object_vars($estante[$i]);
 
-  $boton .= '<a onclick="cargarEstanteDependencia('.$posEstante['Dependencia_idDependencia'].','.$posEstante['numeroEstanteDependenciaLocalizacion'].',\''.$tipoInventario.'\')" class="btn btn-default"><span>'.$posEstante['numeroEstanteDependenciaLocalizacion'].'</span></a>';
+  $boton .= '<a onclick="llenarCampoEstante('.$posEstante['numeroEstanteDependenciaLocalizacion'].'); cargarEstanteDependencia('.$posEstante['Dependencia_idDependencia'].','.$posEstante['numeroEstanteDependenciaLocalizacion'].',\''.$tipoInventario.'\')" class="btn btn-default"><span>'.$posEstante['numeroEstanteDependenciaLocalizacion'].'</span></a>';
 }
 
     $i = 0;
