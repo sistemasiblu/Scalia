@@ -133,6 +133,7 @@ margin:0 auto;
 /*margin-top:2px;*/
 background-color: #255986;
 color: white;
+
  }
 
 .innergrid ul{
@@ -143,14 +144,15 @@ color: white;
 
 
 .icons li{
+list-style: none;
  float:left;
  padding:5px;
  border:solid #666 0;
  cursor: pointer;
  font-family: 'Arial';
- font-size: 12px;
+ font-size: 10pt;
  text-align: center;
- width: 80px;
+ width: 85px;
  height: 80px;
  }
 
@@ -174,8 +176,8 @@ top: 0px;
 }
 
 .gridbox{
- width:450px;
- height:400px;
+ width:100%;
+ height:auto;
  background-color:#FFF;
  box-shadow:0 0 10px #CCC;
  border:solid #CCC 1px;
@@ -189,7 +191,7 @@ top: 0px;
  }
 
  .gridboximportacion{
- width:450px;
+ width:99%;
  /*height:400px;*/
  background-color:#FFF;
  box-shadow:0 0 10px #CCC;
@@ -205,10 +207,10 @@ top: 0px;
  }
 
 .innergrid{
- width:450px;
- height:600px;
+ width:100%;
+ height:auto;
  overflow:hidden;
- margin:15px;
+ margin:5px;
 
  }
 

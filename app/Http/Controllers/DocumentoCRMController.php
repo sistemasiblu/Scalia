@@ -55,7 +55,10 @@ class DocumentoCRMController extends Controller
     {
        $grupoestado = \App\GrupoEstado::where('Compania_idCompania','=', \Session::get('idCompania'))->lists('nombreGrupoEstado','idGrupoEstado');
 
-        return view('documentocrm', compact('grupoestado'));
+        $idTGrafico=\App\CampoCRM::where('tipoCampoCRM','=','grafico')->lists('idCampoCRM');
+        $nombreTGrafico=\App\CampoCRM::where('tipoCampoCRM','=','grafico')->lists('descripcionCampoCRM');
+
+        return view('documentocrm', compact('grupoestado','idTGrafico','nombreTGrafico'));
     }
 
     /**
@@ -110,7 +113,23 @@ class DocumentoCRMController extends Controller
     {
         $documentocrm = \App\DocumentoCRM::find($id);
         $grupoestado = \App\GrupoEstado::where('Compania_idCompania','=', \Session::get('idCompania'))->lists('nombreGrupoEstado','idGrupoEstado');
-        return view('documentocrm',compact('grupoestado'),['documentocrm'=>$documentocrm]);
+        $dcrmgraf=DB::SELECT("select idDocumentoCRMGrafico,DocumentoCRM_idDocumentoCRM,CampoCRM_idCampoCRM as graficoCRM,tituloDocumentoCRMGrafico,
+            tipoDocumentoCRMGrafico,valorDocumentoCRMGrafico 
+            from documentocrmgrafico 
+            inner join campocrm 
+            on documentocrmgrafico.CampoCRM_idCampoCRM=campocrm.idCampoCRM
+            where DocumentoCRM_idDocumentoCRM=$id");
+
+            $documentocrmgrafico= array();
+        for($i = 0; $i < count($dcrmgraf); $i++) 
+        {
+          $documentocrmgrafico[] = get_object_vars($dcrmgraf[$i]);
+        }
+            
+        $idTGrafico=\App\CampoCRM::where('tipoCampoCRM','=','grafico')->lists('idCampoCRM');
+        $nombreTGrafico=\App\CampoCRM::where('tipoCampoCRM','=','grafico')->lists('descripcionCampoCRM');
+
+        return view('documentocrm',compact('grupoestado','idTGrafico','nombreTGrafico','documentocrmgrafico'),['documentocrm'=>$documentocrm]);
     }
 
     /**
@@ -198,7 +217,7 @@ class DocumentoCRMController extends Controller
             'tituloDocumentoCRMGrafico' => $request['tituloDocumentoCRMGrafico'][$i],
             'tipoDocumentoCRMGrafico' => $request['tipoDocumentoCRMGrafico'][$i],
             'valorDocumentoCRMGrafico' => $request['valorDocumentoCRMGrafico'][$i],
-            'serieDocumentoCRMGrafico' => $request['serieDocumentoCRMGrafico'][$i]);
+            'CampoCRM_idCampoCRM' => $request['graficoCRM'][$i]);
 
             $preguntas = \App\DocumentoCRMGrafico::updateOrCreate($indice, $data);
 

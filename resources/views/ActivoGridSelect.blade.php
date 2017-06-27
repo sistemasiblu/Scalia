@@ -11,33 +11,37 @@
                 border-radius: 4px;
             }
 </style> 
+<!-- DataTables -->
+        {!!Html::script('DataTables/media/js/jquery.js'); !!}
+        {!!Html::script('DataTables/media/js/jquery.dataTables.js'); !!}
+        {!!Html::style('DataTables/media/css/jquery.dataTables.min.css'); !!}
+        {!!Html::style('assets/bootstrap-v3.3.5/css/bootstrap.min.css'); !!}
+        {!!Html::script('assets/bootstrap-v3.3.5/js/bootstrap.min.js'); !!} 
+
         <div class="container">
             <div class="row">
                 <div class="container">
-                    <br>
                     <div class="btn-group" style="margin-left: 94%;margin-bottom:4px" title="Columns">
-                        <button  type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
+                        <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="glyphicon glyphicon-th icon-th"></i> 
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li><a class="toggle-vis" data-column="0"><label> ID</label></a></li>
-                            <li><a class="toggle-vis" data-column="1"><label> Referencia</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Codigo Barras</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Descripcion</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Marca</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Modelo</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Serial</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Tipo Activo</label></a></li>
-                            <li><a class="toggle-vis" data-column="2"><label> Estado</label></a></li>
+                       <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a class="toggle-vis" data-column="0"><label> Referencia</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Codigo Barras</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Descripcion</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Marca</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Modelo</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Serial</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Tipo Activo</label></a></li>
+                            <li><a class="toggle-vis" data-column="0"><label> Estado</label></a></li>
                         </ul>
                     </div>
                     
-                    <table id="tactivoSelect" name="tactivoSelect" class="display table-bordered" width="100%">
+                    <table id="tactivoselect" name="tactivoselect" class="display table-bordered" width="100%">
                         <thead>
                             <tr class="btn-primary active">
 
-                                <th><b>ID</b></th>
                                 <th><b>Referencia</b></th>
                                 <th><b>Codigo Barras</b></th>
                                 <th><b>Descripcion</b></th>
@@ -46,12 +50,13 @@
                                 <th><b>Serial</b></th>
                                 <th><b>Tipo Activo</b></th>
                                 <th><b>Estado</b></th>
+
                             </tr>
                         </thead>
-                        <!-- <tfoot>
+                        <tfoot>
                             <tr class="btn-default active">
+                              
 
-                                <th>ID</th>
                                 <th>Referencia</th>
                                 <th>Codigo Barras</th>
                                 <th>Descripcion</th>
@@ -61,13 +66,16 @@
                                 <th>Tipo Activo</th>
                                 <th>Estado</th>
 
+                               
                             </tr>
-                        </tfoot> -->
+                        </tfoot>
                     </table>
 
                     <div class="modal-footer">
-                        <button id="botonActivo" name="botonActivo" type="button" class="btn btn-primary" >Seleccionar</button>
+                        <button id="botonActivo" name="botonCampo" type="button" class="btn btn-primary" >Seleccionar</button>
                     </div>
+
+                
 
                 </div>
             </div>
@@ -79,14 +87,9 @@
     $(document).ready( function () {
 
         
-        /*$('#tactivoSelect').DataTable({
-            "aProcessing": true,
-            "aServerSide": true,
-            "stateSave":true,
-            "ajax": "{!! URL::to ('/datosRolSelect')!!}",
-        });*/
+        
         var lastIdx = null;
-        var table = $('#tactivoSelect').DataTable( {
+        var table = $('#tactivoselect').DataTable( {
             "order": [[ 1, "asc" ]],
             "aProcessing": true,
             "aServerSide": true,
@@ -118,7 +121,7 @@
                     }
         });
          
-        $('a.toggle-vis').on( 'click', function (e) {
+          $('a.toggle-vis').on( 'click', function (e) {
             e.preventDefault();
      
             // Get the column API object
@@ -128,7 +131,7 @@
             column.visible( ! column.visible() );
         } );
 
-        $('#tactivoSelect tbody')
+        $('#tactivoselect tbody')
         .on( 'mouseover', 'td', function () {
             var colIdx = table.cell(this).index().column;
  
@@ -143,13 +146,15 @@
 
 
         // Setup - add a text input to each footer cell
-   /* $('#tactivoSelect tfoot th').each( function () {
-        var title = $('#tactivoSelect thead th').eq( $(this).index() ).text();
+    $('#tactivoselect tfoot th').each( function () {
+        if($(this).index()>0){
+        var title = $('#tactivoselect thead th').eq( $(this).index() ).text();
         $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
-    } );*/
+        }
+    } );
  
     // DataTable
-    var table = $('#tactivoSelect').DataTable();
+    var table = $('#tactivoselect').DataTable();
  
     // Apply the search
     table.columns().every( function () {
@@ -163,11 +168,19 @@
             }
         } );
     })
-     $('#tactivoSelect tbody').on( 'click', 'tr', function () {
+
+
+    $('#tactivoselect tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
+
+        var datos = table.rows('.selected').data();
+
+
     } );
  
-     $('#botonActivo').click(function() {
+    
+    
+    $('#botonActivo').click(function() {
         var datos = table.rows('.selected').data();
         
         for (var i = 0; i < datos.length; i++) 
@@ -181,9 +194,10 @@
         window.parent.$("#ModalActivo").modal("hide");
         } );
 
+
+
     
 });
     
 </script>
 
-@stop

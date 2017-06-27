@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SiSoft - Sistema Integrado de Salud Ocupacional</title>
+    <title>Scalia</title>
 
     <!-- Bootstrap Core CSS -->
     {!!Html::style('sb-admin/bower_components/metisMenu/dist/metisMenu.min.css'); !!}

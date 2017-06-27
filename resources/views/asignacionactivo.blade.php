@@ -1,98 +1,83 @@
-<?php 
-//print_r($idTercero);
-//print_r($nombreTercero);
-//return;
-           
-
-//return;
-
-?>
-<script>
-//var idTercero = '<?php //echo $idTercero;?>';
-var idTercero = '<?php echo (isset($idTercero) ? json_encode($idTercero) : "");?>';
-idTercero = (idTercero != '' ? JSON.parse(idTercero) : '');
-//var nombreTercero = '<?php //echo json_encode($nombreTercero);?>';
-//var Tercero = [idTercero,nombreTercero];
-
-
-</script>
-@include('alerts/request')
-
-@if(isset($rechazoactivo))
-  @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
-    {!!Form::model($rechazoactivo,['route'=>['rechazoactivo.destroy',$rechazoactivo->idRechazoActivo],'method'=>'DELETE'])!!}
-  @else
-    {!!Form::model($rechazoactivo,['route'=>['rechazoactivo.update',$rechazoactivo->idRechazoActivo],'method'=>'PUT'])!!}
-  @endif
-@else
-  {!!Form::open(['route'=>'rechazoactivo.store','method'=>'POST'])!!}
-@endif
-
 @extends('layouts.vista')
 @section('titulo')<br><h4 id="titulo"><center>ASIGNACION ACTIVO</center></h4>@stop
 @section('content')
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>ASIGNACION ACTIVO</title>
-
- <script>
- 
-//var responsable = '<?php //echo (isset($users) ? json_encode($users) : "");?>';
-  //responsable = (responsable != '' ? JSON.parse(responsable) : '');
 
 
- var movimientoactivodetalle="";
 
-var valorDetalle = [0,0,''];
-$(document).ready(function()
+<style type="text/css">
+.select
 {
 
-  detalle=new Atributos('detalle','contenedor-detalle','detalle-');
-  detalle.campoid = 'idTransaccionActivoCampoE';
-  detalle.campoEliminacion = 'encabezadoEliminar';
-  detalle.campos=['idAsignacionActivo', 'numeroAsignacionActivo', 'fechaHoraAsignacionActivo', 'TransaccionActivo_idTransaccionActivo', 'documentoInternoAsignacionActivo', 'Users_idCrea'];
-  detalle.etiqueta=['input','input','input','input','select'];
-  detalle.tipo=['','','','','',''];
-  detalle.estilo=['width:200px; height:35px;','width:200px; height:35px;','width:300px; height:35px;','width:200px; height:35px','width:300px; height:35px;'];
-  detalle.clase=['','','','','',''];
-  detalle.sololectura=[true,true,true,true,true];
-  detalle.completar=['off','off','off','off','off'];
-//var idTercero = '<?php //echo json_encode(@$idTercero);?>';
-var idTercero = '<?php echo $idTercero;?>';
-//idTercero = (idTercero != '' ? JSON.parse(idTercero) : '');
-var nombreTercero = '<?php echo $nombreTercero;?>';
-//nombreTercero = (nombreTercero != '' ? JSON.parse(nombreTercero) : '');
-//var nombreTercero = '<?php //echo json_encode(@$nombreTercero);?>';
-//var Tercero = [JSON.parse(idTercero),JSON.parse(nombreTercero)];
-var Tercero = [JSON.parse(idTercero),JSON.parse(nombreTercero)];
+  data-live-search="true"
+}
 
-console.log(Tercero);
-//var Tercero = [idTercero,nombreTercero];
-//alert()
-  //detalle.opciones = [[],[],[],[],[Tercero]]; 
-  //detalle.opciones = [[],[],[],[],[]];
-  //detalle.opciones = [[],[],[],[],[Tercero]];       
-  detalle.funciones=['','','','',''];
-detalle.opciones=[[],[],[],[],[Tercero]]
-//detalle.opciones=[[],[],[],[],[['M','F'] ,['Masculino','Femenino'] ]]
 
-  
+</style>
+<?php
 
-  for(var j=0; j < movimientoactivodetalle.length; j++)
+if (isset($asignacionactivo)) 
+{
+  $numero=$asignacionactivo->numeroAsignacionActivo;
+}
+
+else
+$numero='Automatico';
+
+
+$usercrea=\App\User::where('id','=',\Session::get('idUsuario'))->lists('name','id');
+$fechahora = Carbon\Carbon::now();
+
+$solicitante = DB::select(
+    'SELECT id as idUsuarioCrea, name as nombreUsuarioCrea
+   from movimientoactivo
+   inner join users
+   on movimientoactivo.Users_idCrea=users.id
+   where id= '.(isset($movimientoactivo) ? $movimientoactivo->Users_idCrea : \Session::get('idUsuario')));
+if(count($solicitante) == 0)
+{ 
+ /* $solicitante['idUsuarioCrea']=null;
+  $solicitante['nombreUsuarioCrea'] = null;*/
+  $solicitante['idUsuarioCrea']=\Session::get('idUsuario');
+  $solicitante['nombreUsuarioCrea'] = \Session::get('nombreUsuario');
+}
+else
+{
+  $solicitante = get_object_vars($solicitante[0]); 
+}
+
+
+?>
+@section('content')
+@include('alerts.request')
+  {!!Html::script('/js/select2.min.js');!!}
+
+{!!Html::script('js/movimientoactivo.js'); !!}
+{!!Html::script('js/dropzone.js'); !!}<!--Llamo al dropzone-->
+{!!Html::style('assets/dropzone/dist/min/dropzone.min.css'); !!}
+
+
+
+   
+<script>
+
+ function abrirModalMovimiento()
   {
-      detalle.agregarCampos(JSON.stringify(movimientoactivodetalle[j]),'L');
+      $('#ModalMovimiento').modal('show');
+
   }
 
-});
+function consultaractivos()
+{
+  $('#ModalActivo').modal('show');
+}
+
 
 function  abrirTransaccionActivo(id)
 {
   //alert('entra');
   if ($('#TransaccionActivo_idTransaccionActivo').val()=="")
   {
-    alert("Debe Seleccionar un Tipo de Documento");
+    alert("Debe Seleccionar un Tipo de Documento Referencia");
   }
   else
   {
@@ -102,7 +87,7 @@ function  abrirTransaccionActivo(id)
     // Abrir modal
     $("#ModalTransaccionActivo").modal('show');
 
-        
+           
     $('a.toggle-vis').on( 'click', function (e) 
     {
       e.preventDefault();
@@ -130,6 +115,14 @@ function  abrirTransaccionActivo(id)
     });
 
 
+  // Setup - add a text input to each footer cell
+    /* $('#tmovimientoactivoSelect tfoot th').each( function () 
+     {
+          var title = $('#tmovimientoactivoSelect thead th').eq( $(this).index() ).text();
+          $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
+      });*/
+   
+      // DataTable
     var table = $('#tmovimientoactivo').DataTable();
    
       // Apply the search
@@ -153,10 +146,8 @@ function  abrirTransaccionActivo(id)
       $(this).toggleClass('selected');
     });
    
-    $('#botonSeleccionar').click(function() 
+    $('#botonActivo').click(function() 
     {
-
-      
           var datos = table.rows('.selected').data();
           var docInterno= "";
           var idInterno= "";
@@ -164,154 +155,18 @@ function  abrirTransaccionActivo(id)
           {
             docInterno+=datos[i][1]+',';
             idInterno+=datos[i][0]+',';
-            var valoresD = new Array(0,datos[i][1],datos[i][2]);
-                detalle.agregarCampos(valoresD,'A');
-          window.parent.$("#ModalTransaccionActivo").modal("hide");
           }
 
           docInterno=docInterno.substring(0,docInterno.length-1);
           idInterno=idInterno.substring(0,idInterno.length-1);
           window.parent.$("#documentoInternoAsignacionActivo").val(docInterno);
 
-          var valoresD = new Array(0,datos[i][1],datos[i][2],0,0,0,0);
-                detalle.agregarCampos(valoresD,'A');
-          window.parent.$("#ModalTransaccionActivo").modal("hide");
-          window.parent.calcularTotales();
-
-    });
-
-
-  }
-}//fin function abrirTransaccionActivo
-
- function abrirModalMovimiento()
-  {
-      $('#ModalMovimiento').modal('show');
-
-  }
-
-    function  abrirTransaccionActivo1(id)
-{
-  
-  if ($('#TransaccionActivo_idTransaccionActivo').val()=="")
-  {
-    alert("Debe Seleccionar un Tipo de Documento");
-  }
-  else
-  {
-    //$('#ModalTransaccionActivo').modal('show');
-    var lastIdx = null;
-    $("#tmovimientoactivo").DataTable().ajax.url("http://"+location.host+"/datosMovimientoActivoSelect?id="+id).load();
-    // Abrir modal
-    $("#ModalTransaccionActivo").modal('show');
-
-   /* var table = $('#tmovimientoactivo').DataTable( 
-    {
-      "order": [[ 1, "asc" ]],
-      "aProcessing": true,
-      "aServerSide": true,
-      "stateSave":true,
-      "ajax": "{!! URL::to ('/datosTransaccionActivoSelect?id="+id+"')!!}",
-      "language": 
-      {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ning&uacute;n dato disponible en esta tabla",
-            "sInfo":           "Registros del _START_ al _END_ de un total de _TOTAL_ ",
-            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": 
-            {
-                "sFirst":    "Primero",
-                "sLast":     "&Uacute;ltimo",
-                "sNext":     "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": 
-            {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            }
-      }
-    });*/
-           
-   $('a.toggle-vis').on( 'click', function (e) {
-            e.preventDefault();
-     
-            // Get the column API object
-            var column = table.column( $(this).attr('data-column') );
-     
-            // Toggle the visibility
-            column.visible( ! column.visible() );
-        } );
-
-        $('#tmovimientoactivo tbody')
-        .on( 'mouseover', 'td', function () {
-            var colIdx = table.cell(this).index().column;
- 
-            if ( colIdx !== lastIdx ) {
-                $( table.cells().nodes() ).removeClass( 'highlight' );
-                $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
-            }
-        } )
-        .on( 'mouseleave', function () {
-            $( table.cells().nodes() ).removeClass( 'highlight' );
-        } );
-
-
-        // Setup - add a text input to each footer cell
-    $('#tmovimientoactivo tfoot th').each( function () {
-        var title = $('#tmovimientoactivo thead th').eq( $(this).index() ).text();
-        $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
-    } );
- 
-    // DataTable
-    var table = $('#tmovimientoactivo').DataTable();
- 
-    // Apply the search
-    table.columns().every( function () {
-        var that = this;
- 
-        $( 'input', this.footer() ).on( 'blur change', function () {
-            if ( that.search() !== this.value ) {
-                that
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    })
-     $('#tmovimientoactivo tbody').on( 'click', 'tr', function () {
-        $(this).toggleClass('selected');
-    } );
- 
-     $('#botonActivo').click(function() 
-     {
-        
-        var datos = table.rows('.selected').data();
-          var docInterno= "";
-          var idInterno= "";
-          for (var i = 0; i < datos.length; i++) 
-          {
-            docInterno+=datos[i][1]+',';
-            idInterno+=datos[i][0]+',';
-          }
-
-          docInterno=docInterno.substring(0,docInterno.length-1);
-          idInterno=idInterno.substring(0,idInterno.length-1);
-          window.parent.$("#documentoInternoMovimientoActivo").val(docInterno);
-
           var token = document.getElementById('token').value;
           $.ajax(
           {
               headers: {'X-CSRF-TOKEN': token},
               dataType: "json",
-              url:'/ConsultarPendientesMovimientoActivoDetalle',
+              url:'/ConsultarPendientesAsignacionActivoDetalle',
               data:{idMovimientoActivo: idInterno},
               type:  'get',
               beforeSend: function(){
@@ -319,12 +174,13 @@ function  abrirTransaccionActivo(id)
 
               success: function(data)
               {
+                alert(JSON.stringify(data));
               for (var i = 0; i < data.length; i++) 
               {
 
-              var valoresD = new Array(0,JSON.stringify(data[i]['nombreLocalizacionO']).replace(/"/g,""),JSON.stringify(data[i]['nombreLocalizacionD']).replace(/"/g,""),JSON.stringify(data[i]['Activo_idActivo']).replace(/"/g,""),JSON.stringify(data[i]['codigoActivo']).replace(/"/g,""),JSON.stringify(data[i]['serieActivo']).replace(/"/g,""),JSON.stringify(data[i]['nombreActivo']).replace(/"/g,""),JSON.stringify(data[i]['cantidadMovimientoActivoDetalle']).replace(/"/g,""),JSON.stringify(data[i]['observacionMovimientoActivoDetalle']).replace(/"/g,""),JSON.stringify(data[i]['MovimientoActivo_idMovimientoActivo']).replace(/"/g,""));
-               detalle.agregarCampos(valoresD,'A');
-                calcularTotales();
+              var valoresD = new Array(0,0,JSON.stringify(data[i]['idMovimientoActivo']).replace(/"/g,""),JSON.stringify(data[i]['Activo_idActivo']).replace(/"/g,""),JSON.stringify(data[i]['codigoActivo']).replace(/"/g,""),JSON.stringify(data[i]['serieActivo']).replace(/"/g,""),JSON.stringify(data[i]['nombreActivo']).replace(/"/g,""),JSON.stringify(data[i]['idLocalizacion']).replace(/"/g,""),JSON.stringify(data[i]['nombreLocalizacion']).replace(/"/g,""),0);
+                detalle.agregarCampos(valoresD,'A');
+                //calcularTotales();
 
               }
                 console.log(valoresD);
@@ -336,50 +192,108 @@ function  abrirTransaccionActivo(id)
               }
           })
 
-         
-
-    });
- 
-  }
-    //window.parent.$("#ModalTransaccionActivo").modal("hide");
+          window.parent.$("#ModalTransaccionActivo").modal("hide");
           //window.parent.calcularTotales();
 
+    });
+
+
+  }
 }//fin function abrirTransaccionActivo
 
 
 
 
+  
+  var asignacionactivodetalle = '<?php echo (isset($asignacionactivodetalle) ? json_encode($asignacionactivodetalle) : "");?>';
+  asignacionactivodetalle = (asignacionactivodetalle != '' ? JSON.parse(asignacionactivodetalle) : '');
+  //console.log(movimientoactivodetalle);*/
 
- </script>
+var movimientoactivodetalle="";
+
+
+
 
 
   
-</head>
-<body >
+var valorDetalle = [0,0,''];
+$(document).ready(function()
+{
+
+  detalle=new Atributos('detalle','contenedor-detalle','detalle-');
+  detalle.campoid = 'idAsignacionActivoDetalle';
+  detalle.campoEliminacion = 'detalleEliminar';
+  detalle.campos=['idAsignacionActivoDetalle', 'AsignacionActivo_idAsignacionActivo', 'MovimientoActivo_idMovimientoActivo', 'Activo_idActivo', 'codigoActivo','serieActivo','nombreActivo','idLocalizacion','nombreLocalizacion', 'Tercero_idResponsable'];
+  detalle.etiqueta=['input','input','input','input','input','input','input','input','input','select'];
+  detalle.tipo=['hidden','hidden','hidden','hidden','','','','hidden','',''];
+  detalle.estilo=['','','','','width:150px; height:26px;','width:200px; height:26px;','width:350px; height:26px;','','width:200px; height:26px','width:350px; height:35px;'];
+  detalle.clase=['','','','','','','','','','selectpicker'];
+  detalle.sololectura=[false,false,false,false,true,true,true,true,true,false];
+  detalle.completar=['off','off','off','off','off','off','off','off','off','off'];
+
+  var idTercero = '<?php echo $idTercero;?>';
+  var nombreTercero = '<?php echo $nombreTercero;?>';
+  var Tercero = [JSON.parse(idTercero),JSON.parse(nombreTercero)];
+  detalle.funciones=['','','','','','','','','',''];
+  detalle.opciones=[[],[],[],[],[],[],[],[],[],Tercero]
+  detalle.obligatorio=[[],[],[],[],[],[],[],[],[],true]
+
+
+  for(var j=0; j < asignacionactivodetalle.length; j++)
+  {
+      detalle.agregarCampos(JSON.stringify(asignacionactivodetalle[j]),'L');
+  }
+
+});
+
+
+
+
+</script>
+
+
+  @if(isset($asignacionactivo))
+    @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
+      {!!Form::model($asignacionactivo,['route'=>['asignacionactivo.destroy',@$asignacionactivo->idAsignacionActivo],'method'=>'DELETE'])!!}
+    @else
+      {!!Form::model($asignacionactivo,['route'=>['asignacionactivo.update',@$asignacionactivo->idAsignacionActivo],'method'=>'PUT'])!!}
+    @endif
+  @else
+    {!!Form::open(['route'=>'asignacionactivo.store','method'=>'POST'])!!}
+  @endif
+
+ 
+  <br><br><br><br>
+
+                     
+{!!Form::hidden('Users_idCrea',  @$solicitante['idUsuarioCrea'], array('id' => 'Users_idCrea'))!!}
+{!!Form::hidden('detalleEliminar', null, array('id' => 'detalleEliminar'))!!}
+
+
 
  <div class="container">
- 
+  <input type="hidden" id="token" value="{{csrf_token()}}"/>
 
     <div class="form-group">
   <div class="col-sm-6" position="left">
-    {!!Form::label('tipoNumeracionTransaccionActivo', 'N. Asignacion', array('class' => 'col-sm-6 control-label')) !!}
+    {!!Form::label('numeroAsignacionActivo', 'N. Asignacion', array('class' => 'col-sm-6 control-label')) !!}
     <div class="col-sm-6">
-     {!!Form::text('tipoNumeracionTransaccionActivo',null,['class' => 'form-control', 'style'=>'padding-left:2px;'])!!}
+    {!!Form::text('numeroAsignacionActivo',$numero,['readonly'=>'readonly','class'=>'form-control','placeholder'=>'Ingresa el número del Documento'])!!}
       </div>
       {!!Form::label('TransaccionActivo_idTransaccionActivo', 'Tipo Documento Referencia', array('class' => 'col-sm-6 control-label')) !!}
     <div class="col-sm-6">
       {!!Form::select('TransaccionActivo_idTransaccionActivo',@$transaccionactivo,null,['class'=>'form-control','placeholder'=>'Seleccione'])!!}
     </div>
-      {!!Form::label('TransaccionGrupo_idTransaccionGrupo', 'Usuario Asigna Transaccion', array('class' => 'col-sm-6 control-label')) !!} 
+      {!!Form::label('Users_nombreCrea', 'Usuario Asigna Transaccion', array('class' => 'col-sm-6 control-label')) !!} 
     <div class="col-sm-6" >
-     {!!Form::text('desdeTransaccionActivo',null,['class'=>'form-control','placeholder'=>''])!!}
+     {!!Form::text('Users_nombreCrea',@$solicitante['nombreUsuarioCrea'],['readonly'=>'readonly','class'=>'form-control','placeholder'=>''])!!}
     </div>
      
  </div>
   <div class="col-sm-6" position="right">
-     {!!Form::label('longitudTransaccionActivo', 'Fecha/Hora Elaboracion', array('class' => 'col-sm-6 control-label')) !!}
+     {!!Form::label('fechaHoraAsignacionActivo', 'Fecha/Hora Elaboracion', array('class' => 'col-sm-6 control-label')) !!}
      <div class="col-sm-6">
-       {!!Form::text('TransaccionActivo_idTransaccionActivo',@$transaccionactivo->longitudTransaccionActivo,['class'=>'form-control','placeholder'=>''])!!}
+       {!!Form::text('fechaHoraAsignacionActivo',$fechahora,['readonly'=>'readonly', 'class'=>'form-control','placeholder'=>''])!!}
      </div>
        {!!Form::label('documentoInternoAsignacionActivo', 'Documento Referencia', array('class' => 'col-sm-6 control-label')) !!}
      
@@ -407,14 +321,15 @@ function  abrirTransaccionActivo(id)
                 <div class="row show-grid">
                   <div class="col-md-1" style="width: 40px;height: 35px;" >
                    <span class="glyphicon glyphicon-minus" style="cursor:pointer;" onclick="detalle.agregarCampos(valorDetalle,'A')" ></span>
-                    <span class="glyphicon glyphicon-plus" onclick="abrirModalMovimiento();"></span> 
+                   <span class="glyphicon glyphicon-plus" onclick="abrirModalMovimiento();"></span>
+                     
 
                   </div>
-                  <div class="col-md-1" style="width: 200px;height: 35px;"><b>Referencia</b></div>
+                  <div class="col-md-1" style="width: 150px;height: 35px;"><b>Referencia</b></div>
                   <div class="col-md-1" style="width: 200px;height: 35px; "><b>Serie</b></div>
-                  <div class="col-md-1" style="width: 300px;height: 35px; "><b>Descripcion</b></div>
+                  <div class="col-md-1" style="width: 350px;height: 35px; "><b>Descripcion</b></div>
                   <div class="col-md-1" style="width: 200px;height: 35px; "><b>Localizacion</b></div>
-                  <div class="col-md-1" style="width: 300px;height: 35px; "><b>Responsable</b></div>
+                  <div class="col-md-1" style="width: 350px;height: 35px; "><b>Responsable</b></div>
 
                   <div id="contenedor-detalle"></div>
                 </div>      
@@ -422,9 +337,9 @@ function  abrirTransaccionActivo(id)
             </div>
           </fieldset>
 </div>
+         
 
-<center><br><br>
-@if(isset($rechazoactivo))
+@if(isset($asignacionactivo))
   @if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
     {!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
   @else
@@ -433,11 +348,31 @@ function  abrirTransaccionActivo(id)
 @else
    {!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
 @endif
-{!! Form::close() !!}  
-</center>        
+{!! Form::close() !!}
+
 </body>
 </html>
 @stop
+
+<div id="ModalMovimiento" class="modal fade" role="dialog" style="display: none;">
+  <div class="modal-dialog" style="width:70%;">
+    <div style="" class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Selecci&oacute;n de Campos</h4>
+      </div>
+        <div class="modal-body">
+          <?php 
+          echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/ActivoGridSelectAsignacionActivo"></iframe>'
+          ?>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <div id="ModalTransaccionActivo" class="modal fade" role="dialog" style="display:none;">
   <div class="modal-dialog" style="width:70%;">
     <div style="" class="modal-content">
@@ -476,6 +411,7 @@ function  abrirTransaccionActivo(id)
                           <li><a class="toggle-vis" data-column="2"><label>Estado</label></a></li>
                           <li><a class="toggle-vis" data-column="2"><label>Usuario Creador</label></a></li>
                           <li><a class="toggle-vis" data-column="2"><label>Usuario Aprobador</label></a></li>
+
                         </ul>
                     </div>
                     
@@ -507,13 +443,14 @@ function  abrirTransaccionActivo(id)
                                 <th>Usuario Creador</th>
                                 <th>Usuario Aprobador</th>
                                 
+                                
 
                             </tr>
                         </tfoot> 
                     </table>
 
                     <div class="modal-footer">
-                        <button id="botonSeleccionar" name="botonSeleccionar" type="button" class="btn btn-primary" >Seleccionar</button>
+                        <button id="botonActivo" name="botonActivo" type="button" class="btn btn-primary" >Seleccionar</button>
                     </div>
 
                 </div>
@@ -528,20 +465,11 @@ function  abrirTransaccionActivo(id)
 
 
 
-<div id="ModalMovimiento" class="modal fade" role="dialog" style="display: none;">
-  <div class="modal-dialog" style="width:70%;">
-    <div style="" class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Selecci&oacute;n de Campos</h4>
-      </div>
-        <div class="modal-body">
-          <?php 
-          echo '<iframe style="width:100%; height:400px; " id="campos" name="campos" src="http://'.$_SERVER["HTTP_HOST"].'/ActivoMovimientoDetalleSelect"></iframe>'
-          ?>
-        </div>
-    </div>
-  </div>
-</div>
+   
+
+
+
+
+
 
 

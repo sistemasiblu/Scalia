@@ -10,8 +10,16 @@
 {!!Form::model($tipoactivo,['route'=>['tipoactivo.update',$tipoactivo->idTipoActivo],'method'=>'PUT'])!!}
 @endif
 @else
-{!!Form::open(['route'=>'tipoactivo.store','method'=>'POST'])!!}
+{!!Form::open(['id'=>'TipoActivo','route'=>'tipoactivo.store','method'=>'POST'])!!}
 @endif
+
+
+
+
+ <script> 
+
+
+</script>
 <!DOCTYPE html>
 <html>
  <head>
@@ -26,8 +34,18 @@
 {!!Html::style('assets/bootstrap-v3.3.5/css/bootstrap-theme.min.css'); !!}
 {!!Html::script('assets/bootstrap-v3.3.5/js/bootstrap.min.js'); !!}    
 {!!Html::style('assets/font-awesome-v4.3.0/css/font-awesome.min.css'); !!}  
-    
+
+<!-- Librerías para el selector de colores (color Picker) -->
+{!! Html::style('assets/colorpicker/css/bootstrap-colorpicker.min.css'); !!}
+{!! Html::script('assets/colorpicker/js/bootstrap-colorpicker.js'); !!} 
+{!! Html::script('jquery-validation/dist\jquery.validate.min.js'); !!} 
+
+
+{!!Html::script('js/categoriaagenda.js');!!} 
+
+
 <script>
+
 //CONTENEDOR PESTAÑA 1
 var tipoactivocaracteristica = '<?php echo (isset($tipoactivo) ? json_encode($tipoactivo->tipoactivocaracteristica) : "");?>';
 tipoactivocaracteristica = (tipoactivocaracteristica != '' ? JSON.parse(tipoactivocaracteristica) : '');
@@ -47,10 +65,11 @@ $(document).ready(function()
     caracteristicaTipoActivo.etiqueta=['input','input'];
     caracteristicaTipoActivo.tipo=['hidden',''];
     caracteristicaTipoActivo.estilo=['','width:200px; height:35px;'];
-    caracteristicaTipoActivo.clase=['',''];
+    caracteristicaTipoActivo.clase=['','selector'];
     caracteristicaTipoActivo.sololectura=[false,false];
     caracteristicaTipoActivo.completar=['off','off'];
-    caracteristicaTipoActivo.funciones=['','',''];
+    caracteristicaTipoActivo.funciones=['',''];
+    caracteristicaTipoActivo.obligatorio=['',true];
     var idTipoActivo = '<?php echo isset($idTipoActivo) ? $idTipoActivo : "";?>';
     var nombreTipoActivo = '<?php echo isset($nombreTipoActivo) ? $nombreTipoActivo : "";?>';
 
@@ -71,13 +90,15 @@ $(document).ready(function()
     documentoTipoActivo.campoEliminacion = 'documentoEliminar';
     documentoTipoActivo.campos=['idTipoActivoDocumento','descripcionTipoActivoDocumento','tipoTipoActivoDocumento','vigenciaTipoActivoDocumento','costoTipoActivoDocumento'];
     documentoTipoActivo.etiqueta=['input','input','select','input','input'];
-    documentoTipoActivo.tipo=['hidden','','','','',''];
+    documentoTipoActivo.tipo=['hidden','','','',''];
     documentoTipoActivo.estilo=['', 'width:210px; height:35px;','width:100px; height:35px;','width:120px; height:35px;','width:80px; height:35px;'];
-    documentoTipoActivo.clase=['','','','','',''];
+    documentoTipoActivo.clase=['','','','',''];
     documentoTipoActivo.sololectura=[false,false,false,false,false];
     documentoTipoActivo.completar=['off','off','off','off','off'];
+    documentoTipoActivo.obligatorio=['',true,true,true,true];
     documentoTipoActivo.opciones = [[],[],[['Oem','Glp','Bsd','Documento'],['Oem','Glp','Bsd','Documento']],[],[]];      
-    documentoTipoActivo.funciones=['','',''];
+    //documentoTipoActivo.funciones=['','',''];
+  
 
     var idTipoActivo = '<?php echo isset($idTipoActivo) ? $idTipoActivo : "";?>';
     var nombreTipoActivo = '<?php echo isset($nombreTipoActivo) ? $nombreTipoActivo : "";?>';
@@ -95,19 +116,41 @@ $(document).ready(function()
 <body>
 <div class="container">
 <br><br><br><br>
+<div id="ok"></div>
   <div class='form-group'>
       {!!Form::label('codigoTipoActivo', 'Codigo', array('class' => 'col-sm-2 control-label')) !!}
       {!!Form::hidden('idTipoActivo', null, array('id' => 'idTipoActivo')) !!}
       {!!Form::hidden('documentoEliminar', null, array('id' => 'documentoEliminar')) !!}
       {!!Form::hidden('caracteristicaEliminar', null, array('id' => 'caracteristicaEliminar')) !!}
     <div class="col-sm-9">
-      {!!Form::text('codigoTipoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el codigo'])!!}
+      {!!Form::text('codigoTipoActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el codigo'])!!}
     </div>
       {!!Form::label('nombreTipoActivo', 'Nombre', array('class' => 'col-sm-2 control-label')) !!}
     <div class="col-sm-9">
-      {!!Form::text('nombreTipoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el nombre'])!!}
+      {!!Form::text('nombreTipoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el nombre','required'=>'required'])!!}
     </div>
-    <br><br><br><br><br>
+	
+	
+        <div class="form-group" id='test'>
+        {!!Form::label('colorCategoriaAgenda', 'Color', array('class' => 'col-sm-2 control-label')) !!}
+        <div class="col-sm-9">
+          <div class="input-group">
+            <span class="input-group-addon">
+                <i class="fa fa-sliders"></i>
+            </span>
+            <div id="colorFondoCategoriaAgenda" class="input-group colorpicker-component" style="width: 100%;">
+        {!!Form::hidden('colorCategoriaAgenda', (isset($categoriaagenda) ? $categoriaagenda->colorCategoriaAgenda : '#255986'), array('id' => 'colorCategoriaAgenda')) !!}
+        <span class="input-group-addon"><i style="width: 100%;"></i></span>
+      </div>
+            <script>
+          $(function () {
+              $('#colorFondoCategoriaAgenda').colorpicker();
+          });
+      </script>
+          </div>
+        </div>
+        </div>  
+    <br><br><br><br><br><br><br>
       <div id="pestanas">
         <ul id=lista class="nav nav-tabs">
         <li  class="active" id="pestana3"><a data-toggle="tab" href='#cpestana3'>Caracteristicas</a>
@@ -166,7 +209,7 @@ $(document).ready(function()
     {!!Form::submit('Modificar',["class"=>"btn btn-primary"])!!}
     @endif
     @else
-    {!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
+    {!!Form::submit('Adicionar',["id"=>"btn","class"=>"btn btn-primary"])!!}
     @endif
 
     {!! Form::close() !!}          

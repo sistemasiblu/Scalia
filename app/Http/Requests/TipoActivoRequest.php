@@ -23,11 +23,45 @@ class TipoActivoRequest extends Request
      */
     public function rules()
     {
-        return 
-        [
-        "codigoTipoActivo" => "required|string|max:20|unique:tipoactivo,codigoTipoActivo,".$this->get('idTipoActivo') .",idTipoActivo",
-            "nombreTipoActivo" => "required|string|max:80"
-            //
-        ];
+
+    //$request = $this->instance()->all();
+    //$rules = [];
+    //$caracteristicas = $request['nombreTipoActivoCaracteristica'];
+    $caracteristica_rules = 'required|max:10';
+    //$documentos = $request['descripcionTipoActivoDocumento'];
+    $documento_rules = 'required|max:10';
+
+
+$rules = [
+    'CodigoTipoActivo' => 'required|max:5',
+  ];
+
+if($this->request->get('nombreTipoActivoCaracteristica')!="")
+{
+  foreach($this->request->get('nombreTipoActivoCaracteristica') as $key => $val)
+  {
+    $rules['nombreTipoActivoCaracteristica.'.$key] = 'required|max:10';
+  }
+
+}
+
+  return $rules;
+
+
+
+
+       
     }
+
+
+   public function messages()
+{
+  $messages = [];
+  foreach($this->request->get('nombreTipoActivoCaracteristica') as $key => $val)
+  {
+    $messages['nombreTipoActivoCaracteristica.'.$key.'.max'] = 'El campo nombre caracterisitica '.$key.' es requerido';
+  }
+  return $messages;
+}
+
 }

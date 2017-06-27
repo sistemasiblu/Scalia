@@ -71,6 +71,7 @@ for($i = 0; $i < count($campos); $i++)
 //print_r($datos);
 ?>
 
+{!!Html::script('js/grid.js'); !!}
 
 @extends('layouts.grid')
 @section('titulo')<h3 id="titulo"><center><?php 
@@ -146,15 +147,29 @@ var valormovimiento = [0,0,''];
         location.reload();
     }
 
- 
+    var id = "<?php echo $id;?>";
+
+    var camposBase = "<?php echo $camposBase;?>";
+    var camposGrid = "<?php echo $camposGrid;?>";
+    var lastIdx = null;
+    var modificar = '<?php echo (isset($dato["modificarTransaccionRol"]) ? $dato["modificarTransaccionRol"] : 0);?>';
+    var eliminar = '<?php echo (isset($dato["anularTransaccionRol"]) ? $dato["anularTransaccionRol"] : 0);?>';
+    var consultar = '<?php echo (isset($dato["consultarTransaccionRol"]) ? $dato["consultarTransaccionRol"] : 0);?>';
+    var aprobar = '<?php echo (isset($dato["autorizarTransaccionRol"]) ? $dato["autorizarTransaccionRol"] : 0);?>';
+    var TipoEstado = '<?php echo $TipoEstado;?>';
     var id ="<?php echo $id;?>";
     var modificar = "<?php echo (isset($dato['modificarTransaccionRol']) ? $dato['modificarTransaccionRol'] : 0);?>";
     var eliminar = "<?php echo (isset($dato['anularTransaccionRol']) ? $dato['anularTransaccionRol'] : 0);?>";
     var consultar = "<?php echo (isset($dato['consultarTransaccionRol']) ? $dato['consultarTransaccionRol'] : 0);?>";
     var aprobar = "<?php echo (isset($dato['autorizarTransaccionRol']) ? $dato['autorizarTransaccionRol'] : 0);?>";
-   /* $(document).ready( function () {
-        configurarGrid('tmovimientoactivo',"{!! URL::to ('/datosMovimientoActivo?idTransaccionActivo="+id+"&TipoEstado="+TipoEstado+"&modificar="+modificar+"&eliminar="+eliminar+"&consultar="+consultar+"&aprobar="+aprobar+"')!!}");
-    });*/
+    
+    $(document).ready( function () 
+    {
+     
+     configurarGrid('tmovimientoactivo',"{!! URL::to ('/datosMovimientoActivo?idTransaccionActivo="+id+"&TipoEstado="+TipoEstado+"&modificar="+modificar+"&eliminar="+eliminar+"&consultar="+consultar+"&aprobar="+aprobar+"')!!}");
+
+    });
+
 </script>
 
 
@@ -238,134 +253,7 @@ var valormovimiento = [0,0,''];
 
 
 
-<script type="text/javascript">
 
-
-
-
-
-    $(document).ready( function () {
-        var id = "<?php echo $id;?>";
-
-        var camposBase = "<?php echo $camposBase;?>";
-        var camposGrid = "<?php echo $camposGrid;?>";
-
-        var lastIdx = null;
-        
-        var modificar = '<?php echo (isset($dato["modificarTransaccionRol"]) ? $dato["modificarTransaccionRol"] : 0);?>';
-        var eliminar = '<?php echo (isset($dato["anularTransaccionRol"]) ? $dato["anularTransaccionRol"] : 0);?>';
-        var consultar = '<?php echo (isset($dato["consultarTransaccionRol"]) ? $dato["consultarTransaccionRol"] : 0);?>';
-        var aprobar = '<?php echo (isset($dato["autorizarTransaccionRol"]) ? $dato["autorizarTransaccionRol"] : 0);?>';
-        var TipoEstado = '<?php echo $TipoEstado;?>';
-
-
-        var table = $('#tmovimientoactivo').DataTable( {
-            "order": [[ 2, "desc" ]],
-            "aProcessing": true,
-
-            "aServerSide": true,
-            "stateSave":true,
-             dom: 'Bfrtip',
-           /* buttons: [
-        'excel', 'print'
-    ],*/
-  /* "buttons": [
-       { "extend": 'excel', "text":'Exportar',"className": 'btn-primary' }
-   ],*/
-   "buttons": [
-       { "extend": 'excel', "text":' <i style="width:20px;" class="fa fa-file-text" aria-hidden="true"></i>',"className": 'btn-primary',
-
-
-        },
-        {
-            "extend": 'pdf', "text":' <i style="width:20px;" class="fa fa-file-pdf-o" aria-hidden="true"></i>',"className": 'btn-primary'
-        }
-
-   ],
- /*  <span class="glyphicons glyphicons-download-alt"></span>
-<i style="width:20px;" class="fa-file-text" aria-hidden="true"></i>*/
-            "ajax": "{!! URL::to ('/datosMovimientoActivo?idTransaccionActivo="+id+"&TipoEstado="+TipoEstado+"&modificar="+modificar+"&eliminar="+eliminar+"&consultar="+consultar+"&aprobar="+aprobar+"')!!}",
-            "language": {
-                        "sProcessing":     "Procesando...",
-                        "sLengthMenu":     "Mostrar _MENU_ registros",
-                        "sZeroRecords":    "No se encontraron resultados",
-                        "sEmptyTable":     "Ning&uacute;n dato disponible en esta tabla",
-                        "sInfo":           "Registros del _START_ al _END_ de un total de _TOTAL_ ",
-                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                        "sInfoPostFix":    "",
-                        "sSearch":         "Buscar:",
-                        "sUrl":            "",
-                        "sInfoThousands":  ",",
-                        "sLoadingRecords": "Cargando...",
-                        "oPaginate": {
-                            "sFirst":    "Primero",
-                            "sLast":     "&Uacute;ltimo",
-                            "sNext":     "Siguiente",
-                            "sPrevious": "Anterior"
-                        },
-                        "oAria": {
-                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                        }
-                    }
-        });
-         
-
-        
-        $('a.toggle-vis').on( 'click', function (e) {
-            e.preventDefault();
-     
-            // Get the column API object
-            var column = table.column( $(this).attr('data-column') );
-     
-            // Toggle the visibility
-            column.visible( ! column.visible() );
-        } );
-
-        $('#tmovimientoactivo tbody')
-        .on( 'mouseover', 'td', function () {
-            var colIdx = table.cell(this).index().column;
- 
-            if ( colIdx !== lastIdx ) {
-                $( table.cells().nodes() ).removeClass( 'highlight' );
-                $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
-            }
-        } )
-        .on( 'mouseleave', function () {
-            $( table.cells().nodes() ).removeClass( 'highlight' );
-        } );
-
-
-        // Setup - add a text input to each footer cell
-    $('#tmovimientoactivo tfoot th').each( function () {
-        if($(this).index()>0){
-        var title = $('#tmovimientoactivo thead th').eq( $(this).index() ).text();
-        $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
-        }
-    } );
- 
-    // DataTable
-    var table = $('#tmovimientoactivo').DataTable();
- 
-    // Apply the search
-    table.columns().every( function () {
-        var that = this;
- 
-        $( 'input', this.footer() ).on( 'blur change', function () {
-            if ( that.search() !== this.value ) {
-                that
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    })
-
-    
-});
-    
-    
-</script>
 <input type="hidden" id="token" value="{{csrf_token()}}"/> 
 
 @stop

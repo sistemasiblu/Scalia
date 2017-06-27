@@ -1,12 +1,13 @@
 function abreMenu(numeroMenu, total)
 {
-	total = Math.ceil(total/4) * 100;
-
-	
+	//total = Math.ceil(total/4) * 100;
+   
 	$('#arrow'+numeroMenu).slideToggle('slow');
 	$('#gridbox'+numeroMenu).slideToggle('slow',function(){
 	$('ul').animate({marginTop:'0'});
-	$('#gridbox'+numeroMenu).animate({height: total+'px'});
+	//$('#gridbox'+numeroMenu).animate({height: total+'px'});
+    $('#gridbox'+numeroMenu).animate({height: 'auto;'});
+
 	});
 
 	if ($("#estadomenu").val() == 1)

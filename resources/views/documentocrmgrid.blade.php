@@ -1,3 +1,6 @@
+<?php 
+
+?>
 @extends('layouts.grid')
 @section('titulo')<h3 id="titulo"><center>Documentos de CRM</center></h3>@stop
 @section('content')

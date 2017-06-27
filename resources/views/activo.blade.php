@@ -198,6 +198,8 @@ $(document).ready(function()
   caracteristicaactivo.sololectura=[false,false,true,false];
   caracteristicaactivo.completar=['off','off','off','off'];
   caracteristicaactivo.funciones=['','','',''];
+  caracteristicaactivo.obligatorio=['','','',true];
+
 
   var idActivo = '<?php echo isset($idActivo) ? $idActivo : "";?>';
   var nombreActivo = '<?php echo isset($nombreActivo) ? $nombreActivo : "";?>';
@@ -231,6 +233,8 @@ $(document).ready(function()
 
   documentoactivo.opciones = [[],[],[],[],[],[],[['Oem','Glp','Bsd','Documento'],['Oem','Glp','Bsd','Documento']],[],[]];      
   documentoactivo.funciones=['','','','','','','','',''];
+  documentoactivo.obligatorio=['','','',true,true,true,'',true,''];
+
 
   var idActivo = '<?php echo isset($idActivo) ? $idActivo : "";?>';
   var nombreActivo = '<?php echo isset($nombreActivo) ? $nombreActivo : "";?>';
@@ -313,7 +317,7 @@ $(document).ready(function()
   <div class="col-sm-6" position="left">
     {!!Form::label('codigoActivo', 'Codigo', array('class' => 'col-sm-4 control-label')) !!}
     <div class="col-sm-6">
-      {!!Form::text('codigoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el codigo'])!!}
+      {!!Form::text('codigoActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el codigo'])!!}
       {!!Form::hidden('idActivo', null, array('id' => 'idActivo')) !!}
       {!!Form::hidden('idTipoActivo', null, array('id' => 'idTipoActivo')) !!}
       {!!Form::hidden('Activo_idActivoParte', null, array('id' => 'Activo_idActivoParte')) !!}
@@ -326,26 +330,26 @@ $(document).ready(function()
     </div>
       {!!Form::label('nombreActivo', 'Nombre', array('class' => 'col-sm-4 control-label')) !!}
     <div class="col-sm-6">
-      {!!Form::text('nombreActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el nombre'])!!}
+      {!!Form::text('nombreActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el nombre'])!!}
     </div>
       {!!Form::label('TipoActivo_idTipoActivo', 'Tipo de Activo', array('class' => 'col-sm-4 control-label')) !!} 
     <div class="col-sm-6" >
-     {!!Form::select('TipoActivo_idTipoActivo', @$tipoactivo, @$activo->TipoActivo_idTipoActivo,['class' => 'form-control', 'id'=>'TipoActivo_idTipoActivo','onchange'=>'llamarCaracteristicas(this.value);llamarDocumentos(this.value);','onready'=>'llamarCaracteristicas(this.value);llamarDocumentos(this.value);'])!!}
+     {!!Form::select('TipoActivo_idTipoActivo', @$tipoactivo, @$activo->TipoActivo_idTipoActivo,['required'=>'required','placeholder'=>'Seleccione','class' => 'form-control', 'id'=>'TipoActivo_idTipoActivo','onchange'=>'llamarCaracteristicas(this.value);llamarDocumentos(this.value);','onready'=>'llamarCaracteristicas(this.value);llamarDocumentos(this.value);'])!!}
     </div>
  </div>
      <input type="hidden" id="token" value="{{csrf_token()}}"/>
   <div class="col-sm-6" position="right">
      {!!Form::label('codigobarraActivo', 'Codigo de Barras', array('class' => 'col-sm-4 control-label')) !!}
      <div class="col-sm-6">
-       {!!Form::text('codigobarraActivo',@$activo->codigobarraActivo,['class'=>'form-control','placeholder'=>'Ingresa el codigo de Barras'])!!}
+       {!!Form::text('codigobarraActivo',@$activo->codigobarraActivo,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el codigo de Barras'])!!}
      </div>
        {!!Form::label('estadoActivo', 'Estado', array('class' => 'col-sm-4 control-label')) !!}
      <div class="col-sm-6">
-       {!!Form::select('estadoActivo',['En uso'=>'En uso', 'Disponible'=>'Disponible'],@$activo->estadoActivo,['class' => 'form-control', 'style'=>'padding-left:2px;'])!!}
+       {!!Form::select('estadoActivo',['En uso'=>'En uso', 'Disponible'=>'Disponible'],@$activo->estadoActivo,['required'=>'required','placeholder'=>'Seleccione','class' => 'form-control', 'style'=>'padding-left:2px;'])!!}
      </div>
        {!!Form::label('clasificacionActivo', 'Clasificacion', array('class' => 'col-sm-4 control-label')) !!}
      <div class="col-sm-6" >
-       {!!Form::select('clasificacionActivo',['Activo'=>'Activo','Parte'=>'Parte','Componente'=>'Componente','Consumible'=>'Consumible'],null,['class' => 'form-control'])!!}
+       {!!Form::select('clasificacionActivo',['Activo'=>'Activo','Parte'=>'Parte','Componente'=>'Componente','Consumible'=>'Consumible'],null,['placeholder'=>'Seleccione','required'=>'required','class' => 'form-control'])!!}
      </div>
   </div>
 </div>
@@ -377,19 +381,19 @@ $(document).ready(function()
       <div class="col-sm-6">
         {!!Form::label('marcaActivo', 'Marca', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-9">
-          {!!Form::text('marcaActivo',null,['class'=>'form-control','placeholder'=>'Ingresa la Marca del Activo'])!!}
+          {!!Form::text('marcaActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa la Marca del Activo'])!!}
         </div>
           {!!Form::label('serieActivo', 'Serie', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-9">
-          {!!Form::text('serieActivo',null,['class'=>'form-control','placeholder'=>'Ingresa la serie'])!!}
+          {!!Form::text('serieActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa la serie'])!!}
         </div>
           {!!Form::label('pesoActivo', 'Peso', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-9">
-          {!!Form::text('pesoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el peso'])!!}
+          {!!Form::text('pesoActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el peso'])!!}
         </div>
           {!!Form::label('altoActivo', 'Alto', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-9">
-          {!!Form::text('altoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el alto'])!!}
+          {!!Form::text('altoActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el alto'])!!}
         </div>
           {!!Form::label('anchoActivo', 'Ancho', array('class' => 'col-sm-2 control-label')) !!}
         <div class="col-sm-9">
@@ -399,15 +403,15 @@ $(document).ready(function()
         <div class="col-sm-6">
             {!!Form::label('largoActivo', 'Largo', array('class' => 'col-sm-2 control-label')) !!}
           <div class="col-sm-9">
-            {!!Form::text('largoActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el largo'])!!}
+            {!!Form::text('largoActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el largo'])!!}
           </div>
             {!!Form::label('modeloActivo', 'Modelo', array('class' => 'col-sm-2 control-label')) !!}
           <div class="col-sm-9">
-            {!!Form::text('modeloActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el modelo'])!!}
+            {!!Form::text('modeloActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el modelo'])!!}
           </div>
           {!!Form::label('volumenActivo', 'Volumen', array('class' => 'col-sm-2 control-label')) !!}
           <div class="col-sm-9">
-           {!!Form::text('volumenActivo',null,['class'=>'form-control','placeholder'=>'Ingresa el volumen'])!!}
+           {!!Form::text('volumenActivo',null,['required'=>'required','class'=>'form-control','placeholder'=>'Ingresa el volumen'])!!}
           </div>
         </div>
 

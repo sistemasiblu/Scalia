@@ -38,7 +38,7 @@
                 : '';
 
     $campos = DB::select(
-    'SELECT codigoDocumentoCRM, nombreDocumentoCRM, nombreCampoCRM,descripcionCampoCRM, 
+    'SELECT codigoDocumentoCRM, nombreDocumentoCRM, nombreCampoCRM,descripcionCampoCRM, tipoCampoCRM,
             mostrarGridDocumentoCRMCampo, relacionTablaCampoCRM, relacionNombreCampoCRM, relacionAliasCampoCRM
     FROM documentocrm
     left join documentocrmcampo
@@ -47,7 +47,7 @@
     on documentocrmcampo.CampoCRM_idCampoCRM = campocrm.idCampoCRM
     where   documentocrm.idDocumentoCRM = '.$id.' and
             relacionTablaCampoCRM != "" and 
-            mostrarGridDocumentoCRMCampo = 1');
+            mostrarGridDocumentoCRMCampo = 1 and tipoCampoCRM="campo"');
 
 $camposGrid = 'IF((fechaVencimientoMovimientoCRM != "0000-00-00 00:00:00" and tipoEstadoCRM NOT IN ("Exitoso","Fallido","Cancelado")), DATEDIFF(fechaVencimientoMovimientoCRM, CURDATE()), 3) as diasFaltantes, detallesMovimientoCRM, idMovimientoCRM, numeroMovimientoCRM, asuntoMovimientoCRM, IF((tipoEstadoCRM NOT IN ("Exitoso","Fallido","Cancelado")),DATEDIFF(CURDATE(), fechaSolicitudMovimientoCRM), diasRealesSolucionMovimientoCRM) as diasProceso';
 $camposBase = 'diasFaltantes, idMovimientoCRM,numeroMovimientoCRM,asuntoMovimientoCRM, diasProceso';
@@ -96,7 +96,7 @@ for($i = 0; $i < count($campos); $i++)
             clasificacioncrm ON movimientocrm.ClasificacionCRM_idClasificacionCRM = clasificacioncrm.idClasificacionCRM
           LEFT JOIN
             clasificacioncrmdetalle ON movimientocrm.ClasificacionCRMDetalle_idClasificacionCRMDetalle = clasificacioncrmdetalle.idClasificacionCRMDetalle
-        Where   idDocumentoCRM = '.$id.  ' and 
+        Where  idDocumentoCRM = '.$id.  ' and 
                 movimientocrm.Compania_idCompania = '.\Session::get('idCompania'). ' and 
                 
                 ((movimientocrm.Tercero_idSolicitante = '.\Session::get('idTercero'). ' or 

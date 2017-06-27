@@ -1,14 +1,25 @@
 function configurarGrid(idTabla, rutaAjax)
 { 
 
-       var table = $('#'+idTabla).DataTable( {
+        var table = $('#'+idTabla).DataTable( {
+            "order": [[ 2, "desc" ]],
             "aProcessing": true,
             "aServerSide": true,
-            /*scrollY:170,*/
-            dom: 'Bfrtip',
-            buttons: [
-        'copy', 'excel', 'pdf'
-    ],
+            "stateSave":true,
+            /*fixedHeader:
+            {
+            header: true,
+            footer: true
+            },*/
+            "dom": 'Blfrtip',
+            "buttons": 
+            [
+                { "extend": 'excel', "text":' <i class="fa fa-download" aria-hidden="true"></i>',"className": 'btn-primary',
+
+                }
+
+            ],
+            "lengthMenu": [ 10, 25, 50,100,200] ,
             "ajax": rutaAjax, 
             "language": {
                         "sProcessing":     "Procesando...",
@@ -35,11 +46,8 @@ function configurarGrid(idTabla, rutaAjax)
                         }
                     }
         });
-
-       
-    //$('#tabel_daftar_all').dataTable().rowGrouping();
          
-
+      //new $.fn.DataTable.FixedHeader( table );
         
         $('a.toggle-vis').on( 'click', function (e) {
             e.preventDefault();
@@ -122,8 +130,3 @@ function recargaPagina()
 {
     location.reload();
 }
-
-$(document).ready(function() {
-    
-    new $.fn.dataTable.FixedHeader( table );
-} );

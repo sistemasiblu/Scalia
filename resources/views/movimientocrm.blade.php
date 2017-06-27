@@ -1,6 +1,9 @@
 <?php 
 //print_r(@$nota);
-/*return;*/
+//return;
+  
+
+
 $idEstadoDefault = null;
 $nombreEstadoDefault = '';
 foreach ($estado as $key => $value) {
@@ -26,6 +29,8 @@ function mostrarCampo($arrayCampos, $campo, $rolUsuario, $atributo)
 	}
 	return $sololectura;
 }	
+
+
 
 // establecemos el SUB-ROL (solicitante, asesor o Aprobador) del tercero loqueado
 // si es un documento nuevo e ingresó es porque es Solicitante pero en los permisos puede tener opcion de Aprobador
@@ -70,6 +75,29 @@ else
 	}
 }
 
+if(isset($estadocrm))
+{
+	// y es APROBADOR
+	if($rolUsuario == 'solicitante' and @$estadocrm!='Nuevo' )
+	{
+		/*$readonly= 'si';
+		echo $readonly;
+		return;*/
+	}
+
+	else
+	{
+		$readonly= '';
+		/*echo $rolUsuario;
+		echo $estadocrm;
+		echo "no";
+		return;*/
+	}
+	
+}
+
+/*echo $readonly;
+return;*/
 //****************************
 // CONSULTAMOS EL TERCERO
 // PARA SABER SI ES SOLICITANTE
@@ -182,6 +210,13 @@ $fechahora = Carbon\Carbon::now();
 
 
 <script>
+
+function deshabilitar(nombre)
+{
+//$( "#"+nombre ).prop( "disabled", true );
+$("#"+nombre ).hide();
+
+}
 	
 	var movimientoCRMAsistentes = '<?php echo (isset($movimientocrm) ? json_encode($movimientocrm->movimientoCRMAsistentes) : "");?>';
 	movimientoCRMAsistentes = (movimientoCRMAsistentes != '' ? JSON.parse(movimientoCRMAsistentes) : '');
@@ -196,12 +231,8 @@ $fechahora = Carbon\Carbon::now();
 	var valorArchivo = [0,'','',''];
 
 var notas = '<?php echo (isset($nota) ? json_encode($nota) : "");?>';
-    notas = (notas != '' ? JSON.parse(notas) : '');
+notas = (notas != '' ? JSON.parse(notas) : '');
 
-
-
-
-    console.log(notas);
  var valorNota = 
  [
     0,
@@ -209,7 +240,7 @@ var notas = '<?php echo (isset($nota) ? json_encode($nota) : "");?>';
     "<?php echo \Session::get("nombreUsuario");?>",
     "<?php echo date('Y-m-d H:i:s');?>",
     ''
- ]
+ ];
 
 	
 
@@ -285,7 +316,7 @@ $(document).ready(function(){
 
 
 
-				for(var j=0, k = movimientocrmvacante.length; j < k; j++)
+		for(var j=0, k = movimientocrmvacante.length; j < k; j++)
 		{
 			documentocrmcargo.agregarCampos(JSON.stringify(movimientocrmvacante[j]),'L');
 			
@@ -343,7 +374,11 @@ $(document).ready(function(){
 					              	<span class="input-group-addon">
 					                	<i class="fa fa-pencil-square-o"></i>
 					              	</span>
-									{!!Form::text('asuntoMovimientoCRM',null,['class'=>'form-control','placeholder'=>'Ingresa el asunto del caso'])!!}
+					              
+									
+								  
+								  {!!Form::text('asuntoMovimientoCRM',null,['class'=>'form-control','placeholder'=>'Ingresa el asunto del caso'])!!}
+								 
 					    		</div>
 					    	</div>
 					    </div>
@@ -759,7 +794,13 @@ $(document).ready(function(){
 					            <div class="panel-body">
 					                
 									<div class="col-sm-12">
-							              {!!Form::textarea('detallesMovimientoCRM',null,['class'=>'ckeditor','placeholder'=>'Ingresa los detalles del documento', mostrarCampo($arrayCampos, 'detallesMovimientoCRM', $rolUsuario,'select')])!!}
+							        
+							        @if(isset($estadocrm) and @$rolUsuario == 'solicitante' and @$estadocrm!='Nuevo' )
+					              		{!!Form::textarea('detallesMovimientoCRM',null,['readonly'=>'readonly','class'=>'ckeditor','placeholder'=>'Ingresa los detalles del documento', mostrarCampo($arrayCampos, 'detallesMovimientoCRM', $rolUsuario,'select')])!!}
+					              	@else
+
+							            {!!Form::textarea('detallesMovimientoCRM',null,['class'=>'ckeditor','placeholder'=>'Ingresa los detalles del documento', mostrarCampo($arrayCampos, 'detallesMovimientoCRM', $rolUsuario,'select')])!!}
+							        @endif
 									</div>
 
 					            </div>
@@ -885,7 +926,9 @@ $(document).ready(function(){
 									                                </div>
 									                            </div>
 									                        </div>
-									                        <a target="_blank" href="javascript:eliminarDiv('.$archivoS['idMovimientoCRMArchivo'].');">
+									                        
+
+									                        <a target="_blank"  '.((@$rolUsuario == 'solicitante' and @$estadocrm!='Nuevo' )?'' :'href="javascript:eliminarDiv('.$archivoS['idMovimientoCRMArchivo'].');"').'>
 									                            <div class="panel-footer">
 									                                <span class="pull-left">Eliminar Documento</span>
 									                                <span class="pull-right"><i class="fa fa-times"></i></span>
@@ -950,7 +993,7 @@ $(document).ready(function(){
 				@if(isset($movimientocrm))
 					{!!Form::submit(((isset($_GET['accion']) and $_GET['accion'] == 'eliminar') ? 'Eliminar' : 'Modificar'),["class"=>"btn btn-primary"])!!}
 				@else
-  					{!!Form::submit('Adicionar',["class"=>"btn btn-primary"])!!}
+  					{!!Form::submit('Adicionar',['id'=>'Adicionar','onclick'=>'deshabilitar(this.id);',"class"=>"btn btn-primary"])!!}
  				@endif
 		</div>
 	{!!Form::close()!!}	

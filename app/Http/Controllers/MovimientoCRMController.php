@@ -345,8 +345,10 @@ class MovimientoCRMController extends Controller
             $idDocumentoCRM= $_GET['idDocumentoCRM'];
             
             $formatoHTML = $this->generarHTMLFormato($id, $idDocumentoCRM);
+
+           
             
-            return view('formatos.formatomovimientocrm',['movimientocrm'=>$formatoHTML], compact('idDocumentoCRM'));
+            return view('formatos.formatomovimientocrm',['movimientocrm'=>$formatoHTML], compact('idDocumentoCRM','tablasgrafico'));
         }
     
         if(isset($_GET['accion']) and $_GET['accion'] == 'dashboard')

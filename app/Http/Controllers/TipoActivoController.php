@@ -37,7 +37,7 @@ class TipoActivoController extends Controller
      */
     public function store(TipoActivoRequest $request)
     {
-
+       
         \App\TipoActivo::create(
         [
             'codigoTipoActivo'=>$request['codigoTipoActivo'],
@@ -69,7 +69,7 @@ class TipoActivoController extends Controller
             ]); 
 
         }
-        return Redirect('/tipoactivo');
+        return redirect('/tipoactivo');
     }
 
     /**

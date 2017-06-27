@@ -18,6 +18,12 @@ Route::resource('rechazoactivo','RechazoActivoController');
 Route::resource('asignacionactivo','AsignacionActivoController');
 Route::resource('frecuenciamedicion','FrecuenciaMedicionController');
 Route::resource('protocolomantenimiento','ProtocoloMantenimientoController');
+Route::resource('programacionmantenimiento','ProgramacionMantenimientoController');
+Route::resource('agenda','AgendaController');
+Route::resource('agendapermiso','AgendaPermisoController');
+Route::resource('ordenmantenimiento','OrdenMantenimientoController');
+
+
 
 Route::group(['middleware' => 'auth'], function () 
 {
@@ -28,11 +34,16 @@ Route::get('plan', function()
 {
     return view('planmantenimiento1');
 });
+
 Route::get('datosTipoAccion', function()
 {
     include public_path().'/ajax/datosTipoAccion.php';
 });
 
+Route::get('datosProgramacionMantenimiento', function()
+{
+    include public_path().'/ajax/datosProgramacionMantenimiento.php';
+});
 Route::get('datosActivoMovimientoDetalle', function()
 {
     include public_path().'/ajax/datosActivoMovimientoDetalle.php';
@@ -124,6 +135,18 @@ Route::get('ConsultarPendientesMovimientoActivoDetalle', function()
 
 });
 
+Route::get('ConsultarPendientesAsignacionActivoDetalle', function()
+{
+    include public_path().'/ajax/ConsultarPendientesAsignacionActivoDetalle.php';
+
+});
+
+Route::get('AgregarPendientesAsignacionActivoDetalle', function()
+{
+    include public_path().'/ajax/AgregarPendientesAsignacionActivoDetalle.php';
+
+});
+
 Route::get('datosTransaccionActivo', function()
 {
     include public_path().'/ajax/datosTransaccionActivo.php';
@@ -187,6 +210,12 @@ Route::get('ActivoGridSelect', function()
     
 });
 
+Route::get('ActivoGridSelectAsignacionActivo', function()
+{
+    return view('ActivoGridSelectAsignacionActivo');
+    
+});
+
 Route::get('TransaccionActivoGridSelect', function()
 {
     return view('TransaccionActivoGridSelect');
@@ -221,6 +250,12 @@ Route::get('CamposTransaccionEncabezado', function()
     include public_path().'/ajax/datosCamposTransaccionEncabezado.php';
 
 });
+
+Route::get('datosOrdenMantenimiento', function()
+{
+    include public_path().'/ajax/datosOrdenMantenimiento.php';
+});
+
 Route::get('mostrarcomponentesgridselect', function()
 {
     return view('mostrarcomponentesgridselect');
@@ -259,6 +294,8 @@ Route::get('AprobacionActivos','MovimientoActivoController@AprobacionActivos');
 Route::get('VerificacionComponentes','MovimientoActivoController@VerificacionComponentes');
 Route::get('ActualizarMovimientoActivo','MovimientoActivoController@ActualizarMovimientoActivo');
 Route::get('AfectarInventario','MovimientoActivoController@AfectarInventario');
+Route::get('llamarActivos','OrdenMantenimientoController@llamarActivos');
+
 
 Route::get('inventarioactivo', function()
 {

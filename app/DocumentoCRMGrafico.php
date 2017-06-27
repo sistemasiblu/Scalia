@@ -9,9 +9,10 @@ class DocumentoCRMGrafico extends Model
     protected $table = 'documentocrmgrafico';
     protected $primaryKey = 'idDocumentoCRMGrafico';
 
-    protected $fillable = ['idDocumentoCRMGrafico', 'DocumentoCRM_idDocumentoCRM', 'tituloDocumentoCRMGrafico', 'tipoDocumentoCRMGrafico', 'valorDocumentoCRMGrafico', 'serieDocumentoCRMGrafico', 'filtroDocumentoCRMGrafico'];
+    protected $fillable = ['idDocumentoCRMGrafico', 'DocumentoCRM_idDocumentoCRM', 'tituloDocumentoCRMGrafico', 'tipoDocumentoCRMGrafico', 'valorDocumentoCRMGrafico', 'CampoCRM_idCampoCRM', 'filtroDocumentoCRMGrafico'];
 
     public $timestamps = false;
+
 
     public function documentocrm()
     {

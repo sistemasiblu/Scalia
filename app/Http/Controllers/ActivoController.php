@@ -27,7 +27,7 @@ public function index()
 public function create()
 {
 
-    $tipoactivo=\App\TipoActivo::lists('nombreTipoActivo','idTipoActivo')->prepend('Selecciona');
+    $tipoactivo=\App\TipoActivo::lists('nombreTipoActivo','idTipoActivo');
     return view('activo',['tipoactivo'=>$tipoactivo]);
     
 }

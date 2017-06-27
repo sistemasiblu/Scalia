@@ -5,7 +5,8 @@
 return;*/
 $idEstadoDefault = null;
 $nombreEstadoDefault = '';
-foreach ($estado as $key => $value) {
+foreach ($estado as $key => $value) 
+{
   $idEstadoDefault = $key;
   $nombreEstadoDefault = $value;
   break;
@@ -28,39 +29,7 @@ function mostrarCampo($arrayCampos, $campo, $rolUsuario, $atributo)
   }
   return $sololectura;
 } 
-?>
-<script>
- function borrarIguales(id,valor)
- {
 
-alert(valor);
-  //$('#campo_select_append').append('<option value="opcion_nueva_1" selected="selected">Opción nueva 1</option>');
-
-var idcampo=JSON.stringify(id).replace(/\D/g,'');
-//$("#nombreLocalizacionD"+idcampo).append("option[value='"+valor+"'] selected='selected'>Opción nueva 1</option>");
-var x = document.getElementById("#nombreLocalizacionD"+idcampo);
-    var option = document.createElement("option");
-    option.text = valor;
-    x.add(option);
-
-
-var dato=document.getElementById("#nombreLocalizacionO"+idcampo).value;
-alert(dato);
-
-//$("#nombreLocalizacionD"+idcampo).find("option[value='"+valor+"']").remove(); 
-//$("#nombreLocalizacionD"+idcampo).find("option[value='"+valor+"']").remove(); 
- }
-
-
- $(document).ready(function() {
-  $("#Tercero_idTercero").select2();
-});
-
-
-
-
-</script>
-<?php
 $id = isset($_GET["idTransaccionActivo"]) ? $_GET["idTransaccionActivo"] : 0;
 $campos = DB::select(
 "select idCampoTransaccion,codigoTransaccionActivo,nombreTransaccionActivo,tipoNumeracionTransaccionActivo,longitudTransaccionActivo,
@@ -293,89 +262,48 @@ function  abrirTransaccionActivo(id)
     $("#tmovimientoactivo").DataTable().ajax.url("http://"+location.host+"/datosTransaccionActivoSelect?id="+id).load();
     // Abrir modal
     $("#ModalTransaccionActivo").modal('show');
+      
+    $('a.toggle-vis').on( 'click', function (e) {
+            e.preventDefault();
+     
+            // Get the column API object
+            var column = table.column( $(this).attr('data-column') );
+     
+            // Toggle the visibility
+            column.visible( ! column.visible() );
+        } );
 
-   /* var table = $('#tmovimientoactivo').DataTable( 
-    {
-      "order": [[ 1, "asc" ]],
-      "aProcessing": true,
-      "aServerSide": true,
-      "stateSave":true,
-      "ajax": "{!! URL::to ('/datosTransaccionActivoSelect?id="+id+"')!!}",
-      "language": 
-      {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ning&uacute;n dato disponible en esta tabla",
-            "sInfo":           "Registros del _START_ al _END_ de un total de _TOTAL_ ",
-            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": 
-            {
-                "sFirst":    "Primero",
-                "sLast":     "&Uacute;ltimo",
-                "sNext":     "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": 
-            {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        $('#tmovimientoactivo tbody')
+        .on( 'mouseover', 'td', function () {
+            var colIdx = table.cell(this).index().column;
+ 
+            if ( colIdx !== lastIdx ) {
+                $( table.cells().nodes() ).removeClass( 'highlight' );
+                $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
             }
-      }
-    });*/
-           
-    $('a.toggle-vis').on( 'click', function (e) 
-    {
-      e.preventDefault();
-
-      // Get the column API object
-      var column = table.column( $(this).attr('data-column') );
-
-      // Toggle the visibility
-      column.visible( ! column.visible() );
-    });
-
-    $('#tmovimientoactivo tbody').on( 'mouseover', 'td', function () 
-    {
-        var colIdx = table.cell(this).index.column();
-
-        if ( colIdx !== lastIdx ) 
-        {
+        } )
+        .on( 'mouseleave', function () {
             $( table.cells().nodes() ).removeClass( 'highlight' );
-            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
+
+
+        // Setup - add a text input to each footer cell
+    $('#tmovimientoactivo tfoot th').each( function () {
+        if($(this).index()>0){
+        var title = $('#tmovimientoactivo thead th').eq( $(this).index() ).text();
+        $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
         }
-    })
-    .on( 'mouseleave', function () 
-    {
-        $( table.cells().nodes() ).removeClass( 'highlight' );
-    });
-
-
-    // Setup - add a text input to each footer cell
-     /* $('#tmovimientoactivoSelect tfoot th').each( function () 
-     {
-          var title = $('#tmovimientoactivoSelect thead th').eq( $(this).index() ).text();
-          $(this).html( '<input type="text" placeholder="Buscar por '+title+'" />' );
-      });*/
-   
-      // DataTable
+    } );
+ 
+    // DataTable
     var table = $('#tmovimientoactivo').DataTable();
-   
-      // Apply the search
-    table.columns().every( function () 
-    {
+ 
+    // Apply the search
+    table.columns().every( function () {
         var that = this;
  
-        $( 'input', this.footer() ).on( 'blur change', function () 
-        {
-            if ( that.search() !== this.value ) 
-            {
+        $( 'input', this.footer() ).on( 'blur change', function () {
+            if ( that.search() !== this.value ) {
                 that
                     .search( this.value )
                     .draw();
@@ -383,10 +311,17 @@ function  abrirTransaccionActivo(id)
         } );
     })
 
-    $('#tmovimientoactivo tbody').on( 'click', 'tr', function () 
-    {
-      $(this).toggleClass('selected');
-    });
+
+    $('#tmovimientoactivo tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');
+
+        var datos = table.rows('.selected').data();
+
+
+    } );
+ 
+    
+    
    
     $('#botonActivo').click(function() 
     {
@@ -438,8 +373,8 @@ function  abrirTransaccionActivo(id)
 
     });
 
-
-  }
+ }
+ 
 }//fin function abrirTransaccionActivo
 
 

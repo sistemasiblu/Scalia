@@ -26,8 +26,10 @@
                     $colores = array("cornflowerblue", "lightskyblue", "lightgreen", "yellowgreen", "orange", "darkorange","red", "blue", "yellow","purple","pink","gray","lime","brown", "navy","olive" ,"fuchshia");
 
                     $graficos = DB::select(
-                        "SELECT idDocumentoCRMGrafico, DocumentoCRM_idDocumentoCRM, tituloDocumentoCRMGrafico, tipoDocumentoCRMGrafico, valorDocumentoCRMGrafico, serieDocumentoCRMGrafico, filtroDocumentoCRMGrafico 
+                        "SELECT idDocumentoCRMGrafico, DocumentoCRM_idDocumentoCRM, tituloDocumentoCRMGrafico, tipoDocumentoCRMGrafico, valorDocumentoCRMGrafico, nombreCampoCRM, filtroDocumentoCRMGrafico 
                         FROM    documentocrmgrafico 
+                        inner join campocrm
+                        on documentocrmgrafico.CampoCRM_idCampoCRM=campocrm.idCampoCRM
                         WHERE   DocumentoCRM_idDocumentoCRM = ".$idDocumentoCRM);
                     
                     for ($g=0; $g < count($graficos) ; $g++) 
@@ -35,24 +37,63 @@
                         $graf = get_object_vars($graficos[$g]);
 
                         $idGrafico = $graf["idDocumentoCRMGrafico"];
-                        $tabla = $graf["serieDocumentoCRMGrafico"];
+                        $datoRelacion = $graf["nombreCampoCRM"];
+                        $tabla = explode("_", $datoRelacion);
+                        if ($tabla[0]=='Tercero') 
+                        {
+                            $basedatos=\Session::get("baseDatosCompania");
+                            $campo='nombre1';
+
+                        }
+
+                        else
+                        {
+                            $basedatos='scalia';
+                            $campo='nombre';
+
+
+                        }
+                        $tabla=$tabla[0];
                         $titulo = $graf["tituloDocumentoCRMGrafico"];
                         $tipoGrafico = $graf["tipoDocumentoCRMGrafico"];
                         $valorGrafico = $graf["valorDocumentoCRMGrafico"];
 
+                      /*  print_r($tabla[0]);
+                        echo $basedatos;*/
+                       //echo  $basedatos.".".$tabla.".".$campo.".".$tabla);
+                      /* echo "SELECT ".$campo."".$tabla.", count(*) as Cantidad, SUM(valorMovimientoCRM) as Valor
+                            FROM movimientocrm M 
+                            left join ".$basedatos.".".strtolower($tabla)." T 
+                            on M.".$datoRelacion." = T.id".$tabla."
+                            where   M.Compania_idCompania = ".$idCompania ." and 
+                                    M.DocumentoCRM_idDocumentoCRM = ".$idDocumentoCRM." 
+                            group by ".$campo."".$tabla;
+                        return;*/
+
                         $consultaGrafico = DB::select(
-                            "SELECT nombre".$tabla.", count(*) as Cantidad, SUM(valorMovimientoCRM) as Valor
+                            "SELECT ".$campo."".$tabla.", count(*) as Cantidad, SUM(valorMovimientoCRM) as Valor
+                            FROM movimientocrm M 
+                            left join ".$basedatos.".".strtolower($tabla)." T 
+                            on M.".$datoRelacion." = T.id".$tabla."
+                            where   M.Compania_idCompania = ".$idCompania ." and 
+                                    M.DocumentoCRM_idDocumentoCRM = ".$idDocumentoCRM." 
+                            group by $campo$tabla order by Cantidad desc limit 15");
+
+/*
+                        $consultaGrafico = DB::select(
+                            "SELECT $basedatos.$tabla.$campo.$tabla", count(*) as Cantidad, SUM(valorMovimientoCRM) as Valor
                             FROM movimientocrm M 
                             left join ".strtolower($tabla)." T 
                             on M.".$tabla."_id".$tabla." = T.id".$tabla."
                             where   M.Compania_idCompania = ".$idCompania ." and 
                                     M.DocumentoCRM_idDocumentoCRM = ".$idDocumentoCRM." 
-                            group by nombre".$tabla);
+                            group by nombre".$tabla);*/
 
                         //and 
                                     //DATE_FORMAT(fechaSolicitudMovimientoCRM,'%m-%Y') = '".$mes."'
 
-
+                        /*print_r($consultaGrafico);
+                        return;*/
                         $arrayLabels = '[';
                         $arrayDatos = '[';
                         $total = 0;
@@ -67,7 +108,7 @@
                         {
                             $Indicador = (array) $valor;
                            
-                            $serie = "'".$Indicador['nombre'.$tabla]."'";
+                            $serie = "'".$Indicador[$campo.$tabla]."'";
 
                             switch ($tipoGrafico) {
                                 case 'Lineas':

@@ -1,7 +1,17 @@
 <?php
 
-$asignacionactivo = DB::select("select idAsignacionActivo, numeroAsignacionActivo, fechaHoraAsignacionActivo, TransaccionActivo_idTransaccionActivo, documentoInternoAsignacionActivo, Users_idCrea
- from asignacionactivo");
+$asignacionactivo = DB::select("select idAsignacionActivo, numeroAsignacionActivo, fechaHoraAsignacionActivo, nombreTransaccionActivo, documentoInternoAsignacionActivo,name as UserCrea
+ from asignacionactivo
+ inner join asignacionactivodetalle
+ on asignacionactivodetalle.AsignacionActivo_idAsignacionActivo=asignacionactivo.idAsignacionActivo
+ inner join movimientoactivo
+ on asignacionactivodetalle.MovimientoActivo_idMovimientoActivo=movimientoactivo.idMovimientoActivo
+  inner join transaccionactivo
+ on movimientoactivo.TransaccionActivo_idTransaccionActivo=transaccionactivo.idTransaccionActivo
+ inner join users
+ on asignacionactivo.Users_idCrea=users.id group by idAsignacionActivo
+
+ ");
 
 
 
@@ -19,9 +29,9 @@ foreach ($asignacionactivo as $key => $value)
     $row[$key][] = $valores['idAsignacionActivo'];
     $row[$key][] = $valores['numeroAsignacionActivo'];
     $row[$key][] = $valores['fechaHoraAsignacionActivo']; 
-    $row[$key][] = $valores['TransaccionActivo_idTransaccionActivo'];
+    $row[$key][] = $valores['nombreTransaccionActivo'];
     $row[$key][] = $valores['documentoInternoAsignacionActivo'];
-    $row[$key][] = $valores['Users_idCrea'];
+    $row[$key][] = $valores['UserCrea'];
 
       
 }

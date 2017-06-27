@@ -1,3 +1,9 @@
+<?php 
+//print_r($documentocrmgrafico);
+//return;
+//print_r($nombreTGrafico);*/
+?>
+
 @extends('layouts.vista')
 @section('titulo')<h3 id="titulo"><center>Documentos CRM</center></h3>@stop
 
@@ -11,7 +17,10 @@
     var documentocrmcampo = '<?php echo (isset($documentocrm) ? json_encode($documentocrm->documentocrmcampo) : "");?>';
     documentocrmcampo = (documentocrmcampo != '' ? JSON.parse(documentocrmcampo) : '');
 
-    var documentocrmgrafico = '<?php echo (isset($documentocrm) ? json_encode($documentocrm->documentocrmgrafico) : "");?>';
+    /*var documentocrmgrafico = '<?php echo (isset($documentocrm) ? json_encode($documentocrm->documentocrmgrafico) : "");?>';
+    documentocrmgrafico = (documentocrmgrafico != '' ? JSON.parse(documentocrmgrafico) : '');*/
+    
+    var documentocrmgrafico = '<?php echo (isset($documentocrmgrafico) ? json_encode($documentocrmgrafico) : "");?>';
     documentocrmgrafico = (documentocrmgrafico != '' ? JSON.parse(documentocrmgrafico) : '');
 
     var documentocrmrol = '<?php echo (isset($documentocrm) ? json_encode($documentocrm->documentocrmrol) : "");?>';
@@ -95,7 +104,7 @@
 
       protGraficos.campos   = [
       'idDocumentoCRMGrafico',
-      'serieDocumentoCRMGrafico',
+      'graficoCRM',
       'tituloDocumentoCRMGrafico',
       'tipoDocumentoCRMGrafico', 
       'valorDocumentoCRMGrafico'
@@ -129,11 +138,16 @@
       serieGrafico = [['estadocrm','categoriacrm','lineanegocio','eventocrm','origencrm'],['Estado','Categoría','Línea de Negocio','Evento/Campaña', 'Origen']];
       valorGrafico = [['Valor','Cantidad'],['Valor','Cantidad']];
 
+      var idTGrafico = '<?php echo isset($idTGrafico) ? $idTGrafico : "";?>';
+      var nombreTGrafico = '<?php echo isset($nombreTGrafico) ? $nombreTGrafico : "";?>';
+      var TGrafico = [JSON.parse(idTGrafico),JSON.parse(nombreTGrafico)];
+      console.log(TGrafico);
+
       protGraficos.clase    = ['','','','',''];
       protGraficos.sololectura = [true,false,false,false,false];  
       protGraficos.funciones = ['','','','',''];
       protGraficos.completar = ['off','off','off','off','off'];
-      protGraficos.opciones = ['',serieGrafico,'',tipoGrafico,valorGrafico];
+      protGraficos.opciones = ['',TGrafico,'',tipoGrafico,valorGrafico];
 
       for(var j=0, k = documentocrmgrafico.length; j < k; j++)
       {
