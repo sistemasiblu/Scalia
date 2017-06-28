@@ -133,9 +133,9 @@
   <br>
 	@if(isset($conciliacioncomercial))
  		@if(isset($_GET['accion']) and $_GET['accion'] == 'eliminar')
-   			{!!Form::button('Eliminar',["id"=>"btnGuardar", "name"=>"btnGuardar", "class"=>"btn btn-primary", "onclick" => "validarProceso();"])!!}
+        {!!Form::submit('Eliminar',["class"=>"btn btn-primary"])!!}
   		@else
-   			{!!Form::button('Consultar',["id"=>"btnGuardar", "name"=>"btnGuardar", "class"=>"btn btn-primary", 'onclick' => 'validarProceso();'])!!}
+   			{!!Form::button('Conciliar',["id"=>"btnGuardar", "name"=>"btnGuardar", "class"=>"btn btn-primary", 'onclick' => 'validarProceso();'])!!}
   		@endif
  	@else
   		{!!Form::button('Conciliar',["id"=>"btnGuardar", "name"=>"btnGuardar", "class"=>"btn btn-primary", 'onclick' => 'validarProceso();'])!!}

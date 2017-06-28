@@ -151,6 +151,16 @@
 
     $datosConComDoc = array();
 
+    if(empty($concomdoc))
+    {
+    	$informacion = 'No se encontro informacion, de la conciliacion.';
+	    $respuesta = array("valid"=>false,"informacion"=>$informacion);
+	    
+	    echo json_encode($respuesta);
+	
+    	return;
+    }
+
     foreach ($concomdoc as $key => $value) 
     {  
         foreach ($value as $datoscampo => $campo) 
@@ -179,21 +189,21 @@
 			$tabla .= "<tr>
     					<td>
     						<a href='javascript:consultarInformacion($idMov,2);'>
-    							<label $style>".$datosConComDoc['descripcion'][$cont]."</label>
+    							<label $style>".utf8_encode($datosConComDoc['descripcion'][$cont])."</label>
 							</a>
     					</td>
     					<td>
-    						".$datosConComDoc['fechaElaboracionMovimiento'][$cont]."
+    						".utf8_encode($datosConComDoc['fechaElaboracionMovimiento'][$cont])."
     					</td>
     					<td>
-    						".$datosConComDoc['nombre1Tercero'][$cont]."
+    						".utf8_encode($datosConComDoc['nombre1Tercero'][$cont])."
     					</td>";
 		}
 		else if($tipo == 2)
 		{
 			$tabla .= "<tr>
     					<td>
-    						<label $style>".$datosConComDoc['descripcion'][$cont]."</label>
+    						<label $style>".utf8_encode($datosConComDoc['descripcion'][$cont])."</label>
     					</td>";
 		}
 		else if($tipo == 3)
@@ -201,7 +211,7 @@
 			$tabla .= "<tr>
     					<td>
     						<a href='javascript:consultarInformacion($idDoc,1);'>
-    							<label $style>".$datosConComDoc['descripcion'][$cont]."</label>
+    							<label $style>".utf8_encode($datosConComDoc['descripcion'][$cont])."</label>
 							</a>
     					</td>";
 		}
@@ -219,13 +229,13 @@
 		if($tipo == 1)
 		{
 			$tabla .= "<td>
-							<input type='text' id='observacionConciliacionComercialMovimiento$cont' name='observacionConciliacionComercialMovimiento$cont' value='".$datosConComDoc['observacionConciliacionComercialMovimiento'][$cont]."' style='width:100%' onchange='guardarObservacion($idMov,$idConCom,this.value,2);'>
+							<input type='text' id='observacionConciliacionComercialMovimiento$cont' name='observacionConciliacionComercialMovimiento$cont' value='".utf8_encode($datosConComDoc['observacionConciliacionComercialMovimiento'][$cont])."' style='width:100%' onchange='guardarObservacion($idMov,$idConCom,this.value,2);'>
 						</td>";
 		}
 		else if($tipo == 3)
 		{
 			$tabla .= "<td>
-							<input type='text' id='observacionConciliacionComercialDocumento$cont' name='observacionConciliacionComercialDocumento$cont' value='".$datosConComDoc['observacionConciliacionComercialDocumento'][$cont]."' style='width:100%' onchange='guardarObservacion($idDoc,$idConCom,this.value,1);'>
+							<input type='text' id='observacionConciliacionComercialDocumento$cont' name='observacionConciliacionComercialDocumento$cont' value='".utf8_encode($datosConComDoc['observacionConciliacionComercialDocumento'][$cont])."' style='width:100%' onchange='guardarObservacion($idDoc,$idConCom,this.value,1);'>
 						</td>";
 		}
 

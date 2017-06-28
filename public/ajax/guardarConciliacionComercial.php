@@ -16,7 +16,7 @@
     $condicionFechasContables = str_replace("fechaElaboracionMovimiento ", "fechaElaboracionMovimientoContable ", $condicionFechas);
 
 	$condicionDocumento = ($condicionDocumento != "") ? " AND $condicionDocumento " : "";
-	$condicionDocumentoCC = ($documentos != "") ? " AND  Documento_idDocumento = '$documentos' " : "";
+	$condicionDocumentoCC = ($documentos != "") ? " AND dc.Documento_idDocumento = '$documentos' " : "";
 
 	$informacion = '';
 	$tabla = '<table id="tconciliacioncomercialdocumento" name="tconciliacioncomercialdocumento" class="display table-bordered" width="100%">
@@ -49,27 +49,34 @@
 		// echo $query;
 		$resp = DB::delete($query);
 
-		$idConciliacionComercial = 0;
+		// $idConciliacionComercial = 0;
 	}
 
 	//SE CONSULTA SI YA EXISTE UNA CONCILIACION CON LOS MISMOS PARAMETROS
 	$concom = DB::select("SELECT idConciliacionComercial 
-							FROM conciliacioncomercial 
+							FROM conciliacioncomercial cc
+							LEFT JOIN users u 
+							ON cc.Users_idCrea = u.id
+							LEFT JOIN documentoconciliacion dc
+							ON cc.Documento_idDocumento = dc.Documento_idDocumento AND dc.Compania_idCompania = u.Compania_idCompania 
 							WHERE fechaElaboracionConciliacionComercial != '$fechaElaboracionConciliacionComercial'
 								AND fechaInicialConciliacionComercial = '$fechaInicialConciliacionComercial'
 								AND fechaFinalConciliacionComercial = '$fechaFinalConciliacionComercial'
-								$condicionDocumentoCC");
+								$condicionDocumentoCC AND dc.Compania_idCompania = ".\Session::get("idCompania")." ");
 
     $datosConCom = array();
 
-    foreach ($concom as $key => $value) 
-    {  
-        foreach ($value as $datoscampo => $campo) 
-        {
-            $datosConCom[$datoscampo][] = $campo;
-        }                        
-    }
-
+    if(!empty($concom))
+    {
+	    foreach ($concom as $key => $value) 
+	    {  
+	        foreach ($value as $datoscampo => $campo) 
+	        {
+	            $datosConCom[$datoscampo][] = $campo;
+	        }                        
+	    }
+	}
+	
     if(!empty($datosConCom))
     {
     	$informacion = 'Error. Ya existe una conciliacion guardada con los mismos parametros, por favor verifique.';
@@ -118,9 +125,9 @@
     $totalReg = count($datosValores['campoValorConciliacion']);
 
     //SE VALIDA SI EXISTE ID DE LA CONCILIACION, SINO PARA CREAR UNA NUEVA 	
-    if($idConciliacionComercial == 0)
-    {
-		$query = "INSERT INTO conciliacioncomercial VALUES(0,
+    // if($idConciliacionComercial == 0)
+    // {
+		$query = "INSERT INTO conciliacioncomercial VALUES($idConciliacionComercial,
 													'$fechaElaboracionConciliacionComercial',
 													$idUsuario,
 													'$fechaInicialConciliacionComercial',
@@ -128,6 +135,8 @@
 													'$documentos') ";
 		// echo $query;
 		$resp = DB::insert($query);
+
+		$condicionDocumentoCC = str_replace(" dc.Documento_idDocumento ", " Documento_idDocumento ", $condicionDocumentoCC);
 
 		$concom = DB::select("SELECT idConciliacionComercial 
 								FROM conciliacioncomercial 
@@ -148,7 +157,7 @@
 	    }
 
     	$idConciliacionComercial = $datosConCom['idConciliacionComercial'][0];
-    }
+    // }
 
 	$sqlInicial = "INSERT INTO conciliacioncomercialdetalle 
 					SELECT * FROM ("; 
@@ -189,7 +198,18 @@
 	            }
 	            else
 	            {
-	                $estructuraWhere .= " (numeroCuentaContable IN(".$cuentas2[$reg][0].")) OR ";
+	            	$inicioCuenta = substr($cuentas2[$reg][0], 0, 1);
+
+	            	if($inicioCuenta == 'X')
+	            	{
+	            		$cuentas2[$reg][0] = substr($cuentas2[$reg][0], 1);
+	            		$estructuraWhere .= " (numeroCuentaContable NOT IN(".$cuentas2[$reg][0].")) OR ";
+	            	}
+	            	else
+	            	{
+	            		$estructuraWhere .= " (numeroCuentaContable IN(".$cuentas2[$reg][0].")) OR ";
+	            	}
+	                
 	            }
 
 	        }
@@ -236,7 +256,7 @@
 
 		$sql = $sqlInicial.$sql;
 
-	    // echo '<br>----------------- consulta documento -----------<br>'.$sql.'<br>----------------- consulta documento -----------<br>';
+	 //    echo '<br>----------------- consulta documento -----------<br>'.$sql.'<br>----------------- consulta documento -----------<br>';
 		// return;
 		$resp = DB::insert($sql);
 
